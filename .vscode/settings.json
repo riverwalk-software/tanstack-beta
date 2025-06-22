@@ -16,7 +16,7 @@
     ".gitignore": ".git*",
   },
   "files.associations": {
-    "*.gitignore.*": "ignore",
+    "wrangler.json": "jsonc",
   },
   "files.autoSave": "off",
   "files.encoding": "utf8",
