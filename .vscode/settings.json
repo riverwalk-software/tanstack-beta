@@ -13,7 +13,7 @@
   "editor.wordWrapColumn": 80,
   "explorer.excludeGitIgnore": true,
   "explorer.fileNesting.patterns": {
-    ".gitignore": ".git*",
+    ".gitignore": ".git*"
   },
   "files.associations": {
     "wrangler.json": "jsonc"
@@ -27,7 +27,7 @@
     "**/.git*": true,
     "**/{,*-,*.}{lock,lockfile}{,-*,.*}": true,
     "**/{CHANGELOG,LICENSE,LEGAL}{,.*}": true,
-    "**/*.svg": true,
+    "**/*.svg": true
   },
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
@@ -57,7 +57,7 @@
     "**/{,*-,*.}{lock,lockfile}{,-*,.*}": true,
     "**/{CHANGELOG,LICENSE,LEGAL}{,.*}": true,
     "**/*.svg": true,
-    "**/*.xsl": true,
+    "**/*.xsl": true
   },
   "search.useIgnoreFiles": true,
   "typescript.format.enable": false,
@@ -74,19 +74,21 @@
   //// Language-Specific
   "[markdown]": {
     "editor.tabSize": 4,
-    "editor.wordWrap": "on",
+    "editor.wordWrap": "on"
   },
   "[mdx]": {
     "editor.tabSize": 4,
-    "editor.wordWrap": "on",
+    "editor.wordWrap": "on"
   },
   "[plaintext]": {
     "editor.tabSize": 4,
-    "editor.wordWrap": "on",
+    "editor.wordWrap": "on"
   },
   //// Extensions
   // adpyke.codesnap
   "codesnap.shutterAction": "copy",
+  // biomejs.biome
+  "editor.defaultFormatter": "biomejs.biome",
   // christian-kohler.path-intellisense
   "javascript.suggest.paths": false,
   "path-intellisense.autoSlashAfterDirectory": true,
@@ -108,5 +110,5 @@
   "yaml.extension.recommendations": false,
   "yaml.format.enable": false,
   "yaml.schemaStore.enable": false,
-  "yaml.validate": false,
+  "yaml.validate": false
 }

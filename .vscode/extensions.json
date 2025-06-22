@@ -1,6 +1,9 @@
 {
   "recommendations": [
     "adpyke.codesnap",
+    "biomejs.biome",
+    "christian-kohler.npm-intellisense",
+    "christian-kohler.path-intellisense",
     "EditorConfig.EditorConfig",
     "GitHub.codespaces",
     "GitHub.copilot",
@@ -9,6 +12,6 @@
     "GitHub.vscode-pull-request-github",
     "ms-vsliveshare.vsliveshare",
     "PKief.material-icon-theme",
-    "redhat.vscode-yaml",
-  ],
+    "redhat.vscode-yaml"
+  ]
 }
