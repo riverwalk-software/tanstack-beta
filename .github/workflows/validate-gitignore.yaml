@@ -13,6 +13,7 @@ env:
   OS_TEMPLATES: windows,macos,linux
   USER_SPACE_TEMPLATES: git,zsh,dotenv
   EDITOR_TEMPLATES: visualstudiocode
+  RUNTIME_TEMPLATES: node
 
 permissions:
   contents: write
@@ -29,7 +30,7 @@ jobs:
       - name: Build GITIGNORE_TEMPLATES
         id: build_templates
         run: |
-          echo "GITIGNORE_TEMPLATES=${OS_TEMPLATES},${USER_SPACE_TEMPLATES},${EDITOR_TEMPLATES}" >> $GITHUB_ENV
+          echo "GITIGNORE_TEMPLATES=${OS_TEMPLATES},${USER_SPACE_TEMPLATES},${EDITOR_TEMPLATES},${RUNTIME_TEMPLATES}" >> $GITHUB_ENV
 
       - name: Fetch and combine .gitignore fragments
         id: fetch
@@ -38,7 +39,7 @@ jobs:
           set -euo pipefail
           OUT="$RUNNER_TEMP/.gitignore"
           curl -Ls "https://www.toptal.com/developers/gitignore/api/${GITIGNORE_TEMPLATES}" > "$OUT"
-          cat .gitignore.* 2>/dev/null >> "$OUT"
+          curl -Ls "https://raw.githubusercontent.com/andreilgeorgescu/store/refs/heads/main/.gitignore.cloudflare" >> "$OUT"
           echo "path=$OUT" >>"$GITHUB_OUTPUT"
 
       - name: Compare with committed file
