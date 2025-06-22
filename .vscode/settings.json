@@ -89,6 +89,11 @@
   "codesnap.shutterAction": "copy",
   // biomejs.biome
   "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports.ts": "explicit",
+    "source.fixAll.biome": "explicit",
+    "source.removeUnusedImports": "explicit"
+  },
   // christian-kohler.path-intellisense
   "javascript.suggest.paths": false,
   "path-intellisense.autoSlashAfterDirectory": true,
