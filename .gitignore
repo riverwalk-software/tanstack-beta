@@ -290,6 +290,7 @@ zsdoc/data
 ### Tanstack ###
 # generated
 .tanstack/
+routeTree.gen
 ### Cloudflare ###
 # env
 .dev.vars
