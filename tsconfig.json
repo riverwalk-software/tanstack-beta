@@ -6,6 +6,10 @@
     "target": "ES2022",
     "skipLibCheck": true,
     "strictNullChecks": true,
-    "verbatimModuleSyntax": false // https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
+    "verbatimModuleSyntax": false, // https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }

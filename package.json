@@ -5,17 +5,21 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.10",
     "@tanstack/react-router": "^1.121.27",
     "@tanstack/react-start": "^1.121.32",
-    "react-dom": "^19.1.0",
+    "postcss": "^8.5.6",
     "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwindcss": "^4.1.10",
     "vite": "^6.3.5"
   },
   "devDependencies": {
     "@biomejs/biome": "2.0.4",
-    "@types/react-dom": "^19.1.6",
     "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "typescript": "^5.8.3",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "wrangler": "^4.20.5"
   }
 }
