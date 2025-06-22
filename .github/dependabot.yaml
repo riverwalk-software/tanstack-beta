@@ -19,3 +19,12 @@ updates:
       github-actions-dependencies:
         patterns:
           - "*"
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    reviewers: [andreilgeorgescu]
+    groups:
+      npm-dependencies:
+        patterns:
+          - "*"
