@@ -26,6 +26,7 @@
     "**/.editorconfig": true,
     "**/.git*": true,
     "**/{,*-,*.}{lock,lockfile}{,-*,.*}": true,
+    "**/{,*-,*.}{gen,generated}{,-*,.*}": true,
     "**/{CHANGELOG,LICENSE,LEGAL}{,.*}": true,
     "**/*.svg": true
   },
@@ -55,6 +56,7 @@
     "**/.editorconfig": true,
     "**/.git*": true,
     "**/{,*-,*.}{lock,lockfile}{,-*,.*}": true,
+    "**/{,*-,*.}{gen,generated}{,-*,.*}": true,
     "**/{CHANGELOG,LICENSE,LEGAL}{,.*}": true,
     "**/*.svg": true,
     "**/*.xsl": true
