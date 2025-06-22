@@ -289,6 +289,8 @@ zsdoc/data
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,git,zsh,dotenv,visualstudiocode,node
 ### Tanstack ###
 # generated
+.nitro/
+.output/
 .tanstack/
 routeTree.gen.ts
 ### Cloudflare ###
