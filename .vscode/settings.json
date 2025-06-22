@@ -16,7 +16,7 @@
     ".gitignore": ".git*",
   },
   "files.associations": {
-    "wrangler.json": "jsonc",
+    "wrangler.json": "jsonc"
   },
   "files.autoSave": "off",
   "files.encoding": "utf8",
@@ -87,6 +87,11 @@
   //// Extensions
   // adpyke.codesnap
   "codesnap.shutterAction": "copy",
+  // christian-kohler.path-intellisense
+  "javascript.suggest.paths": false,
+  "path-intellisense.autoSlashAfterDirectory": true,
+  "path-intellisense.autoTriggerNextSuggestion": true,
+  "typescript.suggest.paths": false,
   // EditorConfig.EditorConfig
   "editorconfig.generateAuto": false,
   "editorconfig.showMenuEntry": false,
