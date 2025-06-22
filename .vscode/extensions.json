@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "adpyke.codesnap",
+    "EditorConfig.EditorConfig",
+    "GitHub.codespaces",
+    "GitHub.copilot",
+    "GitHub.github-vscode-theme",
+    "github.vscode-github-actions",
+    "GitHub.vscode-pull-request-github",
+    "ms-vsliveshare.vsliveshare",
+    "PKief.material-icon-theme",
+    "redhat.vscode-yaml",
+  ],
+}

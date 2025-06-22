@@ -1,0 +1,66 @@
+name: Validate .gitignore
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 0'
+
+concurrency:
+  group: validate-gitignore
+  cancel-in-progress: true
+
+env:
+  OS_TEMPLATES: windows,macos,linux
+  USER_SPACE_TEMPLATES: git,zsh,dotenv
+  EDITOR_TEMPLATES: visualstudiocode
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build GITIGNORE_TEMPLATES
+        id: build_templates
+        run: |
+          echo "GITIGNORE_TEMPLATES=${OS_TEMPLATES},${USER_SPACE_TEMPLATES},${EDITOR_TEMPLATES}" >> $GITHUB_ENV
+
+      - name: Fetch and combine .gitignore fragments
+        id: fetch
+        shell: bash
+        run: |
+          set -euo pipefail
+          OUT="$RUNNER_TEMP/.gitignore"
+          curl -Ls "https://www.toptal.com/developers/gitignore/api/${GITIGNORE_TEMPLATES}" > "$OUT"
+          cat .gitignore.* 2>/dev/null >> "$OUT"
+          echo "path=$OUT" >>"$GITHUB_OUTPUT"
+
+      - name: Compare with committed file
+        id: changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if cmp -s .gitignore "${{ steps.fetch.outputs.path }}"; then
+            echo "changed=false" >>"$GITHUB_OUTPUT"
+          else
+            echo "changed=true"  >>"$GITHUB_OUTPUT"
+          fi
+
+      - name: Overwrite .gitignore for PR
+        if: steps.changed.outputs.changed == 'true'
+        run: cp "${{ steps.fetch.outputs.path }}" .gitignore
+
+      - name: Create pull request
+        if: steps.changed.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore: sync .gitignore with gitignore.io (${GITIGNORE_TEMPLATES})"
+          title:          "chore: update .gitignore"
+          branch:         update/gitignore
+          labels:         automated, housekeeping
