@@ -3,12 +3,19 @@
   "features": {
     "ghcr.io/devcontainers/features/git-lfs:1": {
       "autoPull": false
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
     }
   },
   "customizations": {
     "vscode": {
       "extensions": [
+        "-dbaeumer.vscode-eslint",
         "adpyke.codesnap",
+        "biomejs.biome",
+        "christian-kohler.npm-intellisense",
+        "christian-kohler.path-intellisense",
         "EditorConfig.EditorConfig",
         "GitHub.copilot",
         "github.vscode-github-actions",
