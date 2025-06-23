@@ -18,6 +18,7 @@
       "@/*": ["./src/*"]
     },
     "noEmit": true,
-    "verbatimModuleSyntax": false // https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
+    "verbatimModuleSyntax": false, // https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
+    "types": ["./worker-configuration.d.ts", "node"] // https://developers.cloudflare.com/workers/languages/typescript/#3-make-sure-your-tsconfigjson-includes-the-generated-types
   }
 }
