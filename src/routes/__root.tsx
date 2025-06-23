@@ -13,12 +13,17 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
+import { ThemeProvider, useTheme } from "@/components/theme/ThemeProvider";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import globalsCss from "@/styles/globals.css?url";
 import { seo } from "@/utils/seo";
+import { getThemeFn, type Theme } from "@/utils/theme";
 
-export const Route = createRootRouteWithContext<{
+interface RouterContext {
   queryClient: QueryClient;
-}>()({
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
     meta: [
       {
@@ -57,28 +62,38 @@ export const Route = createRootRouteWithContext<{
       { rel: "icon", href: "/favicon.ico" },
     ],
   }),
-  errorComponent: (props) => {
-    return (
-      <RootDocument>
-        <DefaultCatchBoundary {...props} />
-      </RootDocument>
-    );
-  },
+  errorComponent: (props) => (
+    <RootDocument>
+      <DefaultCatchBoundary {...props} />
+    </RootDocument>
+  ),
   notFoundComponent: () => <NotFound />,
   component: RootComponent,
+  // beforeLoad: ({ context: { queryClient } }) =>
+  //   queryClient.ensureQueryData(authQueryOptions),
+  loader: () => getThemeFn(),
 });
 
 function RootComponent() {
+  const theme: Theme = Route.useLoaderData();
   return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
+    <ThemeProvider theme={theme}>
+      <RootDocument>
+        <Outlet />
+      </RootDocument>
+    </ThemeProvider>
   );
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  // useSuspenseQuery(authQueryOptions); // Ensure auth query is loaded
+  const { theme } = useTheme();
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={theme}
+      suppressHydrationWarning // Suppress hydration because theme may differ between server and client
+    >
       <head>
         <HeadContent />
       </head>
@@ -93,6 +108,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           >
             Home
           </Link>{" "}
+          <ThemeToggle />
         </div>
         <hr />
         {children}
