@@ -71,7 +71,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
   // beforeLoad: ({ context: { queryClient } }) =>
   //   queryClient.ensureQueryData(authQueryOptions),
-  loader: () => getThemeFn(),
+  loader: (): Promise<Theme> => getThemeFn(),
 });
 
 function RootComponent() {
