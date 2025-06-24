@@ -292,7 +292,7 @@ zsdoc/data
 .nitro/
 .output/
 .tanstack/
-routeTree.gen.ts
+*/routeTree.gen.ts
 ### Cloudflare ###
 # env
 .dev.vars
