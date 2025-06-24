@@ -16,6 +16,11 @@ import { NotFound } from "@/components/NotFound";
 import { ThemeProvider, useTheme } from "@/components/theme/ThemeProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import globalsCss from "@/styles/globals.css?url";
+import {
+  EnvironmentError,
+  type EnvironmentValidation,
+  validateEnvironmentFn,
+} from "@/utils/environment";
 import { seo } from "@/utils/seo";
 import { getThemeFn, type Theme } from "@/utils/theme";
 
@@ -71,11 +76,39 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
   // beforeLoad: ({ context: { queryClient } }) =>
   //   queryClient.ensureQueryData(authQueryOptions),
-  loader: (): Promise<Theme> => getThemeFn(),
+  loader: async (): Promise<{
+    theme: Theme;
+    environmentValidation: EnvironmentValidation | null;
+  }> => {
+    if (import.meta.env.DEV) {
+      const [theme, environmentValidation] = await Promise.all([
+        getThemeFn(),
+        validateEnvironmentFn(),
+      ]);
+      return { theme, environmentValidation };
+    }
+
+    const theme = await getThemeFn();
+    return { theme, environmentValidation: null };
+  },
 });
 
 function RootComponent() {
-  const theme: Theme = Route.useLoaderData();
+  const {
+    theme,
+    environmentValidation,
+  }: { theme: Theme; environmentValidation: EnvironmentValidation | null } =
+    Route.useLoaderData();
+
+  if (environmentValidation !== null && !environmentValidation.isValid) {
+    return (
+      <ThemeProvider theme={theme}>
+        <RootDocument>
+          <EnvironmentError {...environmentValidation} />
+        </RootDocument>
+      </ThemeProvider>
+    );
+  }
   return (
     <ThemeProvider theme={theme}>
       <RootDocument>
