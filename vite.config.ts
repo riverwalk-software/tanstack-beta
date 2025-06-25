@@ -23,7 +23,12 @@ export default defineConfig({
     commonjsOptions: {
       // keep this low enough to not blow the FD limit
       // since lucide publishes pure ESM, skip transforming it
-      exclude: [/lucide-react/],
+      exclude: [
+        /node_modules\/lucide-react\/.*/, // <— skip folder
+        /node_modules\/@?lucide-react$/, // <— skip root import
+      ],
+      // when a package ships mixed ES/CJS, this helps avoid fallback reads
+      transformMixedEsModules: true,
     },
   },
 });
