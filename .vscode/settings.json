@@ -92,7 +92,6 @@
   // biomejs.biome
   "editor.defaultFormatter": "biomejs.biome",
   "editor.codeActionsOnSave": {
-    "source.addMissingImports.ts": "explicit",
     "source.fixAll.biome": "explicit",
     "source.removeUnusedImports": "explicit"
   },
