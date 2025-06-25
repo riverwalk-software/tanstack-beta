@@ -132,6 +132,7 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const { theme } = useTheme();
+  useSuspenseQuery(authenticationQueryOptions);
   return (
     <html
       lang="en"
