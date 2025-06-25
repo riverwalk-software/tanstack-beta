@@ -10,12 +10,19 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { useAtomValue } from "jotai";
 import type { ReactNode } from "react";
+import { Toaster } from "sonner";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
 import { ThemeProvider, useTheme } from "@/components/theme/ThemeProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { Button } from "@/components/ui/button";
 import globalsCss from "@/styles/globals.css?url";
+import {
+  authenticationQueryOptions,
+  sessionDataAtom,
+} from "@/utils/authentication";
 import {
   EnvironmentError,
   type EnvironmentValidation,
@@ -74,8 +81,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   ),
   notFoundComponent: () => <NotFound />,
   component: RootComponent,
-  // beforeLoad: ({ context: { queryClient } }) =>
-  //   queryClient.ensureQueryData(authQueryOptions),
+  beforeLoad: ({ context: { queryClient } }) =>
+    queryClient.ensureQueryData(authenticationQueryOptions),
   loader: async (): Promise<{
     theme: Theme;
     environmentValidation: EnvironmentValidation | null;
@@ -119,7 +126,6 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  // useSuspenseQuery(authQueryOptions); // Ensure auth query is loaded
   const { theme } = useTheme();
   return (
     <html
@@ -131,24 +137,100 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <HeadContent />
       </head>
       <body>
-        <div className="p-2 flex gap-2 text-lg">
-          <Link
-            to="/"
-            activeProps={{
-              className: "font-bold",
-            }}
-            activeOptions={{ exact: true }}
-          >
-            Home
-          </Link>{" "}
-          <ThemeToggle />
-        </div>
+        <Navbar />
         <hr />
         {children}
+        <Toaster richColors={true} />
         <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" />
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function Navbar() {
+  const {
+    data: { isAuthenticated },
+  } = useAtomValue(sessionDataAtom);
+  return (
+    <div className="p-2 flex gap-2 text-lg">
+      <div className="flex flex-1 gap-2">
+        {isAuthenticated && (
+          <>
+            <HomeLink />
+            <ProfileLink />
+          </>
+        )}
+      </div>
+      <div className="flex gap-2 ml-auto">
+        {isAuthenticated ? (
+          // <SignOutButton />
+          <Button>Sign Out</Button>
+        ) : (
+          <>
+            <SigninLink />
+            <SignupLink />
+          </>
+        )}
+      </div>
+      <ThemeToggle />
+    </div>
+  );
+}
+
+function HomeLink() {
+  return (
+    <Link
+      to="/"
+      activeProps={{
+        className: "font-bold",
+      }}
+      activeOptions={{ exact: true }}
+    >
+      Home
+    </Link>
+  );
+}
+
+function ProfileLink() {
+  return (
+    <Link
+      to="/profile"
+      activeProps={{
+        className: "font-bold",
+      }}
+      activeOptions={{ exact: true }}
+    >
+      Profile
+    </Link>
+  );
+}
+
+function SigninLink() {
+  return (
+    <Link
+      to="/signin"
+      activeProps={{
+        className: "font-bold",
+      }}
+      activeOptions={{ exact: false }}
+    >
+      Sign In
+    </Link>
+  );
+}
+
+function SignupLink() {
+  return (
+    <Link
+      to="/signup"
+      activeProps={{
+        className: "font-bold",
+      }}
+      activeOptions={{ exact: true }}
+    >
+      Sign Up
+    </Link>
   );
 }
