@@ -26,8 +26,8 @@ function RouteComponent() {
               });
               await router.invalidate({ sync: true });
             },
-            onError: (error) => {
-              toast.error(`Sign in failed: ${error.message}`);
+            onError: (context) => {
+              toast.error(`Sign in failed: ${context.error.message}`);
             },
           },
         )

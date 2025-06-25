@@ -52,8 +52,8 @@ function SignUp() {
               onSuccess: () => {
                 toast.success("Sign up successful!");
               },
-              onError: (error) => {
-                toast.error(`Sign up failed: ${error.message}`);
+              onError: (context) => {
+                toast.error(`Sign up failed: ${context.error.message}`);
               },
             },
           )
