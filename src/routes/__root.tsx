@@ -10,7 +10,6 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { useAtomValue } from "jotai";
 import type { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { SignOutButton } from "@/components/auth/SignOutButton";
@@ -20,8 +19,8 @@ import { ThemeProvider, useTheme } from "@/components/theme/ThemeProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import globalsCss from "@/styles/globals.css?url";
 import {
+  type AuthenticationData,
   authenticationQueryOptions,
-  sessionDataAtom,
 } from "@/utils/authentication";
 import {
   EnvironmentError,
@@ -81,8 +80,14 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   ),
   notFoundComponent: () => <NotFound />,
   component: RootComponent,
-  beforeLoad: ({ context: { queryClient } }) =>
-    queryClient.ensureQueryData(authenticationQueryOptions),
+  beforeLoad: async ({
+    context: { queryClient },
+  }): Promise<{ authenticationData: AuthenticationData }> => {
+    const authenticationData = await queryClient.fetchQuery(
+      authenticationQueryOptions,
+    );
+    return { authenticationData };
+  },
   loader: async (): Promise<{
     theme: Theme;
     environmentValidation: EnvironmentValidation | null;
@@ -151,8 +156,8 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 
 function Navbar() {
   const {
-    data: { isAuthenticated },
-  } = useAtomValue(sessionDataAtom);
+    authenticationData: { isAuthenticated },
+  }: { authenticationData: AuthenticationData } = Route.useRouteContext();
   return (
     <div className="p-2 flex gap-2 text-lg">
       <div className="flex flex-1 gap-2">

@@ -1,7 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { authenticationQueryOptions } from "@/utils/authentication";
 import { TEST_USER } from "@/utils/constants";
 
 export const Route = createFileRoute("/_unauthenticated/signin")({
@@ -9,14 +11,20 @@ export const Route = createFileRoute("/_unauthenticated/signin")({
 });
 
 function RouteComponent() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
   return (
     <Button
       onClick={() =>
         authClient.signIn.email(
           { ...TEST_USER },
           {
-            onSuccess: () => {
+            onSuccess: async () => {
               toast.success("Sign in successful!");
+              await queryClient.invalidateQueries({
+                queryKey: authenticationQueryOptions.queryKey,
+              });
+              await router.invalidate({ sync: true });
             },
             onError: (error) => {
               toast.error(`Sign in failed: ${error.message}`);
