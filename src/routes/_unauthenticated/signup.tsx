@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute } from "@tanstack/react-router";
 import { atom, useAtomValue, useSetAtom } from "jotai";
+import { useState } from "react";
 import { Form, type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -33,6 +34,7 @@ const formDataAtom = atom({} as SignUpFormTransformed);
 function SignUp() {
   // const isSubmitted = useAtomValue(isSubmittedAtom);
   // const { email } = useAtomValue(formDataAtom);
+  const [pending, setPending] = useState(false);
   return (
     <CenteredContainer>
       {/* {isSubmitted ? (
@@ -45,15 +47,20 @@ function SignUp() {
       )} */}
       {/* <MyForm /> */}
       <Button
+        disabled={pending}
         onClick={() =>
           authClient.signUp.email(
             { ...TEST_USER },
             {
+              onRequest: () => {
+                setPending(true);
+              },
               onSuccess: () => {
                 toast.success("Sign up successful!");
               },
               onError: (context) => {
                 toast.error(`Sign up failed: ${context.error.message}`);
+                setPending(false);
               },
             },
           )
