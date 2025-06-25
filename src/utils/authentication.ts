@@ -1,7 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
-import { atomWithSuspenseQuery } from "jotai-tanstack-query";
 import ms from "ms";
 import { auth } from "@/lib/auth";
 import { EVENTUAL_CONSISTENCY_DELAY_S } from "./constants";
@@ -39,7 +38,3 @@ export const authenticationQueryOptions = queryOptions({
   staleTime: ms(`${EVENTUAL_CONSISTENCY_DELAY_S}s`),
   retry: false,
 });
-
-export const sessionDataAtom = atomWithSuspenseQuery(
-  () => authenticationQueryOptions,
-);
