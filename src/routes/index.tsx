@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -14,7 +15,8 @@ function Home() {
       <Button
         onClick={async () => {
           await queryClient.invalidateQueries();
-          await router.invalidate();
+          await router.invalidate({ sync: true });
+          toast.success("Cache invalidated successfully!");
         }}
       >
         Invalidate

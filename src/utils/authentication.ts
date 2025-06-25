@@ -1,9 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
-import ms from "ms";
 import { auth } from "@/lib/auth";
-import { EVENTUAL_CONSISTENCY_DELAY_S } from "./constants";
 
 export type SessionData = typeof auth.$Infer.Session;
 export type AuthenticationData =
@@ -35,6 +33,6 @@ const getSessionDataFn = createServerFn().handler(
 export const authenticationQueryOptions = queryOptions({
   queryKey: ["authentication"],
   queryFn: getSessionDataFn,
-  staleTime: ms(`${EVENTUAL_CONSISTENCY_DELAY_S}s`),
+  // staleTime: ms(`${EVENTUAL_CONSISTENCY_DELAY_S}s`),
   retry: false,
 });

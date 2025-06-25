@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { QueryClient } from "@tanstack/react-query";
+import { type QueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
@@ -156,8 +156,8 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 
 function Navbar() {
   const {
-    authenticationData: { isAuthenticated },
-  }: { authenticationData: AuthenticationData } = Route.useRouteContext();
+    data: { isAuthenticated },
+  } = useSuspenseQuery(authenticationQueryOptions);
   return (
     <div className="p-2 flex gap-2 text-lg">
       <div className="flex flex-1 gap-2">
