@@ -164,7 +164,7 @@ function Navbar() {
         {isAuthenticated && (
           <>
             <HomeLink />
-            <ProfileLink />
+            {/* <ProfileLink /> */}
           </>
         )}
       </div>
@@ -197,19 +197,19 @@ function HomeLink() {
   );
 }
 
-function ProfileLink() {
-  return (
-    <Link
-      to="/profile"
-      activeProps={{
-        className: "font-bold",
-      }}
-      activeOptions={{ exact: true }}
-    >
-      Profile
-    </Link>
-  );
-}
+// function ProfileLink() {
+//   return (
+//     <Link
+//       to="/profile"
+//       activeProps={{
+//         className: "font-bold",
+//       }}
+//       activeOptions={{ exact: true }}
+//     >
+//       Profile
+//     </Link>
+//   );
+// }
 
 function SigninLink() {
   return (
