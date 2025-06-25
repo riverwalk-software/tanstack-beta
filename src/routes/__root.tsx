@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import { type QueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
@@ -8,15 +8,17 @@ import {
   Link,
   Outlet,
   Scripts,
+  useRouter,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
-import { Toaster } from "sonner";
+import { Toaster, toast } from "sonner";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
 import { ThemeProvider, useTheme } from "@/components/theme/ThemeProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { Button } from "@/components/ui/button";
 import globalsCss from "@/styles/globals.css?url";
 import {
   type AuthenticationData,
@@ -83,6 +85,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({
     context: { queryClient },
   }): Promise<{ authenticationData: AuthenticationData }> => {
+    console.log("Loading root route...");
     const authenticationData = await queryClient.fetchQuery(
       authenticationQueryOptions,
     );
@@ -106,11 +109,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 function RootComponent() {
-  const {
-    theme,
-    environmentValidation,
-  }: { theme: Theme; environmentValidation: EnvironmentValidation | null } =
-    Route.useLoaderData();
+  const { theme, environmentValidation } = Route.useLoaderData();
 
   if (environmentValidation !== null && !environmentValidation.isValid) {
     return (
@@ -132,7 +131,6 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const { theme } = useTheme();
-  useSuspenseQuery(authenticationQueryOptions);
   return (
     <html
       lang="en"
@@ -156,9 +154,11 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 }
 
 function Navbar() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const {
-    data: { isAuthenticated },
-  } = useSuspenseQuery(authenticationQueryOptions);
+    authenticationData: { isAuthenticated },
+  } = Route.useRouteContext();
   return (
     <div className="p-2 flex gap-2 text-lg">
       <div className="flex flex-1 gap-2">
@@ -186,6 +186,15 @@ function Navbar() {
           </>
         )}
       </div>
+      <Button
+        onClick={async () => {
+          await queryClient.invalidateQueries();
+          await router.invalidate({ sync: true });
+          toast.success("Cache invalidated successfully!");
+        }}
+      >
+        Invalidate
+      </Button>
       <ThemeToggle />
     </div>
   );
@@ -204,20 +213,6 @@ function HomeLink() {
     </Link>
   );
 }
-
-// function ProfileLink() {
-//   return (
-//     <Link
-//       to="/profile"
-//       activeProps={{
-//         className: "font-bold",
-//       }}
-//       activeOptions={{ exact: true }}
-//     >
-//       Profile
-//     </Link>
-//   );
-// }
 
 function SigninLink() {
   return (
