@@ -59,7 +59,7 @@ function SignUp() {
           )
         }
       >
-        Sign In
+        Sign Up
       </Button>
     </CenteredContainer>
   );

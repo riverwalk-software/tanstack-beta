@@ -13,11 +13,11 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { useAtomValue } from "jotai";
 import type { ReactNode } from "react";
 import { Toaster } from "sonner";
+import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
 import { ThemeProvider, useTheme } from "@/components/theme/ThemeProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
-import { Button } from "@/components/ui/button";
 import globalsCss from "@/styles/globals.css?url";
 import {
   authenticationQueryOptions,
@@ -165,8 +165,7 @@ function Navbar() {
       </div>
       <div className="flex gap-2 ml-auto">
         {isAuthenticated ? (
-          // <SignOutButton />
-          <Button>Sign Out</Button>
+          <SignOutButton />
         ) : (
           <>
             <SigninLink />

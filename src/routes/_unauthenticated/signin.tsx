@@ -16,10 +16,10 @@ function RouteComponent() {
           { ...TEST_USER },
           {
             onSuccess: () => {
-              toast.success("Sign up successful!");
+              toast.success("Sign in successful!");
             },
             onError: (error) => {
-              toast.error(`Sign up failed: ${error.message}`);
+              toast.error(`Sign in failed: ${error.message}`);
             },
           },
         )
