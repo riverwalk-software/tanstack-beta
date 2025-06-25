@@ -1,13 +1,18 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getSessionDataFn } from "@/utils/authentication";
+import {
+  authenticationQueryOptions,
+  getSessionDataFn,
+} from "@/utils/authentication";
 
 export const Route = createFileRoute("/_authenticated/test")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [id, setId] = useState("None");
   return (
@@ -25,6 +30,9 @@ function RouteComponent() {
             setId(id);
           } catch (error) {
             if (error) {
+              await queryClient.invalidateQueries({
+                queryKey: authenticationQueryOptions.queryKey,
+              });
               await router.invalidate({ sync: true });
             }
           }
