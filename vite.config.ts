@@ -14,4 +14,9 @@ export default defineConfig({
       target: "cloudflare-module",
     }),
   ],
+  build: {
+    commonjsOptions: {
+      exclude: [/lucide-react/],
+    },
+  },
 });
