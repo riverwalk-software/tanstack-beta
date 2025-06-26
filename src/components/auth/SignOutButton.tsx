@@ -23,7 +23,6 @@ export function SignOutButton() {
               setIsPending(false);
             },
             onSuccess: async () => {
-              toast.success("Signed out successfully");
               await queryClient.invalidateQueries({
                 queryKey: authenticationQueryOptions.queryKey,
               });
