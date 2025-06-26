@@ -158,18 +158,19 @@ function Navbar() {
   return (
     <div className="p-2 flex gap-2 text-lg">
       <div className="flex flex-1 gap-2">
-        {isAuthenticated && (
+        {isAuthenticated ? (
           <>
             <HomeLink />
             {/* <ProfileLink /> */}
           </>
-        )}
+        ) : null}
       </div>
       <div className="flex gap-2 ml-auto">
         {isAuthenticated ? (
           <SignOutButton />
         ) : (
           <>
+            <MagicLinkLink />
             <SigninLink />
             <SignupLink />
           </>
@@ -190,6 +191,20 @@ function HomeLink() {
       activeOptions={{ exact: true }}
     >
       Home
+    </Link>
+  );
+}
+
+function MagicLinkLink() {
+  return (
+    <Link
+      to="/magic-link"
+      activeProps={{
+        className: "font-bold",
+      }}
+      activeOptions={{ exact: true }}
+    >
+      Magic Link
     </Link>
   );
 }
