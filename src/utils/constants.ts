@@ -6,6 +6,6 @@ export const SITE_URL = "https://tanstack-beta.andrei-023.workers.dev/";
 // export const SNAPGEN_PATH = "/api/snapgen";
 export const TEST_USER = {
   name: "Test User",
-  email: "test@test.email.com",
-  password: "password",
+  email: "test@email.com",
+  password: "passwordpassword",
 };
