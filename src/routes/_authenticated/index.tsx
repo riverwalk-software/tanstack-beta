@@ -1,9 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { CenteredContainer } from "@/containers/CenteredContainer";
 
 export const Route = createFileRoute("/_authenticated/")({
   component: Home,
 });
 
 function Home() {
-  return <p>Home</p>;
+  return (
+    <CenteredContainer>
+      <p>Home</p>
+    </CenteredContainer>
+  );
 }
