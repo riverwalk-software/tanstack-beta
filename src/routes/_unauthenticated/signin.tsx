@@ -85,7 +85,7 @@ function FormHeader() {
     <div className="space-y-2">
       <h1 className="text-2xl font-bold">Sign In</h1>
       <FormDescription>
-        Enter your email below to login to your account
+        Enter your email below to sign in to your account
       </FormDescription>
     </div>
   );
