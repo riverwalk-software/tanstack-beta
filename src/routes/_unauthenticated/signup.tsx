@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute } from "@tanstack/react-router";
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import { Form, type UseFormReturn, useForm } from "react-hook-form";
+import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
+  Form,
   FormControl,
   FormDescription,
   FormField,
@@ -50,6 +51,13 @@ function SignUp() {
 function MyForm() {
   const form = useForm<SignUpForm>({
     resolver: zodResolver(SignUpFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
   const setIsPendingAtom = useSetAtom(isPendingAtom);
   const setIsSubmitted = useSetAtom(isSubmittedAtom);
@@ -196,7 +204,7 @@ function FormSubmitButton() {
   const isPending = useAtomValue(isPendingAtom);
   return (
     <Button disabled={isPending} className="w-full">
-      Sign Up
+      {isPending ? "Signing Up..." : "Sign Up"}
     </Button>
   );
 }
@@ -224,10 +232,11 @@ const SignUpFormSchema = z
   });
 
 const SignUpFormTransformedSchema = SignUpFormSchema.transform(
-  ({ confirmPassword, firstName, lastName, ...rest }) => ({
-    ...rest,
-    name: `${firstName} ${lastName}`,
-  }),
+  ({ confirmPassword, firstName, lastName, ...rest }) =>
+    ({
+      ...rest,
+      name: `${firstName} ${lastName}`,
+    }) as Parameters<typeof authClient.signUp.email>[0],
 );
 
 type SignUpForm = z.infer<typeof SignUpFormSchema>;
