@@ -1,7 +1,11 @@
 import { betterAuth } from "better-auth";
 import { reactStartCookies } from "better-auth/react-start";
 import { D1Dialect } from "kysely-d1";
-import { EVENTUAL_CONSISTENCY_DELAY_S } from "@/utils/constants";
+import {
+  EVENTUAL_CONSISTENCY_DELAY_S,
+  MAXIMUM_PASSWORD_LENGTH,
+  MINIMUM_PASSWORD_LENGTH,
+} from "@/utils/constants";
 import { getBindings } from "@/utils/getBindings";
 
 const { DB, SESSION_STORE } = getBindings();
@@ -44,12 +48,11 @@ export const auth = betterAuth({
   // },
   emailAndPassword: {
     enabled: true,
-    autoSignIn: true,
     // autoSignIn: false,
     // requireEmailVerification: true,
     // autoSignInAfterVerification: true,
-    // minPasswordLength: MINIMUM_PASSWORD_LENGTH,
-    // maxPasswordLength: MAXIMUM_PASSWORD_LENGTH,
+    minPasswordLength: MINIMUM_PASSWORD_LENGTH,
+    maxPasswordLength: MAXIMUM_PASSWORD_LENGTH,
   },
   plugins: [
     reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
