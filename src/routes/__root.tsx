@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import { type QueryClient, useQueryClient } from "@tanstack/react-query";
+import type { QueryClient } from "@tanstack/query-core";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
@@ -8,17 +8,15 @@ import {
   Link,
   Outlet,
   Scripts,
-  useRouter,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
 import { ThemeProvider, useTheme } from "@/components/theme/ThemeProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
-import { Button } from "@/components/ui/button";
 import globalsCss from "@/styles/globals.css?url";
 import {
   type AuthenticationData,
@@ -154,8 +152,6 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 }
 
 function Navbar() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
   const {
     authenticationData: { isAuthenticated },
   } = Route.useRouteContext();
@@ -186,15 +182,6 @@ function Navbar() {
           </>
         )}
       </div>
-      <Button
-        onClick={async () => {
-          await queryClient.invalidateQueries();
-          await router.invalidate({ sync: true });
-          toast.success("Cache invalidated successfully!");
-        }}
-      >
-        Invalidate
-      </Button>
       <ThemeToggle />
     </div>
   );
