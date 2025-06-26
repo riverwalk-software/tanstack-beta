@@ -3,6 +3,7 @@ import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
 import ms from "ms";
 import { auth } from "@/lib/auth";
+import { UNAUTHENTICATED } from "./httpResponses";
 
 export type SessionData = typeof auth.$Infer.Session;
 export type AuthenticationData =
@@ -44,16 +45,18 @@ const getAuthenticationDataFn = createServerFn()
       authenticationData,
   );
 
-// TODO: Cannot use middleware due to bug https://github.com/TanStack/router/issues/4460
-export const getSessionDataFn = createServerFn().handler(
-  async (): Promise<SessionData> => {
-    const { headers } = getWebRequest();
-    const sessionData = await auth.api.getSession({ headers });
-    const isAuthenticated = sessionData !== null;
-    if (!isAuthenticated) throw new Error("Not authenticated");
-    return sessionData;
-  },
-);
+export const getSessionDataFn = createServerFn()
+  .middleware([getAuthenticationDataMw])
+  .handler(
+    async ({
+      context: {
+        authenticationData: { isAuthenticated, sessionData },
+      },
+    }): Promise<SessionData> => {
+      if (!isAuthenticated) throw new UNAUTHENTICATED();
+      return sessionData;
+    },
+  );
 
 export const authenticationQueryOptions = queryOptions({
   queryKey: ["authentication"],
