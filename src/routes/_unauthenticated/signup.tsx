@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_unauthenticated/signup")({
   component: SignUp,
 });
 
-const isSubmittedAtom = atom(false);
+const isSignedUp = atom(false);
 const isPendingAtom = atom(false);
 const formDataAtom = atom({} as SignUpFormTransformed);
 
@@ -59,25 +59,22 @@ function MyForm() {
       confirmPassword: "",
     },
   });
-  const setIsPendingAtom = useSetAtom(isPendingAtom);
-  const setIsSubmitted = useSetAtom(isSubmittedAtom);
+  const setIsPending = useSetAtom(isPendingAtom);
+  const setIsSignedUp = useSetAtom(isSignedUp);
   const setFormData = useSetAtom(formDataAtom);
   const onSubmit = async (values: SignUpForm) => {
     const formData = SignUpFormTransformedSchema.parse(values);
-    const { data, error } = await authClient.signUp.email(formData, {
-      onRequest: () => setIsPendingAtom(true),
-      onSuccess: () => {
-        setFormData(formData);
-        setIsSubmitted(true);
-        toast.success("Check your email for a confirmation link");
-      },
+    await authClient.signUp.email(formData, {
+      onRequest: () => setIsPending(true),
       onError: ({ error: { message } }) => {
-        setIsPendingAtom(false);
         toast.error(message);
+        setIsPending(false);
+      },
+      onSuccess: async () => {
+        setFormData(formData);
+        setIsSignedUp(true);
       },
     });
-    if (error) throw error;
-    return data;
   };
   return (
     <Form {...form}>

@@ -50,11 +50,15 @@ function MyForm() {
       rememberMe: false,
     },
   });
-  const setIsPendingAtom = useSetAtom(isPendingAtom);
+  const setIsPending = useSetAtom(isPendingAtom);
   const onSubmit = async (values: SignInForm) => {
     const formData = SignInFormTransformedSchema.parse(values);
-    const { data, error } = await authClient.signIn.email(formData, {
-      onRequest: () => setIsPendingAtom(true),
+    await authClient.signIn.email(formData, {
+      onRequest: () => setIsPending(true),
+      onError: ({ error: { message } }) => {
+        toast.error(message);
+        setIsPending(false);
+      },
       onSuccess: async () => {
         toast.success("Sign in successful!");
         await queryClient.invalidateQueries({
@@ -62,13 +66,7 @@ function MyForm() {
         });
         await router.invalidate({ sync: true });
       },
-      onError: ({ error: { message } }) => {
-        setIsPendingAtom(false);
-        toast.error(message);
-      },
     });
-    if (error) throw error;
-    return data;
   };
   return (
     <Form {...form}>

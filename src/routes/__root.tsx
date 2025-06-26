@@ -161,13 +161,6 @@ function Navbar() {
         {isAuthenticated && (
           <>
             <HomeLink />
-            <Link
-              to="/pokemon"
-              activeProps={{ className: "font-bold" }}
-              activeOptions={{ exact: true }}
-            >
-              Pokemon
-            </Link>
             {/* <ProfileLink /> */}
           </>
         )}
