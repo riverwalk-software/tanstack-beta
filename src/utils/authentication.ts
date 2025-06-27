@@ -3,7 +3,6 @@ import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
 import ms from "ms";
 import { auth } from "@/lib/auth";
-import { UNAUTHENTICATED } from "@/utils/httpResponses";
 
 export type SessionData = typeof auth.$Infer.Session;
 export type AuthenticationData =
@@ -54,7 +53,7 @@ export const getSessionDataMw = createMiddleware({ type: "function" })
         authenticationData: { isAuthenticated, sessionData },
       },
     }) => {
-      if (!isAuthenticated) throw new UNAUTHENTICATED();
+      if (!isAuthenticated) throw new Error("unauthorized");
       return next({
         context: {
           sessionData,
