@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { type UseFormReturn, useForm } from "react-hook-form";
@@ -40,8 +40,6 @@ function SignIn() {
 }
 
 function MyForm() {
-  const queryClient = useQueryClient();
-  const router = useRouter();
   const form = useForm<SignInForm>({
     resolver: zodResolver(SignInFormSchema),
     defaultValues: {
@@ -50,23 +48,30 @@ function MyForm() {
       rememberMe: false,
     },
   });
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const setIsPending = useSetAtom(isPendingAtom);
-  const onSubmit = async (values: SignInForm) => {
+  const { mutate: signIn } = useMutation({
+    mutationKey: ["signin"],
+    onMutate: () => setIsPending(true),
+    mutationFn: (formData: SignInFormTransformed) =>
+      authClient.signIn.email(formData),
+    onError: () =>
+      toast.error("Failed to sign in.", {
+        description: "Please check your credentials and try again.",
+      }),
+    onSuccess: async () => {
+      toast.success("Sign in successful!");
+      await queryClient.invalidateQueries({
+        queryKey: authenticationQueryOptions.queryKey,
+      });
+      await router.invalidate({ sync: true });
+    },
+    onSettled: () => setIsPending(false),
+  });
+  const onSubmit = (values: SignInForm) => {
     const formData = SignInFormTransformedSchema.parse(values);
-    await authClient.signIn.email(formData, {
-      onRequest: () => setIsPending(true),
-      onError: ({ error: { message } }) => {
-        toast.error(message);
-        setIsPending(false);
-      },
-      onSuccess: async () => {
-        toast.success("Sign in successful!");
-        await queryClient.invalidateQueries({
-          queryKey: authenticationQueryOptions.queryKey,
-        });
-        await router.invalidate({ sync: true });
-      },
-    });
+    signIn(formData);
   };
   return (
     <Form {...form}>
@@ -173,3 +178,4 @@ const SignInFormTransformedSchema = SignInFormSchema.transform(
 );
 
 type SignInForm = z.infer<typeof SignInFormSchema>;
+type SignInFormTransformed = z.infer<typeof SignInFormTransformedSchema>;

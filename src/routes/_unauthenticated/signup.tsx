@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { type UseFormReturn, useForm } from "react-hook-form";
@@ -26,13 +27,13 @@ export const Route = createFileRoute("/_unauthenticated/signup")({
   component: SignUp,
 });
 
-const isSignedUp = atom(false);
 const isPendingAtom = atom(false);
-const formDataAtom = atom({} as SignUpFormTransformed);
+const isSignedUpAtom = atom(false);
+const emailAtom = atom("");
 
 function SignUp() {
   // const isSubmitted = useAtomValue(isSubmittedAtom);
-  // const { email } = useAtomValue(formDataAtom);
+  // const { email } = useAtomValue(emailAtom);
   return (
     <CenteredContainer>
       {/* {isSubmitted ? (
@@ -59,22 +60,25 @@ function MyForm() {
       confirmPassword: "",
     },
   });
+  const setEmail = useSetAtom(emailAtom);
   const setIsPending = useSetAtom(isPendingAtom);
-  const setIsSignedUp = useSetAtom(isSignedUp);
-  const setFormData = useSetAtom(formDataAtom);
+  const { mutate: signUp } = useMutation({
+    mutationKey: ["signup"],
+    onMutate: () => setIsPending(true),
+    mutationFn: (formData: SignUpFormTransformed) =>
+      authClient.signUp.email(formData),
+    onError: () =>
+      toast.error("Failed to sign up.", {
+        description: "Please try again later.",
+      }),
+    onSuccess: (_data, { email }) => {
+      setEmail(email);
+    },
+    onSettled: () => setIsPending(false),
+  });
   const onSubmit = async (values: SignUpForm) => {
     const formData = SignUpFormTransformedSchema.parse(values);
-    await authClient.signUp.email(formData, {
-      onRequest: () => setIsPending(true),
-      onError: ({ error: { message } }) => {
-        toast.error(message);
-        setIsPending(false);
-      },
-      onSuccess: async () => {
-        setFormData(formData);
-        setIsSignedUp(true);
-      },
-    });
+    await signUp(formData);
   };
   return (
     <Form {...form}>

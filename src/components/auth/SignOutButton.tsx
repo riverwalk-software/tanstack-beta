@@ -1,38 +1,29 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import { atom, useSetAtom } from "jotai";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { authenticationQueryOptions } from "@/utils/authentication";
 import { Button } from "../ui/button";
 
-const isPendingAtom = atom(false);
-
 export function SignOutButton() {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const setIsPending = useSetAtom(isPendingAtom);
+  const { mutate: signOut, isPending } = useMutation({
+    mutationFn: () => authClient.signOut(),
+    onError: () =>
+      toast.error("Failed to sign out.", {
+        description: "Please try again.",
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: authenticationQueryOptions.queryKey,
+      });
+      await router.invalidate({ sync: true });
+    },
+  });
   return (
-    <Button
-      onClick={() =>
-        authClient.signOut({
-          fetchOptions: {
-            onRequest: () => setIsPending(true),
-            onError: ({ error: { message } }) => {
-              toast.error(message);
-              setIsPending(false);
-            },
-            onSuccess: async () => {
-              await queryClient.invalidateQueries({
-                queryKey: authenticationQueryOptions.queryKey,
-              });
-              await router.invalidate({ sync: true });
-            },
-          },
-        })
-      }
-    >
-      Sign Out
+    <Button onClick={() => signOut()} disabled={isPending}>
+      {isPending ? "Signing out..." : "Sign Out"}
     </Button>
   );
 }
