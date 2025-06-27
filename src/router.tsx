@@ -1,9 +1,4 @@
-import {
-  type DefaultError,
-  MutationCache,
-  QueryCache,
-  QueryClient,
-} from "@tanstack/react-query";
+import { type DefaultError, QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { routerWithQueryClient } from "@tanstack/react-router-with-query";
 import { toast } from "sonner";
@@ -18,11 +13,27 @@ import { authenticationQueryOptions } from "./utils/authentication";
 // to show what's possible with the current APIs.
 
 export function createRouter() {
-  let router: ReturnType<typeof createTanStackRouter>;
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: (failureCount, error) =>
+          error.message !== "unauthorized" && failureCount < 3,
+      },
+    },
+  });
+  const router = createTanStackRouter({
+    routeTree,
+    scrollRestoration: true,
+    context: { queryClient },
+    defaultPreload: "intent",
+    defaultErrorComponent: DefaultCatchBoundary,
+    defaultNotFoundComponent: () => <NotFound />,
+  });
+
   const onError = async (error: DefaultError) => {
     if (error.message === "unauthorized") {
       toast.error("You are no longer signed in.", {
-        description: "Redirecting to sign-in page...",
+        description: "Redirecting to sign in page...",
       });
       await authClient.signOut();
       await queryClient.invalidateQueries({
@@ -35,29 +46,9 @@ export function createRouter() {
       });
     }
   };
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: (failureCount, error) =>
-          error.message !== "unauthorized" && failureCount < 3,
-      },
-    },
-    queryCache: new QueryCache({
-      onError,
-    }),
-    mutationCache: new MutationCache({
-      onError,
-    }),
-  });
 
-  router = createTanStackRouter({
-    routeTree,
-    scrollRestoration: true,
-    context: { queryClient },
-    defaultPreload: "intent",
-    defaultErrorComponent: DefaultCatchBoundary,
-    defaultNotFoundComponent: () => <NotFound />,
-  });
+  queryClient.getQueryCache().config.onError = onError;
+  queryClient.getMutationCache().config.onError = onError;
 
   return routerWithQueryClient(router, queryClient);
 }
