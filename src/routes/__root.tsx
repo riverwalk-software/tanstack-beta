@@ -83,7 +83,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({
     context: { queryClient },
   }): Promise<{ authenticationData: AuthenticationData }> => {
-    console.log("Loading root route...");
     const authenticationData = await queryClient.fetchQuery(
       authenticationQueryOptions,
     );
