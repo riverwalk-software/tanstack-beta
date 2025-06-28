@@ -16,7 +16,8 @@
     ".gitignore": ".git*"
   },
   "files.associations": {
-    "wrangler.json": "jsonc"
+    "wrangler.json": "jsonc",
+    "*.css": "tailwindcss"
   },
   "files.autoSave": "off",
   "files.encoding": "utf8",
@@ -94,6 +95,10 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
     "source.removeUnusedImports": "explicit"
+  },
+  // bradlc.vscode-tailwindcss
+  "editor.quickSuggestions": {
+    "strings": "on"
   },
   // christian-kohler.path-intellisense
   "javascript.suggest.paths": false,

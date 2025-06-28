@@ -13,13 +13,14 @@
       "extensions": [
         "-dbaeumer.vscode-eslint",
         "adpyke.codesnap",
-        "biomejs.biome",
+        "biomejs.biome", // Needs more configuration
+        "bradlc.vscode-tailwindcss", // Needs more configuration
         "christian-kohler.npm-intellisense",
         "christian-kohler.path-intellisense",
         "EditorConfig.EditorConfig",
-        "GitHub.copilot",
+        "GitHub.copilot", // Needs more configuration
         "github.vscode-github-actions",
-        "GitHub.vscode-pull-request-github",
+        "GitHub.vscode-pull-request-github", // Needs more configuration
         "ms-vsliveshare.vsliveshare",
         "redhat.vscode-yaml"
         // "WallabyJs.console-ninja"

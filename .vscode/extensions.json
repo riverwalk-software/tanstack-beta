@@ -2,6 +2,7 @@
   "recommendations": [
     "adpyke.codesnap",
     "biomejs.biome",
+    "bradlc.vscode-tailwindcss",
     "christian-kohler.npm-intellisense",
     "christian-kohler.path-intellisense",
     "EditorConfig.EditorConfig",
@@ -13,5 +14,6 @@
     "ms-vsliveshare.vsliveshare",
     "PKief.material-icon-theme",
     "redhat.vscode-yaml"
+    // "WallabyJs.console-ninja"
   ]
 }
