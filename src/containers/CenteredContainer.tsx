@@ -1,6 +1,15 @@
-export function CenteredContainer({ children }: { children: React.ReactNode }) {
+import { cn } from "@/lib/utils";
+
+export function CenteredContainer({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center">
+    <div
+      className={cn("flex min-h-[60vh] items-center justify-center", className)}
+      {...props}
+    >
       {children}
     </div>
   );
