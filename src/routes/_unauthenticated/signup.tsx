@@ -40,7 +40,6 @@ function SignUp() {
       ) : (
         <MyForm />
       )}
-      <MyForm />
     </CenteredContainer>
   );
 }
@@ -101,7 +100,7 @@ const useSignUp = () => {
 function FormHeader() {
   return (
     <div className="space-y-2">
-      <h1 className="text-2xl font-bold">Sign Up</h1>
+      <h1 className="font-bold text-2xl">Sign Up</h1>
       <FormDescription>
         Enter your information to create an account
       </FormDescription>

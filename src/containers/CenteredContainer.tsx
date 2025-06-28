@@ -1,6 +1,6 @@
 export function CenteredContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex justify-center items-center min-h-[60vh]">
+    <div className="flex min-h-[60vh] items-center justify-center">
       {children}
     </div>
   );

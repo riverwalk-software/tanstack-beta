@@ -155,7 +155,7 @@ function Navbar() {
     authenticationData: { isAuthenticated },
   } = Route.useRouteContext();
   return (
-    <div className="p-2 flex gap-2 text-lg">
+    <div className="flex gap-2 p-2 text-lg">
       <div className="flex flex-1 gap-2">
         {isAuthenticated ? (
           <>
@@ -164,7 +164,7 @@ function Navbar() {
           </>
         ) : null}
       </div>
-      <div className="flex gap-2 ml-auto">
+      <div className="ml-auto flex gap-2">
         {isAuthenticated ? (
           <SignOutButton />
         ) : (
