@@ -1,7 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
-import ms from "ms";
 import { auth } from "@/lib/auth";
 
 export type SessionData = typeof auth.$Infer.Session;
@@ -65,7 +64,7 @@ export const getSessionDataMw = createMiddleware({ type: "function" })
 export const authenticationQueryOptions = queryOptions({
   queryKey: ["authentication"],
   queryFn: getAuthenticationDataFn,
-  gcTime: ms("30m"),
   retry: false,
   staleTime: Infinity,
+  gcTime: Infinity,
 });
