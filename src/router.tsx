@@ -41,8 +41,8 @@ export function createRouter() {
       });
       await router.invalidate({ sync: true });
     } else {
-      toast.error("Error occurred while performing the action.", {
-        description: error.message,
+      toast.error("This action cannot be performed right now.", {
+        description: "Please try again later.",
       });
     }
   };
