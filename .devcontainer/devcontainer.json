@@ -22,9 +22,18 @@
         "GitHub.vscode-pull-request-github",
         "ms-vsliveshare.vsliveshare",
         "redhat.vscode-yaml"
+        // "WallabyJs.console-ninja"
       ]
     }
   },
   "onCreateCommand": "git lfs install",
-  "postCreateCommand": "git lfs pull"
+  "postCreateCommand": "git lfs pull",
+  "postAttachCommand": "pnpm install --prefer-offline --no-audit --progress=false --frozen-lockfile && pnpm dev",
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Application",
+      "onAutoForward": "openBrowserOnce"
+    }
+  }
 }
