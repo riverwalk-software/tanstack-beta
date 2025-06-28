@@ -27,23 +27,19 @@ export const Route = createFileRoute("/_unauthenticated/signup")({
   component: SignUp,
 });
 
-const isPendingAtom = atom(false);
-const isSignedUpAtom = atom(false);
 const emailAtom = atom("");
-
 function SignUp() {
-  // const isSubmitted = useAtomValue(isSubmittedAtom);
-  // const { email } = useAtomValue(emailAtom);
+  const email = useAtomValue(emailAtom);
   return (
     <CenteredContainer>
-      {/* {isSubmitted ? (
+      {email ? (
         <div className="flex flex-col items-center gap-4">
           <p>Check your email</p>
-          <ResendVerificationButton email={email} />
+          {/* <ResendVerificationButton email={email} /> */}
         </div>
       ) : (
         <MyForm />
-      )} */}
+      )}
       <MyForm />
     </CenteredContainer>
   );
@@ -60,25 +56,10 @@ function MyForm() {
       confirmPassword: "",
     },
   });
-  const setEmail = useSetAtom(emailAtom);
-  const setIsPending = useSetAtom(isPendingAtom);
-  const { mutate: signUp } = useMutation({
-    mutationKey: ["signup"],
-    onMutate: () => setIsPending(true),
-    mutationFn: (formData: SignUpFormTransformed) =>
-      authClient.signUp.email(formData),
-    onError: () =>
-      toast.error("Failed to sign up.", {
-        description: "Please try again later.",
-      }),
-    onSuccess: (_data, { email }) => {
-      setEmail(email);
-    },
-    onSettled: () => setIsPending(false),
-  });
+  const { mutate: signUp, isPending } = useSignUp();
   const onSubmit = async (values: SignUpForm) => {
     const formData = SignUpFormTransformedSchema.parse(values);
-    await signUp(formData);
+    signUp(formData);
   };
   return (
     <Form {...form}>
@@ -95,11 +76,28 @@ function MyForm() {
         <FormEmail form={form} />
         <FormPassword form={form} />
         <FormConfirmPassword form={form} />
-        <FormSubmitButton />
+        <FormSubmitButton isPending={isPending} />
       </form>
     </Form>
   );
 }
+
+const useSignUp = () => {
+  const setEmail = useSetAtom(emailAtom);
+  return useMutation({
+    mutationKey: ["signup"],
+    mutationFn: (formData: SignUpFormTransformed) =>
+      authClient.signUp.email(formData),
+    onError: () =>
+      toast.error("Failed to sign up.", {
+        description: "Please try again later.",
+      }),
+    onSuccess: (_data, { email }) => {
+      setEmail(email);
+    },
+  });
+};
+
 function FormHeader() {
   return (
     <div className="space-y-2">
@@ -201,8 +199,7 @@ function FormConfirmPassword({ form }: { form: UseFormReturn<SignUpForm> }) {
   );
 }
 
-function FormSubmitButton() {
-  const isPending = useAtomValue(isPendingAtom);
+function FormSubmitButton({ isPending }: { isPending: boolean }) {
   return (
     <Button disabled={isPending} className="w-full">
       {isPending ? "Signing Up..." : "Sign Up"}

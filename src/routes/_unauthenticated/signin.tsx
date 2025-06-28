@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { atom, useAtomValue, useSetAtom } from "jotai";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -29,8 +28,6 @@ export const Route = createFileRoute("/_unauthenticated/signin")({
   component: SignIn,
 });
 
-const isPendingAtom = atom(false);
-
 function SignIn() {
   return (
     <CenteredContainer>
@@ -43,17 +40,34 @@ function MyForm() {
   const form = useForm<SignInForm>({
     resolver: zodResolver(SignInFormSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "test@email.com",
+      password: "passwordpassword",
       rememberMe: false,
     },
   });
+  const { mutate: signIn, isPending } = useSignIn();
+  const onSubmit = (values: SignInForm) => {
+    const formData = SignInFormTransformedSchema.parse(values);
+    signIn(formData);
+  };
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormHeader />
+        <FormEmail form={form} />
+        <FormPassword form={form} />
+        <FormRememberMe form={form} />
+        <FormSubmitButton isPending={isPending} />
+      </form>
+    </Form>
+  );
+}
+
+const useSignIn = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const setIsPending = useSetAtom(isPendingAtom);
-  const { mutate: signIn } = useMutation({
+  return useMutation({
     mutationKey: ["signin"],
-    onMutate: () => setIsPending(true),
     mutationFn: (formData: SignInFormTransformed) =>
       authClient.signIn.email(formData),
     onError: () =>
@@ -67,24 +81,9 @@ function MyForm() {
       });
       await router.invalidate({ sync: true });
     },
-    onSettled: () => setIsPending(false),
   });
-  const onSubmit = (values: SignInForm) => {
-    const formData = SignInFormTransformedSchema.parse(values);
-    signIn(formData);
-  };
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormHeader />
-        <FormEmail form={form} />
-        <FormPassword form={form} />
-        <FormRememberMe form={form} />
-        <FormSubmitButton />
-      </form>
-    </Form>
-  );
-}
+};
+
 function FormHeader() {
   return (
     <div className="space-y-2">
@@ -149,8 +148,7 @@ function FormRememberMe({ form }: { form: UseFormReturn<SignInForm> }) {
   );
 }
 
-function FormSubmitButton() {
-  const isPending = useAtomValue(isPendingAtom);
+function FormSubmitButton({ isPending }: { isPending: boolean }) {
   return (
     <Button disabled={isPending} className="w-full">
       {isPending ? "Signing in..." : "Sign In"}
