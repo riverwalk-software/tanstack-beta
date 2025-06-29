@@ -24,8 +24,8 @@ import {
 } from "@/utils/authentication";
 import {
   EnvironmentError,
-  type EnvironmentValidation,
-  validateEnvironmentFn,
+  environmentValidationQueryOptions,
+  useEnvironmentValidation,
 } from "@/utils/environment";
 import { seo } from "@/utils/seo";
 import { themeQueryOptions, useTheme } from "@/utils/theme";
@@ -88,43 +88,18 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     );
     return { authenticationData };
   },
-  loader: async ({
-    context: { queryClient },
-  }): Promise<{
-    environmentValidation: EnvironmentValidation | null;
-  }> => {
-    if (import.meta.env.DEV) {
-      const [environmentValidation] = await Promise.all([
-        validateEnvironmentFn(),
-      ]);
-      await queryClient.prefetchQuery(themeQueryOptions);
-      return { environmentValidation };
-    }
-
-    await queryClient.prefetchQuery(themeQueryOptions);
-    return { environmentValidation: null };
+  loader: async ({ context: { queryClient } }): Promise<void> => {
+    await Promise.all([
+      import.meta.env.DEV
+        ? queryClient.prefetchQuery(environmentValidationQueryOptions)
+        : Promise.resolve(),
+      queryClient.prefetchQuery(themeQueryOptions),
+    ]);
   },
 });
 
 function RootComponent() {
-  const { environmentValidation } = Route.useLoaderData();
-
-  if (environmentValidation !== null && !environmentValidation.isValid) {
-    return (
-      <CookiesProvider
-        defaultSetOptions={{
-          httpOnly: false,
-          path: "/",
-          sameSite: "lax",
-          secure: !import.meta.env.DEV,
-        }}
-      >
-        <RootDocument>
-          <EnvironmentError {...environmentValidation} />
-        </RootDocument>
-      </CookiesProvider>
-    );
-  }
+  const { environmentValidation } = useEnvironmentValidation();
   return (
     <CookiesProvider
       defaultSetOptions={{
@@ -135,7 +110,11 @@ function RootComponent() {
       }}
     >
       <RootDocument>
-        <Outlet />
+        {environmentValidation?.isError ? (
+          <EnvironmentError {...environmentValidation} />
+        ) : (
+          <Outlet />
+        )}
       </RootDocument>
     </CookiesProvider>
   );

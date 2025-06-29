@@ -1,9 +1,38 @@
-import { createServerFn } from "@tanstack/react-start";
+import { queryOptions, useQueryClient } from "@tanstack/react-query";
+import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+
+const VariablesEnvironmentSchema = z.object({
+  BETTER_AUTH_URL: z
+    .string()
+    .url({ message: "BETTER_AUTH_URL must be a valid URL" }),
+  // GOOGLE_CLIENT_ID: z
+  //   .string()
+  //   .nonempty({ message: "GOOGLE_CLIENT_ID is required" }),
+  // GOOGLE_REDIRECT_URI: z
+  //   .string()
+  //   .url({ message: "GOOGLE_REDIRECT_URI must be a valid URL" }),
+});
+
+type VariablesEnvironment = z.infer<typeof VariablesEnvironmentSchema>;
+
+const SecretsEnvironmentSchema = z.object({
+  BETTER_AUTH_SECRET: z
+    .string()
+    .nonempty({ message: "BETTER_AUTH_SECRET is required" }),
+  // GOOGLE_CLIENT_SECRET: z
+  //   .string()
+  //   .nonempty({ message: "GOOGLE_CLIENT_SECRET is required" }),
+  // RESEND_API_KEY: z
+  //   .string()
+  //   .nonempty({ message: "RESEND_API_KEY is required" }),
+});
+
+type SecretsEnvironment = z.infer<typeof SecretsEnvironmentSchema>;
 
 export function EnvironmentError({
   errors: { variables, secrets },
-}: EnvironmentValidation) {
+}: FailedEnvironmentValidation) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-red-50 dark:bg-red-950">
       <div className="max-w-md rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800">
@@ -34,53 +63,99 @@ const renderMissingSection = (title: string, items: string[]) =>
     </>
   );
 
-const VariablesEnvironmentSchema = z.object({
-  BETTER_AUTH_URL: z
-    .string()
-    .url({ message: "BETTER_AUTH_URL must be a valid URL" }),
-  // GOOGLE_CLIENT_ID: z
-  //   .string()
-  //   .nonempty({ message: "GOOGLE_CLIENT_ID is required" }),
-  // GOOGLE_REDIRECT_URI: z
-  //   .string()
-  //   .url({ message: "GOOGLE_REDIRECT_URI must be a valid URL" }),
-});
-
-const SecretsEnvironmentSchema = z.object({
-  BETTER_AUTH_SECRET: z
-    .string()
-    .nonempty({ message: "BETTER_AUTH_SECRET is required" }),
-  // GOOGLE_CLIENT_SECRET: z
-  //   .string()
-  //   .nonempty({ message: "GOOGLE_CLIENT_SECRET is required" }),
-  // RESEND_API_KEY: z
-  //   .string()
-  //   .nonempty({ message: "RESEND_API_KEY is required" }),
-});
-
-export interface EnvironmentValidation {
-  isValid: boolean;
+interface FailedEnvironmentValidation {
+  isError: true;
   errors: {
     variables?: string[];
     secrets?: string[];
   };
 }
 
-export const validateEnvironmentFn = createServerFn().handler(
-  async (): Promise<EnvironmentValidation> => {
-    const [variables, secrets] = [
-      VariablesEnvironmentSchema.safeParse(process.env),
-      SecretsEnvironmentSchema.safeParse(process.env),
-    ];
+interface SuccessfulEnvironmentValidation {
+  isError: false;
+}
 
-    return {
-      isValid: variables.success && secrets.success,
-      errors: {
-        variables: variables.error?.issues.map(
-          (issue) => `${issue.path[0]}: ${issue.message}`,
-        ),
-        secrets: secrets.error?.issues.map((issue) => issue.path[0].toString()),
+export type EnvironmentValidation =
+  | FailedEnvironmentValidation
+  | SuccessfulEnvironmentValidation;
+
+const validateEnvironmentMw = createMiddleware({ type: "function" }).server(
+  async ({ next }) => {
+    const variables = VariablesEnvironmentSchema.safeParse(process.env);
+    const secrets = SecretsEnvironmentSchema.safeParse(process.env);
+    return next({
+      context: {
+        environmentValidation: {
+          variables,
+          secrets,
+        },
       },
-    };
+    });
   },
 );
+
+const validateEnvironmentFn = createServerFn()
+  .middleware([validateEnvironmentMw])
+  .handler(
+    async ({
+      context: {
+        environmentValidation: { variables, secrets },
+      },
+    }): Promise<EnvironmentValidation> => {
+      if (variables.success && secrets.success)
+        return {
+          isError: false,
+        };
+      else
+        return {
+          isError: true,
+          errors: {
+            variables: variables.error?.issues.map(
+              (issue) => `${issue.path[0]}: ${issue.message}`,
+            ),
+            secrets: secrets.error?.issues.map((issue) =>
+              issue.path[0].toString(),
+            ),
+          },
+        };
+    },
+  );
+
+export const environmentValidationQueryOptions = queryOptions({
+  queryKey: ["environmentValidation"],
+  queryFn: validateEnvironmentFn,
+  retry: false,
+  staleTime: Infinity,
+  gcTime: Infinity,
+  subscribed: false,
+});
+
+export const useEnvironmentValidation = () => {
+  const queryClient = useQueryClient();
+  const environmentValidation = queryClient.getQueryData(
+    environmentValidationQueryOptions.queryKey,
+  );
+  return { environmentValidation };
+};
+
+export const getEnvironmentMw = createMiddleware({ type: "function" })
+  .middleware([validateEnvironmentMw])
+  .server(
+    async ({
+      next,
+      context: {
+        environmentValidation: { secrets, variables },
+      },
+    }) => {
+      if (!variables.success || !secrets.success)
+        throw new Error("Environment validation failed");
+      return next({
+        context: {
+          environment: {
+            variables: variables.data,
+            secrets: secrets.data,
+          },
+        },
+      });
+    },
+  );
