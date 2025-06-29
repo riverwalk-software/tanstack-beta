@@ -1,25 +1,43 @@
+import {
+  queryOptions,
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
-import { getCookie, setCookie } from "@tanstack/react-start/server";
+import { getCookie } from "@tanstack/react-start/server";
+import { useCookies } from "react-cookie";
 import { z } from "zod";
 
 const ThemeSchema = z.enum(["light", "dark"]).catch("dark");
 export type Theme = z.infer<typeof ThemeSchema>;
 const cookieName = "theme";
 
-export const getThemeFn = createServerFn().handler(
+const getThemeFn = createServerFn().handler(
   async (): Promise<Theme> => ThemeSchema.parse(getCookie(cookieName)),
 );
 
-const setThemeFn = createServerFn({ method: "POST" })
-  .validator(ThemeSchema)
-  .handler(
-    async ({ data: theme }): Promise<void> => setCookie(cookieName, theme),
-  );
+export const themeQueryOptions = queryOptions({
+  queryKey: [cookieName],
+  queryFn: getThemeFn,
+  retry: false,
+  staleTime: Infinity,
+  gcTime: Infinity,
+});
 
-export const toggleThemeFn = createServerFn().handler(
-  async (): Promise<void> => {
-    const currentTheme = await getThemeFn();
-    const newTheme = currentTheme === "light" ? "dark" : "light";
-    await setThemeFn({ data: newTheme });
-  },
-);
+export const useTheme = () => {
+  const queryClient = useQueryClient();
+  const { data: theme } = useSuspenseQuery(themeQueryOptions);
+  const [, setTheme] = useCookies<"theme", Theme>([cookieName], {
+    doNotUpdate: true,
+  });
+  const { mutate: toggleTheme } = useMutation({
+    mutationKey: ["toggleTheme"],
+    mutationFn: async () => {
+      const newTheme = theme === "dark" ? "light" : "dark";
+      setTheme(cookieName, newTheme, { httpOnly: false });
+      queryClient.setQueryData<Theme>(themeQueryOptions.queryKey, newTheme);
+    },
+  });
+  return { theme, toggleTheme };
+};

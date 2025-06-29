@@ -11,11 +11,11 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
+import { CookiesProvider } from "react-cookie";
 import { Toaster } from "sonner";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
-import { ThemeProvider, useTheme } from "@/components/theme/ThemeProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import globalsCss from "@/styles/globals.css?url";
 import {
@@ -28,7 +28,7 @@ import {
   validateEnvironmentFn,
 } from "@/utils/environment";
 import { seo } from "@/utils/seo";
-import { getThemeFn, type Theme } from "@/utils/theme";
+import { themeQueryOptions, useTheme } from "@/utils/theme";
 
 interface RouterContext {
   queryClient: QueryClient;
@@ -88,41 +88,42 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     );
     return { authenticationData };
   },
-  loader: async (): Promise<{
-    theme: Theme;
+  loader: async ({
+    context: { queryClient },
+  }): Promise<{
     environmentValidation: EnvironmentValidation | null;
   }> => {
     if (import.meta.env.DEV) {
-      const [theme, environmentValidation] = await Promise.all([
-        getThemeFn(),
+      const [environmentValidation] = await Promise.all([
         validateEnvironmentFn(),
       ]);
-      return { theme, environmentValidation };
+      await queryClient.prefetchQuery(themeQueryOptions);
+      return { environmentValidation };
     }
 
-    const theme = await getThemeFn();
-    return { theme, environmentValidation: null };
+    await queryClient.prefetchQuery(themeQueryOptions);
+    return { environmentValidation: null };
   },
 });
 
 function RootComponent() {
-  const { theme, environmentValidation } = Route.useLoaderData();
+  const { environmentValidation } = Route.useLoaderData();
 
   if (environmentValidation !== null && !environmentValidation.isValid) {
     return (
-      <ThemeProvider theme={theme}>
+      <CookiesProvider defaultSetOptions={{ path: "/" }}>
         <RootDocument>
           <EnvironmentError {...environmentValidation} />
         </RootDocument>
-      </ThemeProvider>
+      </CookiesProvider>
     );
   }
   return (
-    <ThemeProvider theme={theme}>
+    <CookiesProvider defaultSetOptions={{ path: "/" }}>
       <RootDocument>
         <Outlet />
       </RootDocument>
-    </ThemeProvider>
+    </CookiesProvider>
   );
 }
 
@@ -137,10 +138,10 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <head>
         <HeadContent />
       </head>
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className="flex min-h-screen flex-col">
         <Navbar />
         <hr />
-        {children}
+        <main className="grid flex-1">{children} </main>
         <Toaster richColors={true} />
         <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" />
