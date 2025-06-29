@@ -29,7 +29,7 @@
   },
   "onCreateCommand": "git lfs install",
   "postCreateCommand": "git lfs pull",
-  "postAttachCommand": "pnpm install --prefer-offline --no-audit --progress=false --frozen-lockfile && pnpm dev",
+  "postAttachCommand": "pnpm install --prefer-offline --frozen-lockfile && pnpm dev",
   "forwardPorts": [3000],
   "portsAttributes": {
     "3000": {
