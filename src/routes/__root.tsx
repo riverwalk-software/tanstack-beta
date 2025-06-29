@@ -111,7 +111,14 @@ function RootComponent() {
 
   if (environmentValidation !== null && !environmentValidation.isValid) {
     return (
-      <CookiesProvider defaultSetOptions={{ path: "/" }}>
+      <CookiesProvider
+        defaultSetOptions={{
+          httpOnly: false,
+          path: "/",
+          sameSite: "lax",
+          secure: !import.meta.env.DEV,
+        }}
+      >
         <RootDocument>
           <EnvironmentError {...environmentValidation} />
         </RootDocument>
@@ -119,7 +126,14 @@ function RootComponent() {
     );
   }
   return (
-    <CookiesProvider defaultSetOptions={{ path: "/" }}>
+    <CookiesProvider
+      defaultSetOptions={{
+        httpOnly: false,
+        path: "/",
+        sameSite: "lax",
+        secure: !import.meta.env.DEV,
+      }}
+    >
       <RootDocument>
         <Outlet />
       </RootDocument>

@@ -28,14 +28,14 @@ export const themeQueryOptions = queryOptions({
 export const useTheme = () => {
   const queryClient = useQueryClient();
   const { data: theme } = useSuspenseQuery(themeQueryOptions);
-  const [, setTheme] = useCookies<"theme", Theme>([cookieName], {
+  const [, setTheme] = useCookies<"theme", Theme>([], {
     doNotUpdate: true,
   });
   const { mutate: toggleTheme } = useMutation({
     mutationKey: ["toggleTheme"],
     mutationFn: async () => {
       const newTheme = theme === "dark" ? "light" : "dark";
-      setTheme(cookieName, newTheme, { httpOnly: false });
+      setTheme(cookieName, newTheme);
       queryClient.setQueryData<Theme>(themeQueryOptions.queryKey, newTheme);
     },
   });
