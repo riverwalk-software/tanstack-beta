@@ -1,17 +1,18 @@
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import { createMiddleware, createServerFn } from "@tanstack/react-start";
+import { Context } from "effect";
 import { z } from "zod";
 
 const VariablesEnvironmentSchema = z.object({
   BETTER_AUTH_URL: z
     .string()
     .url({ message: "BETTER_AUTH_URL must be a valid URL" }),
-  // GOOGLE_CLIENT_ID: z
-  //   .string()
-  //   .nonempty({ message: "GOOGLE_CLIENT_ID is required" }),
-  // GOOGLE_REDIRECT_URI: z
-  //   .string()
-  //   .url({ message: "GOOGLE_REDIRECT_URI must be a valid URL" }),
+  GOOGLE_CLIENT_ID: z
+    .string()
+    .nonempty({ message: "GOOGLE_CLIENT_ID is required" }),
+  GOOGLE_REDIRECT_URI: z
+    .string()
+    .url({ message: "GOOGLE_REDIRECT_URI must be a valid URL" }),
 });
 
 type VariablesEnvironment = z.infer<typeof VariablesEnvironmentSchema>;
@@ -138,24 +139,22 @@ export const useEnvironmentValidation = () => {
   return { environmentValidation };
 };
 
-export const getEnvironmentMw = createMiddleware({ type: "function" })
-  .middleware([validateEnvironmentMw])
-  .server(
-    async ({
-      next,
-      context: {
-        environmentValidation: { secrets, variables },
-      },
-    }) => {
-      if (!variables.success || !secrets.success)
-        throw new Error("Environment validation failed");
-      return next({
-        context: {
-          environment: {
-            variables: variables.data,
-            secrets: secrets.data,
-          },
-        },
-      });
-    },
-  );
+export const getEnvironmentMw = createMiddleware({ type: "function" }).server(
+  async ({ next }) => {
+    const variables = VariablesEnvironmentSchema.parse(process.env);
+    const secrets = SecretsEnvironmentSchema.parse(process.env);
+    return next({
+      context: { environment: { variables, secrets } },
+    });
+  },
+);
+
+export type Environment = {
+  variables: VariablesEnvironment;
+  secrets: SecretsEnvironment;
+};
+
+export class EnvironmentService extends Context.Tag("EnvironmentService")<
+  EnvironmentService,
+  Environment
+>() {}

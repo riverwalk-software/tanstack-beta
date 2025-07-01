@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
+import { Context } from "effect";
 import { auth } from "@/lib/auth";
 
 export type SessionData = typeof auth.$Infer.Session;
@@ -68,3 +69,8 @@ export const authenticationQueryOptions = queryOptions({
   staleTime: Infinity,
   gcTime: Infinity,
 });
+
+export class SessionDataService extends Context.Tag("SessionDataService")<
+  SessionDataService,
+  SessionData
+>() {}
