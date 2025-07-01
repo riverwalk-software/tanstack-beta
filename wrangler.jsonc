@@ -23,20 +23,6 @@
       "database_id": "b782d4c8-861c-401d-9ee3-88c9ca479533",
       "migrations_dir": "./db/migrations/"
     }
-  ],
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "OAUTH_STORE",
-        "class_name": "OauthStore"
-      }
-    ]
-  },
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["OauthStore"]
-    }
   ]
 }
 /**

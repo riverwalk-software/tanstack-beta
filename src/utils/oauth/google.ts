@@ -7,9 +7,8 @@ import { EnvironmentService, getEnvironmentMw } from "../environment";
 import {
   CloudflareBindingsService,
   getCloudflareBindingsMw,
-  getDurableObject,
 } from "../getCloudflareBindings";
-import { buildUrl, concurrent, strictParse } from "../httpResponses";
+import { buildUrl, strictParse } from "../httpResponses";
 
 export const getConsentUrlFn = createServerFn()
   .middleware([getEnvironmentMw, getCloudflareBindingsMw, getSessionDataMw])
@@ -17,22 +16,22 @@ export const getConsentUrlFn = createServerFn()
     async ({
       context: { environment, cloudflareBindings, sessionData },
     }): Promise<string> => {
-      const program = Effect.gen(function* () {
-        const state = yield* generateState();
-        const [consentUrl] = yield* concurrent([
-          generateConsentUrl(state),
-          storeStateAndSessionId(state),
-        ]);
-        return consentUrl;
-      });
+      // const program = Effect.gen(function* () {
+      //   const state = yield* generateState();
+      //   const [consentUrl] = yield* concurrent([
+      //     generateConsentUrl(state),
+      //     storeStateAndSessionId(state),
+      //   ]);
+      //   return consentUrl;
+      // });
       const context = Context.empty().pipe(
         Context.add(EnvironmentService, environment),
         Context.add(SessionDataService, sessionData),
         Context.add(CloudflareBindingsService, cloudflareBindings),
       );
-      const runnable = Effect.provide(program, context);
-      const consentUrl = await Effect.runPromise(runnable);
-      return consentUrl.toString();
+      // const runnable = Effect.provide(program, context);
+      // const consentUrl = await Effect.runPromise(runnable);
+      return environment.secrets.BETTER_AUTH_SECRET;
     },
   );
 
@@ -63,12 +62,12 @@ const generateConsentUrl = (state: string) =>
 
 const storeStateAndSessionId = (state: string) =>
   Effect.gen(function* () {
-    const { OAUTH_STORE } = yield* CloudflareBindingsService;
-    const oauthStore = yield* Effect.sync(() =>
-      getDurableObject(OAUTH_STORE, state),
-    );
-    const { session } = yield* SessionDataService;
-    yield* Effect.promise(() => oauthStore.set(session.id));
+    // const { OAUTH_STORE } = yield* CloudflareBindingsService;
+    // const oauthStore = yield* Effect.sync(() =>
+    //   getDurableObject(OAUTH_STORE, state),
+    // );
+    // const { session } = yield* SessionDataService;
+    // yield* Effect.promise(() => oauthStore.set(session.id));
   });
 
 export const selectedScopes = [
