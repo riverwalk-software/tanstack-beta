@@ -14,7 +14,9 @@ import { buildUrl, concurrent, strictParse } from "../httpResponses";
 export const getConsentUrlFn = createServerFn()
   .middleware([getEnvironmentMw, getCloudflareBindingsMw, getSessionDataMw])
   .handler(
-    async ({ context: { environment, cloudflareBindings, sessionData } }) => {
+    async ({
+      context: { environment, cloudflareBindings, sessionData },
+    }): Promise<string> => {
       const program = Effect.gen(function* () {
         const state = yield* generateState();
         const [consentUrl] = yield* concurrent([
