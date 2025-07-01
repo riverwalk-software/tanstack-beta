@@ -6,9 +6,9 @@ import {
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
 } from "@/utils/constants";
-import { getBindings } from "@/utils/getBindings";
+import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
-const { DB, SESSION_STORE } = getBindings();
+const { DB, SESSION_STORE } = getCloudflareBindings();
 export const auth = betterAuth({
   // database: new Database("./db/sqlite.db"),
   database: {
