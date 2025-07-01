@@ -1,5 +1,4 @@
 import crypto from "node:crypto";
-import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { Context, Effect } from "effect";
 import { z } from "zod";
@@ -12,7 +11,7 @@ import {
 } from "../getCloudflareBindings";
 import { buildUrl, concurrent, strictParse } from "../httpResponses";
 
-export const redirectToConsentUrlFn = createServerFn()
+export const getConsentUrlFn = createServerFn()
   .middleware([getEnvironmentMw, getCloudflareBindingsMw, getSessionDataMw])
   .handler(
     async ({ context: { environment, cloudflareBindings, sessionData } }) => {
@@ -31,9 +30,7 @@ export const redirectToConsentUrlFn = createServerFn()
       );
       const runnable = Effect.provide(program, context);
       const consentUrl = await Effect.runPromise(runnable);
-      throw redirect({
-        href: consentUrl.toString(),
-      });
+      return consentUrl.toString();
     },
   );
 
