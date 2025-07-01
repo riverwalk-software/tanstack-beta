@@ -28,7 +28,7 @@ export const themeQueryOptions = queryOptions({
 export const useTheme = () => {
   const queryClient = useQueryClient();
   const { data: theme } = useSuspenseQuery(themeQueryOptions);
-  const [, setTheme] = useCookies<"theme", Theme>([], {
+  const [, setTheme] = useCookies<"theme", CookiesValue>([], {
     doNotUpdate: true,
   });
   const { mutate: toggleTheme } = useMutation({
@@ -41,3 +41,7 @@ export const useTheme = () => {
   });
   return { theme, toggleTheme };
 };
+
+interface CookiesValue {
+  theme: Theme;
+}
