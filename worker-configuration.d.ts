@@ -4,7 +4,7 @@
 declare namespace Cloudflare {
 	interface Env {
 		SESSION_STORE: KVNamespace;
-		OAUTH_STORE: DurableObjectNamespace<import("./.output/server/index").OauthStore>;
+		OAUTH_STORE: DurableObjectNamespace<import("./src/utils/durableObjects/oauthStore.ts").OauthStore>;
 		DB: D1Database;
 	}
 }

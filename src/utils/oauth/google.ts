@@ -8,6 +8,7 @@ import { EnvironmentService, getEnvironmentMw } from "../environment";
 import {
   CloudflareBindingsService,
   getCloudflareBindingsMw,
+  getDurableObject,
 } from "../getCloudflareBindings";
 import { buildUrl, concurrent, strictParse } from "../httpResponses";
 
@@ -64,13 +65,11 @@ const generateConsentUrl = (state: string) =>
 const storeStateAndSessionId = (state: string) =>
   Effect.gen(function* () {
     const { OAUTH_STORE } = yield* CloudflareBindingsService;
-    const id = OAUTH_STORE.idFromName(state);
-    const stub = OAUTH_STORE.get(id);
-    // const oauthStore = yield* Effect.sync(() =>
-    //   getDurableObject(OAUTH_STORE, state),
-    // );
+    const oauthStore = yield* Effect.sync(() =>
+      getDurableObject(OAUTH_STORE, state),
+    );
     const { session } = yield* SessionDataService;
-    yield* Effect.promise(() => stub.set(session.id));
+    yield* Effect.promise(() => oauthStore.set(session.id));
   });
 
 export const selectedScopes = [
