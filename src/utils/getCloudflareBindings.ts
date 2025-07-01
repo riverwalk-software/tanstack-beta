@@ -1,4 +1,3 @@
-import { createMiddleware } from "@tanstack/react-start";
 import { Context } from "effect";
 
 let cachedEnv: CloudflareBindings | null = null;
@@ -26,23 +25,6 @@ export function getCloudflareBindings(): CloudflareBindings {
 
   return process.env as unknown as CloudflareBindings;
 }
-
-export const getCloudflareBindingsMw = createMiddleware({
-  type: "function",
-}).server(async ({ next }) => {
-  if (import.meta.env.DEV) {
-    if (cachedEnv === null) {
-      throw new Error(
-        "Dev bindings not initialized yet. Call initDevEnv() first.",
-      );
-    }
-  }
-  return next({
-    context: {
-      cloudflareBindings: process.env as unknown as CloudflareBindings,
-    },
-  });
-});
 
 export class CloudflareBindingsService extends Context.Tag(
   "CloudflareBindingsService",
