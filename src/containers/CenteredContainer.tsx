@@ -6,10 +6,7 @@ export function CenteredContainer({
   ...props
 }: React.ComponentProps<"div">) {
   return (
-    <div
-      className={cn("flex min-h-[60vh] items-center justify-center", className)}
-      {...props}
-    >
+    <div className={cn("grid place-content-center", className)} {...props}>
       {children}
     </div>
   );
