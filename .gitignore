@@ -299,4 +299,3 @@ zsdoc/data
 
 # generated
 .wrangler/
-worker-configuration.d.ts
