@@ -14,6 +14,10 @@
     {
       "binding": "SESSION_STORE",
       "id": "e4313f1dcc9449fd905b0abe8e657003"
+    },
+    {
+      "binding": "OAUTH_STORE",
+      "id": "2c53e8720a86463fbe40deb1b8afb0f6"
     }
   ],
   "d1_databases": [

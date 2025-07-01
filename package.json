@@ -2,10 +2,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build && tsc --noEmit",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
-    "durableObjectExport": "echo 'export{OauthStore}from\"../../src/utils/durableObjects/oauthStore.ts\";' >> .output/server/index.mjs"
+    "dev": "pnpm run cf-typegen && vite dev",
+    "build": "pnpm run cf-typegen && vite build && tsc --noEmit",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
