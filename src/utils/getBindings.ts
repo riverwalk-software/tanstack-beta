@@ -1,10 +1,10 @@
-let cachedEnv: Env | null = null;
+let cachedEnv: CloudflareBindings | null = null;
 
 // This gets called once at startup when running locally
 const initDevEnv = async () => {
   const { getPlatformProxy } = await import("wrangler");
   const proxy = await getPlatformProxy();
-  cachedEnv = proxy.env as unknown as Env;
+  cachedEnv = proxy.env as unknown as CloudflareBindings;
 };
 
 if (import.meta.env.DEV) {
@@ -15,7 +15,7 @@ if (import.meta.env.DEV) {
  * Will only work when being accessed on the server. Obviously, CF bindings are not available in the browser.
  * @returns
  */
-export function getBindings(): Env {
+export function getBindings(): CloudflareBindings {
   if (import.meta.env.DEV) {
     if (!cachedEnv) {
       throw new Error(
@@ -25,5 +25,5 @@ export function getBindings(): Env {
     return cachedEnv;
   }
 
-  return process.env as unknown as Env;
+  return process.env as unknown as CloudflareBindings;
 }
