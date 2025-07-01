@@ -15,6 +15,7 @@ export const Route = createFileRoute("/_authenticated")({
           redirect: location.href,
         },
       });
+
     return { sessionData };
   },
   component: AuthenticatedPathlessLayout,

@@ -6,9 +6,5 @@ export const Route = createFileRoute("/_authenticated/")({
 });
 
 function Home() {
-  return (
-    <CenteredContainer>
-      <p>Home</p>
-    </CenteredContainer>
-  );
+  return <CenteredContainer>{/* <GoogleOauthButton /> */}</CenteredContainer>;
 }

@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { z } from "zod";
+import { Image } from "./Image";
 import {
   Card,
   CardContent,
@@ -20,33 +21,35 @@ function PokemonCardBase({
     }
   | { isLoading?: false; data: Pokemon }) {
   return (
-    <Card className="w-256">
+    <Card className="">
       <CardHeader>
-        <CardTitle>
-          <div className="justify-left flex h-16 w-20 items-center">
+        <div className="justify-left flex flex-col items-start gap-2">
+          <CardTitle className="flex-1">
+            {/* <div className="h-16 w-20"> */}
             {isLoading ? (
-              <Skeleton className="max-w max-h rounded" />
+              <Skeleton />
             ) : (
               <span className="truncate capitalize">{data.name}</span>
             )}
-          </div>
-        </CardTitle>
-        <CardDescription>
-          <div className="justify-left flex h-5 items-center">
+            {/* </div> */}
+          </CardTitle>
+          <CardDescription className="flex-1">
+            {/* <div className="h-5 w-5"> */}
             {isLoading ? (
-              <Skeleton className="h-4 w-16 rounded" />
+              <Skeleton />
             ) : (
               <p>#{data.id.toString().padStart(3, "0")}</p>
             )}
-          </div>
-        </CardDescription>
+            {/* </div> */}
+          </CardDescription>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="mx-auto mb-4 flex h-128 w-128 items-center justify-center rounded-lg bg-muted/10">
+        <div className="mx-auto mb-4 flex h-128 w-128 items-center justify-center rounded-md bg-muted/10">
           {isLoading ? (
-            <Skeleton className="h-full w-full rounded-lg" />
+            <Skeleton />
           ) : (
-            <img
+            <Image
               src={data.sprites.other["official-artwork"].front_default}
               alt={data.name}
               className="max-h-full max-w-full object-contain"
@@ -62,7 +65,7 @@ function PokemonCardLoading() {
   return <PokemonCardBase isLoading={true} />;
 }
 
-function PokemonCardContent({ pokemonId }: { pokemonId: number }) {
+function PokemonCardLoaded({ pokemonId }: { pokemonId: number }) {
   const { data: pokemon } = useSuspenseQuery({
     queryKey: ["pokemon", pokemonId],
     queryFn: async () => {
@@ -70,7 +73,7 @@ function PokemonCardContent({ pokemonId }: { pokemonId: number }) {
         `https://pokeapi.co/api/v2/pokemon/${pokemonId}`,
       );
       if (!response.ok) throw new Error("Failed to fetch Pokemon");
-      return response.json() as Pokemon;
+      return response.json() as unknown as Pokemon;
     },
   });
 
@@ -80,7 +83,7 @@ function PokemonCardContent({ pokemonId }: { pokemonId: number }) {
 export function PokemonCard({ pokemonId }: { pokemonId: number }) {
   return (
     <Suspense fallback={<PokemonCardLoading />}>
-      <PokemonCardContent pokemonId={pokemonId} />
+      <PokemonCardLoaded pokemonId={pokemonId} />
     </Suspense>
   );
 }
