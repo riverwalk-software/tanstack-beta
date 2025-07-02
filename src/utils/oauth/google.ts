@@ -1,6 +1,10 @@
 import crypto from "node:crypto";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { Context, Effect } from "effect";
+import { useState } from "react";
+import { toast } from "sonner";
 import { z } from "zod";
 import { getSessionDataMw, SessionDataService } from "../authentication";
 import { EnvironmentService, getEnvironmentMw } from "../environment";
@@ -11,7 +15,7 @@ import {
 import { buildUrl, concurrent, strictParse } from "../httpResponses";
 import { s } from "../time";
 
-export const getConsentUrlFn = createServerFn()
+const getConsentUrlFn = createServerFn()
   .middleware([getEnvironmentMw, getSessionDataMw])
   .handler(
     async ({ context: { environment, sessionData } }): Promise<string> => {
@@ -112,3 +116,22 @@ export const selectedScopes = [
 ] as z.input<typeof GoogleConsentUrlSearchParamsSchema>["scopes"];
 
 export const googleOauthQueryKey = ["googleOauth"];
+
+export const useSignInWithGoogle = () => {
+  const navigate = useNavigate();
+  const [isPending, setIsPending] = useState(false);
+  const { mutate: redirectToConsentUrl } = useMutation({
+    mutationFn: () => getConsentUrlFn(),
+    onMutate: () => setIsPending(true),
+    onError: () => {
+      toast.error("Failed to sign in.", {
+        description: "Please try again.",
+      });
+      setIsPending(false);
+    },
+    onSuccess: async (consentUrl) => {
+      navigate({ href: consentUrl });
+    },
+  });
+  return { redirectToConsentUrl, isPending };
+};

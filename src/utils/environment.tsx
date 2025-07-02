@@ -131,14 +131,6 @@ export const environmentValidationQueryOptions = queryOptions({
   subscribed: false,
 });
 
-export const useEnvironmentValidation = () => {
-  const queryClient = useQueryClient();
-  const environmentValidation = queryClient.getQueryData(
-    environmentValidationQueryOptions.queryKey,
-  );
-  return { environmentValidation };
-};
-
 export const getEnvironmentMw = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
     const variables = VariablesEnvironmentSchema.parse(process.env);
@@ -158,3 +150,11 @@ export class EnvironmentService extends Context.Tag("EnvironmentService")<
   EnvironmentService,
   Environment
 >() {}
+
+export const useEnvironmentValidation = () => {
+  const queryClient = useQueryClient();
+  const environmentValidation = queryClient.getQueryData(
+    environmentValidationQueryOptions.queryKey,
+  );
+  return { environmentValidation };
+};

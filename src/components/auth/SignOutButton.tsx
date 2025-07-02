@@ -6,7 +6,7 @@ import { authenticationQueryOptions } from "@/utils/authentication";
 import { Button } from "../ui/button";
 
 export function SignOutButton() {
-  const { mutate: signOut, isPending } = useSignOut();
+  const { signOut, isPending } = useSignOut();
   return (
     <Button onClick={() => signOut()} disabled={isPending}>
       {isPending ? "Signing out..." : "Sign Out"}
@@ -17,7 +17,7 @@ export function SignOutButton() {
 const useSignOut = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  return useMutation({
+  const { mutate: signOut, isPending } = useMutation({
     mutationFn: () => authClient.signOut(),
     onError: () =>
       toast.error("Failed to sign out.", {
@@ -30,4 +30,5 @@ const useSignOut = () => {
       await router.invalidate({ sync: true });
     },
   });
+  return { signOut, isPending };
 };
