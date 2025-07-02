@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { GoogleOauthButton } from "@/components/oauth/GoogleOauthButton";
 import { CenteredContainer } from "@/containers/CenteredContainer";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -7,9 +6,5 @@ export const Route = createFileRoute("/_authenticated/")({
 });
 
 function Home() {
-  return (
-    <CenteredContainer>
-      <GoogleOauthButton />
-    </CenteredContainer>
-  );
+  return <CenteredContainer></CenteredContainer>;
 }
