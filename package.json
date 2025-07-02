@@ -27,6 +27,7 @@
     "effect": "^3.16.9",
     "jotai": "^2.12.5",
     "jotai-tanstack-query": "^0.9.0",
+    "ky": "^1.8.1",
     "kysely-d1": "^0.4.0",
     "lucide-react": "0.483.0",
     "ms": "^2.1.3",
