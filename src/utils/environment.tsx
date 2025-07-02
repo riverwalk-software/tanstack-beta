@@ -21,9 +21,9 @@ const SecretsEnvironmentSchema = z.object({
   BETTER_AUTH_SECRET: z
     .string()
     .nonempty({ message: "BETTER_AUTH_SECRET is required" }),
-  // GOOGLE_CLIENT_SECRET: z
-  //   .string()
-  //   .nonempty({ message: "GOOGLE_CLIENT_SECRET is required" }),
+  GOOGLE_CLIENT_SECRET: z
+    .string()
+    .nonempty({ message: "GOOGLE_CLIENT_SECRET is required" }),
   // RESEND_API_KEY: z
   //   .string()
   //   .nonempty({ message: "RESEND_API_KEY is required" }),
