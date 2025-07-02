@@ -45,7 +45,21 @@ function SignUp() {
 }
 
 function MyForm() {
-  const { form, onSubmit, isPending } = useSignUp();
+  const form = useForm<SignUpForm>({
+    resolver: zodResolver(SignUpFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+  const { signUp, isPending } = useSignUp();
+  const onSubmit = async (values: SignUpForm) => {
+    const formData = SignUpFormTransformedSchema.parse(values);
+    signUp(formData);
+  };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -68,16 +82,6 @@ function MyForm() {
 }
 
 const useSignUp = () => {
-  const form = useForm<SignUpForm>({
-    resolver: zodResolver(SignUpFormSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
   const setEmail = useSetAtom(emailAtom);
   const { mutate: signUp, isPending } = useMutation({
     mutationKey: ["signup"],
@@ -91,11 +95,7 @@ const useSignUp = () => {
       setEmail(email);
     },
   });
-  const onSubmit = async (values: SignUpForm) => {
-    const formData = SignUpFormTransformedSchema.parse(values);
-    signUp(formData);
-  };
-  return { form, onSubmit, isPending };
+  return { signUp, isPending };
 };
 
 function FormHeader() {

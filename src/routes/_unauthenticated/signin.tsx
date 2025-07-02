@@ -37,7 +37,19 @@ function SignIn() {
 }
 
 function MyForm() {
-  const { form, onSubmit, isPending } = useSignIn();
+  const form = useForm<SignInForm>({
+    resolver: zodResolver(SignInFormSchema),
+    defaultValues: {
+      email: "test@email.com",
+      password: "passwordpassword",
+      rememberMe: false,
+    },
+  });
+  const { signIn, isPending } = useSignIn();
+  const onSubmit = (values: SignInForm) => {
+    const formData = SignInFormTransformedSchema.parse(values);
+    signIn(formData);
+  };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -54,14 +66,6 @@ function MyForm() {
 const useSignIn = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const form = useForm<SignInForm>({
-    resolver: zodResolver(SignInFormSchema),
-    defaultValues: {
-      email: "test@email.com",
-      password: "passwordpassword",
-      rememberMe: false,
-    },
-  });
   const { mutate: signIn, isPending } = useMutation({
     mutationKey: ["signin"],
     mutationFn: (formData: SignInFormTransformed) =>
@@ -78,11 +82,7 @@ const useSignIn = () => {
       await router.invalidate({ sync: true });
     },
   });
-  const onSubmit = (values: SignInForm) => {
-    const formData = SignInFormTransformedSchema.parse(values);
-    signIn(formData);
-  };
-  return { form, onSubmit, isPending };
+  return { signIn, isPending };
 };
 
 function FormHeader() {
