@@ -131,7 +131,7 @@ export const environmentValidationQueryOptions = queryOptions({
   subscribed: false,
 });
 
-export const getEnvironmentMw = createMiddleware({ type: "function" }).server(
+const getEnvironmentMw = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
     const variables = VariablesEnvironmentSchema.parse(process.env);
     const secrets = SecretsEnvironmentSchema.parse(process.env);
@@ -140,6 +140,10 @@ export const getEnvironmentMw = createMiddleware({ type: "function" }).server(
     });
   },
 );
+
+export const getEnvironmentFn = createServerFn()
+  .middleware([getEnvironmentMw])
+  .handler(({ context: { environment } }) => environment);
 
 export type Environment = {
   variables: VariablesEnvironment;

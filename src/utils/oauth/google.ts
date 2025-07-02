@@ -6,8 +6,8 @@ import { Context, Effect } from "effect";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { getSessionDataMw, SessionDataService } from "../authentication";
-import { EnvironmentService, getEnvironmentMw } from "../environment";
+import { getSessionDataFn, SessionDataService } from "../authentication";
+import { EnvironmentService, getEnvironmentFn } from "../environment";
 import {
   CloudflareBindingsService,
   getCloudflareBindings,
@@ -15,29 +15,27 @@ import {
 import { buildUrl, concurrent, strictParse } from "../httpResponses";
 import { s } from "../time";
 
-const getConsentUrlFn = createServerFn()
-  .middleware([getEnvironmentMw, getSessionDataMw])
-  .handler(
-    async ({ context: { environment, sessionData } }): Promise<string> => {
-      const cloudflareBindings = getCloudflareBindings();
-      const program = Effect.gen(function* () {
-        const state = yield* generateState();
-        const [consentUrl] = yield* concurrent([
-          generateConsentUrl(state),
-          storeStateAndSessionId(state),
-        ]);
-        return consentUrl;
-      });
-      const context = Context.empty().pipe(
-        Context.add(EnvironmentService, environment),
-        Context.add(SessionDataService, sessionData),
-        Context.add(CloudflareBindingsService, cloudflareBindings),
-      );
-      const runnable = Effect.provide(program, context);
-      const consentUrl = await Effect.runPromise(runnable);
-      return consentUrl.toString();
-    },
+const getConsentUrlFn = createServerFn().handler(async (): Promise<string> => {
+  const sessionData = await getSessionDataFn();
+  const environment = await getEnvironmentFn();
+  const cloudflareBindings = getCloudflareBindings();
+  const program = Effect.gen(function* () {
+    const state = yield* generateState();
+    const [consentUrl] = yield* concurrent([
+      generateConsentUrl(state),
+      storeStateAndSessionId(state),
+    ]);
+    return consentUrl;
+  });
+  const context = Context.empty().pipe(
+    Context.add(EnvironmentService, environment),
+    Context.add(SessionDataService, sessionData),
+    Context.add(CloudflareBindingsService, cloudflareBindings),
   );
+  const runnable = Effect.provide(program, context);
+  const consentUrl = await Effect.runPromise(runnable);
+  return consentUrl.toString();
+});
 
 const generateState = () =>
   Effect.sync(() => crypto.randomBytes(32).toString("hex"));

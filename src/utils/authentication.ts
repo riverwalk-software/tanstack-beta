@@ -44,7 +44,7 @@ const getAuthenticationDataFn = createServerFn()
       authenticationData,
   );
 
-export const getSessionDataMw = createMiddleware({ type: "function" })
+const getSessionDataMw = createMiddleware({ type: "function" })
   .middleware([getAuthenticationDataMw])
   .server(
     async ({
@@ -61,6 +61,10 @@ export const getSessionDataMw = createMiddleware({ type: "function" })
       });
     },
   );
+
+export const getSessionDataFn = createServerFn()
+  .middleware([getSessionDataMw])
+  .handler(({ context: { sessionData } }) => sessionData);
 
 export const authenticationQueryOptions = queryOptions({
   queryKey: ["authentication"],
