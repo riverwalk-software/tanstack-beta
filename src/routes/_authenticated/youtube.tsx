@@ -41,15 +41,7 @@ export const Route = createFileRoute("/_authenticated/youtube")({
 // }));
 
 function Youtube() {
-  const searchParams = Route.useSearch();
-  useEffect(() => {
-    const { success, data } = OauthSearchParamsSchema.safeParse(searchParams);
-    if (success) {
-      const { oauthSucceeded } = data;
-      if (oauthSucceeded) toast.success("OAuth succeeded");
-      else toast.error("OAuth failed. Please try again.");
-    }
-  }, [searchParams]);
+  useOauthSucceeded();
   // const { data: isGoogleOauthAuthenticated } = useAtomValue(
   //   isGoogleOauthAuthenticatedAtom,
   // );
@@ -84,3 +76,15 @@ function Youtube() {
 //       ) : (
 //         <GoogleOauthButton />
 //       )}
+
+const useOauthSucceeded = () => {
+  const searchParams = Route.useSearch();
+  useEffect(() => {
+    const { success, data } = OauthSearchParamsSchema.safeParse(searchParams);
+    if (success) {
+      const { oauthSucceeded } = data;
+      if (oauthSucceeded) toast.success("OAuth succeeded");
+      else toast.error("OAuth failed. Please try again.");
+    }
+  }, [searchParams]);
+};
