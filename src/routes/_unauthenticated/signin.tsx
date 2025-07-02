@@ -69,7 +69,7 @@ const useSignIn = () => {
   const { mutate: signIn, isPending } = useMutation({
     mutationKey: ["signin"],
     mutationFn: (formData: SignInFormTransformed) =>
-      authClient.signIn.email(formData),
+      authClient.signIn.email(formData, { retry: 0, throw: true }),
     onError: () =>
       toast.error("Failed to sign in.", {
         description: "Please check your credentials and try again.",

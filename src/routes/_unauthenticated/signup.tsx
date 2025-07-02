@@ -86,7 +86,7 @@ const useSignUp = () => {
   const { mutate: signUp, isPending } = useMutation({
     mutationKey: ["signup"],
     mutationFn: (formData: SignUpFormTransformed) =>
-      authClient.signUp.email(formData),
+      authClient.signUp.email(formData, { retry: 0, throw: true }),
     onError: () =>
       toast.error("Failed to sign up.", {
         description: "Please try again later.",

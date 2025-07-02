@@ -38,7 +38,7 @@ export function createRouter() {
       toast.error("You are no longer signed in.", {
         description: "Redirecting to sign in page...",
       });
-      await authClient.signOut();
+      await authClient.signOut({ fetchOptions: { retry: 0, throw: true } });
       await queryClient.invalidateQueries({
         queryKey: authenticationQueryOptions.queryKey,
       });
