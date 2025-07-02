@@ -18,6 +18,10 @@
     {
       "binding": "OAUTH_STORE",
       "id": "2c53e8720a86463fbe40deb1b8afb0f6"
+    },
+    {
+      "binding": "USER_STORE",
+      "id": "bf8b4371cf0940eab452701cc716d011"
     }
   ],
   "d1_databases": [
