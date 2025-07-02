@@ -9,9 +9,13 @@ export const Route = createFileRoute("/_authenticated/youtube")({
   component: Youtube,
 });
 
-export const OauthSearchParamsSchema = z.object({
-  oauthSucceeded: z.enum(["true", "false"]),
-});
+export const OauthSearchParamsSchema = z
+  .object({
+    oauthSucceeded: z.enum(["true", "false"]),
+  })
+  .transform((schema) => ({
+    oauthSucceeded: schema.oauthSucceeded === "true",
+  }));
 
 // const isGoogleOauthAuthenticatedFn = createServerFn()
 //   .middleware([authenticationMiddleware])
