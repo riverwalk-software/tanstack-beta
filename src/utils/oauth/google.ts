@@ -78,7 +78,7 @@ const storeStateAndSessionId = (state: string) =>
   });
 
 export const scopeDelimiter = " ";
-const YouTubeDataScopeSchema = z.enum([
+export const YouTubeDataScopeSchema = z.enum([
   "https://www.googleapis.com/auth/youtube",
   "https://www.googleapis.com/auth/youtube.channel-memberships.creator",
   "https://www.googleapis.com/auth/youtube.force-ssl",
