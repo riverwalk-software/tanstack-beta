@@ -1,6 +1,7 @@
 import { createServerFileRoute } from "@tanstack/react-start/server";
 import { Context, Effect, Either } from "effect";
 import { z } from "zod";
+import { getSessionDataFn, SessionDataService } from "@/utils/authentication";
 import { EnvironmentService, getEnvironmentFn } from "@/utils/environment";
 import {
   CloudflareBindingsService,
@@ -28,6 +29,7 @@ export const ServerRoute = createServerFileRoute(
   "/api/oauth/google/callback",
 ).methods((api) => ({
   GET: api.handler(async ({ request }) => {
+    const sessionData = await getSessionDataFn();
     const environment = await getEnvironmentFn();
     const cloudflareBindings = getCloudflareBindings();
     const program = Effect.gen(function* () {
@@ -42,6 +44,7 @@ export const ServerRoute = createServerFileRoute(
     });
     const context = Context.empty().pipe(
       Context.add(EnvironmentService, environment),
+      Context.add(SessionDataService, sessionData),
       Context.add(CloudflareBindingsService, cloudflareBindings),
     );
     const runnable = Effect.provide(program, context);
