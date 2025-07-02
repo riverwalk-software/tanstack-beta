@@ -1,9 +1,11 @@
-import { Data, Effect, Schedule } from "effect";
+import { Data, Effect, pipe, Schedule } from "effect";
 import { HTTPError } from "ky";
 import ms from "ms";
 import type { KyHeadersInit } from "node_modules/ky/distribution/types/options";
 import { type ZodTypeAny, z } from "zod";
 import { httpClient } from "@/lib/httpClient";
+import { OauthSearchParamsSchema } from "@/routes/_authenticated/youtube";
+import { SITE_URL } from "./constants";
 import { s } from "./time";
 
 export function strictParse<T extends ZodTypeAny>(
@@ -49,21 +51,23 @@ export const buildUrl = ({
 //     Effect.runPromise,
 //   );
 
-// export const effectToRedirect = <A>({
-//   request,
-//   program,
-// }: {
-//   request: Request;
-//   program: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>;
-// }): Promise<Response> =>
-//   pipe(
-//     // checkContentType(request),
-//     // Effect.zipRight(program),
-//     program,
-//     handleDefects,
-//     (effect) => handleErrorsForRedirect({ effect, path: "/", code: 302 }),
-//     Effect.runPromise,
-//   );
+export const effectToRedirect = <A>({
+  request,
+  effect,
+  path,
+}: {
+  request: Request;
+  effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>;
+  path: string;
+}): Promise<Response> =>
+  pipe(
+    // checkContentType(request),
+    // Effect.zipRight(program),
+    effect,
+    handleDefects,
+    (effect) => handleErrorsForRedirect({ effect, path, code: 302 }),
+    Effect.runPromise,
+  );
 
 // const checkContentType = (request: Request) =>
 //   Either.try({
@@ -74,10 +78,10 @@ export const buildUrl = ({
 //     },
 //   });
 
-// const handleDefects = Effect.catchAllDefect((defect) => {
-//   console.error(defect);
-//   return Effect.fail(new INTERNAL_SERVER_ERROR());
-// });
+const handleDefects = Effect.catchAllDefect((defect) => {
+  console.error(defect);
+  return Effect.fail(new INTERNAL_SERVER_ERROR());
+});
 
 // const handleErrors = <A>(
 //   effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>,
@@ -89,19 +93,19 @@ export const buildUrl = ({
 //       makeResponse({ code, message, data }),
 //   });
 
-// const handleErrorsForRedirect = <A>({
-//   effect,
-//   path,
-//   code,
-// }: {
-//   effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>;
-//   path: string;
-//   code: number;
-// }) =>
-//   Effect.match(effect, {
-//     onFailure: () => makeRedirect({ path, oauthSucceeded: false, code }),
-//     onSuccess: () => makeRedirect({ path, oauthSucceeded: true, code }),
-//   });
+const handleErrorsForRedirect = <A>({
+  effect,
+  path,
+  code,
+}: {
+  effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>;
+  path: string;
+  code: number;
+}) =>
+  Effect.match(effect, {
+    onFailure: () => makeRedirect({ path, oauthSucceeded: false, code }),
+    onSuccess: () => makeRedirect({ path, oauthSucceeded: true, code }),
+  });
 
 // const makeResponse = ({
 //   code,
@@ -127,21 +131,21 @@ export const buildUrl = ({
 //   });
 // };
 
-// const makeRedirect = ({
-//   path,
-//   oauthSucceeded,
-//   code,
-// }: {
-//   path: string;
-//   oauthSucceeded: boolean;
-//   code: number;
-// }) => {
-//   const base = SITE_URL;
-//   const searchParams = strictParse(OauthSearchParamsSchema, {
-//     oauthSucceeded,
-//   });
-//   return Response.redirect(buildUrl({ base, path, searchParams }), code);
-// };
+const makeRedirect = ({
+  path,
+  oauthSucceeded,
+  code,
+}: {
+  path: string;
+  oauthSucceeded: boolean;
+  code: number;
+}) => {
+  const base = SITE_URL;
+  const searchParams = strictParse(OauthSearchParamsSchema, {
+    oauthSucceeded: oauthSucceeded ? "true" : "false",
+  });
+  return Response.redirect(buildUrl({ base, path, searchParams }), code);
+};
 
 const DEFAULT_RETRY_AFTER = s("15s");
 const RetryAfterSchema = z.coerce.number().int().positive();
@@ -209,7 +213,6 @@ export const upstream = <T extends ZodTypeAny>({
     catch: (error) => {
       console.error(error);
       if (!(error instanceof HTTPError)) throw new Error("Unknown Error");
-      if (error.response === undefined) return new BAD_GATEWAY();
       const {
         response: { headers, status },
       } = error;
