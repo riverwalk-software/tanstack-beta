@@ -1,5 +1,10 @@
-import { Data, Effect, Either, pipe } from "effect";
+import { Data, Effect, Schedule } from "effect";
+import { HTTPError } from "ky";
+import ms from "ms";
+import type { KyHeadersInit } from "node_modules/ky/distribution/types/options";
 import { type ZodTypeAny, z } from "zod";
+import { httpClient } from "@/lib/httpClient";
+import { s } from "./time";
 
 export function strictParse<T extends ZodTypeAny>(
   schema: T,
@@ -28,21 +33,21 @@ export const buildUrl = ({
     base,
   );
 
-export const effectToResponse = <A>({
-  request,
-  program,
-}: {
-  request?: Request;
-  program: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>;
-}): Promise<Response> =>
-  pipe(
-    // checkContentType(request),
-    // Effect.zipRight(program),
-    program,
-    handleDefects,
-    (effect) => handleErrors(effect),
-    Effect.runPromise,
-  );
+// export const effectToResponse = <A>({
+//   request,
+//   program,
+// }: {
+//   request?: Request;
+//   program: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>;
+// }): Promise<Response> =>
+//   pipe(
+//     // checkContentType(request),
+//     // Effect.zipRight(program),
+//     program,
+//     handleDefects,
+//     (effect) => handleErrors(effect),
+//     Effect.runPromise,
+//   );
 
 // export const effectToRedirect = <A>({
 //   request,
@@ -60,29 +65,29 @@ export const effectToResponse = <A>({
 //     Effect.runPromise,
 //   );
 
-const checkContentType = (request: Request) =>
-  Either.try({
-    try: () => ContentTypeSchema.parse(request.headers.get("Accept")),
-    catch: (error) => {
-      console.error(error);
-      return new NOT_ACCEPTABLE();
-    },
-  });
+// const checkContentType = (request: Request) =>
+//   Either.try({
+//     try: () => ContentTypeSchema.parse(request.headers.get("Accept")),
+//     catch: (error) => {
+//       console.error(error);
+//       return new NOT_ACCEPTABLE();
+//     },
+//   });
 
-const handleDefects = Effect.catchAllDefect((defect) => {
-  console.error(defect);
-  return Effect.fail(new INTERNAL_SERVER_ERROR());
-});
+// const handleDefects = Effect.catchAllDefect((defect) => {
+//   console.error(defect);
+//   return Effect.fail(new INTERNAL_SERVER_ERROR());
+// });
 
-const handleErrors = <A>(
-  effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>,
-) =>
-  Effect.match(effect, {
-    onFailure: ({ code, message, retryAfter }) =>
-      makeResponse({ code, message, retryAfter, data: null }),
-    onSuccess: ({ code, message, data }) =>
-      makeResponse({ code, message, data }),
-  });
+// const handleErrors = <A>(
+//   effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>,
+// ) =>
+//   Effect.match(effect, {
+//     onFailure: ({ code, message, retryAfter }) =>
+//       makeResponse({ code, message, retryAfter, data: null }),
+//     onSuccess: ({ code, message, data }) =>
+//       makeResponse({ code, message, data }),
+//   });
 
 // const handleErrorsForRedirect = <A>({
 //   effect,
@@ -98,29 +103,29 @@ const handleErrors = <A>(
 //     onSuccess: () => makeRedirect({ path, oauthSucceeded: true, code }),
 //   });
 
-const makeResponse = ({
-  code,
-  message,
-  data,
-  retryAfter,
-}: {
-  code: number;
-  message: string;
-  data: unknown;
-  retryAfter?: string;
-}) => {
-  // const headers = {
-  //   "Content-Type": "application/json",
-  //   ...(retryAfter ? { "Retry-After": retryAfter } : {}),
-  // } as z.input<typeof ResponseHeadersSchema>;
-  return new Response(data !== null ? JSON.stringify(data) : null, {
-    status: code,
-    statusText: message,
-    headers: {
-      "content-type": "application/json",
-    },
-  });
-};
+// const makeResponse = ({
+//   code,
+//   message,
+//   data,
+//   retryAfter,
+// }: {
+//   code: number;
+//   message: string;
+//   data: unknown;
+//   retryAfter?: string;
+// }) => {
+//   // const headers = {
+//   //   "Content-Type": "application/json",
+//   //   ...(retryAfter ? { "Retry-After": retryAfter } : {}),
+//   // } as z.input<typeof ResponseHeadersSchema>;
+//   return new Response(data !== null ? JSON.stringify(data) : null, {
+//     status: code,
+//     statusText: message,
+//     headers: {
+//       "content-type": "application/json",
+//     },
+//   });
+// };
 
 // const makeRedirect = ({
 //   path,
@@ -138,7 +143,7 @@ const makeResponse = ({
 //   return Response.redirect(buildUrl({ base, path, searchParams }), code);
 // };
 
-const DEFAULT_RETRY_AFTER = 15; // seconds
+const DEFAULT_RETRY_AFTER = s("15s");
 const RetryAfterSchema = z.coerce.number().int().positive();
 const ContentTypeSchema = z.enum([
   "application/json",
@@ -150,83 +155,104 @@ const BaseHeadersSchema = z
     "retry-after": RetryAfterSchema.transform(String),
   })
   .partial();
-// export const RequestHeadersSchema = BaseHeadersSchema.extend({
-//   accept: ContentTypeSchema,
-//   authorization: z.object({
-//     scheme: z.enum(["Bearer", "Basic"]),
-//     credentials: z.string(),
-//   }),
-// })
-//   .partial()
-//   .transform(({ Authorization, ...rest }) => ({
-//     ...rest,
-//     ...(Authorization
-//       ? {
-//           authorization: `${Authorization.Scheme} ${Authorization.Credentials}`,
-//         }
-//       : {}),
-//   }));
+export const RequestHeadersSchema = BaseHeadersSchema.extend({
+  accept: ContentTypeSchema,
+  authorization: z.object({
+    scheme: z.enum(["Bearer", "Basic"]),
+    credentials: z.string(),
+  }),
+})
+  .partial()
+  .transform(({ authorization, ...rest }) => ({
+    ...rest,
+    ...(authorization
+      ? {
+          authorization: `${authorization.scheme} ${authorization.credentials}`,
+        }
+      : {}),
+  }));
 export const ResponseHeadersSchema = BaseHeadersSchema.extend({}).partial();
 // export type RequestHeaders = z.infer<typeof RequestHeadersSchema>;
 export type ResponseHeaders = z.infer<typeof ResponseHeadersSchema>;
 
 export const concurrent = <
-  const Arg extends // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const Arg extends
     | Iterable<Effect.Effect<any, any, any>>
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     | Record<string, Effect.Effect<any, any, any>>,
 >(
   arg: Arg,
 ) => Effect.all(arg, { concurrency: "inherit" });
 
-// export const upstream = <A>(tryFn: (signal: AbortSignal) => PromiseLike<A>) => {
-//   const task = Effect.tryPromise({
-//     try: tryFn,
-//     catch: (error) => {
-//       console.error(error);
-//       if (!axios.isAxiosError(error)) throw new Error("Unknown Error");
-//       if (error.response === undefined) return new BAD_GATEWAY();
-//       const status = error.response.status;
-//       if (status === 429 || status === 503) {
-//         const { data: retryAfter } = RetryAfterSchema.safeParse(
-//           error.response.headers["retry-after"],
-//         );
-//         return new SERVICE_UNAVAILABLE({
-//           retryAfter: retryAfter?.toString(),
-//         });
-//       }
-//       if (is5xx(status)) return new BAD_GATEWAY();
-//       throw new Error("Client Error");
-//     },
-//   });
-//   return Effect.catchTags(task, {
-//     BAD_GATEWAY: (_) =>
-//       Effect.retry(task, {
-//         while: (error) => error instanceof BAD_GATEWAY,
-//         schedule: Schedule.addDelay(Schedule.recurs(2), (n) =>
-//           ms(`${100 * 2 ** n}ms`),
-//         ),
-//       }),
-//     SERVICE_UNAVAILABLE: (error) =>
-//       Effect.gen(function* () {
-//         const defaultRetryAfter = yield* Effect.succeed(DEFAULT_RETRY_AFTER);
-//         const ExtendedRetryAfterSchema = RetryAfterSchema.catch(
-//           defaultRetryAfter,
-//         )
-//           .refine((retryAfter) => retryAfter <= defaultRetryAfter, {
-//             message: "'retry-after' header is too long",
-//           })
-//           .transform((retryAfter) => ms(`${retryAfter}s`));
-//         const retryAfter = yield* Effect.sync(() =>
-//           ExtendedRetryAfterSchema.parse(error.retryAfter),
-//         );
-//         yield* Effect.sleep(retryAfter);
-//         return yield* Effect.retry(task, {
-//           times: 1,
-//         });
-//       }),
-//   });
-// };
+export const upstream = <T extends ZodTypeAny>({
+  body,
+  headers,
+  method,
+  schema,
+  url,
+}: {
+  body?: unknown;
+  headers?: KyHeadersInit;
+  method: "delete" | "get" | "head" | "patch" | "post" | "put";
+  schema: T;
+  url: Parameters<typeof httpClient>[0];
+}) => {
+  const task = Effect.tryPromise({
+    try: async () => {
+      const response = httpClient(url, {
+        method,
+        headers,
+        ...(body !== undefined ? { json: body } : {}),
+      });
+      const data = await response.json();
+      return strictParse(schema, data);
+    },
+    catch: (error) => {
+      console.error(error);
+      if (!(error instanceof HTTPError)) throw new Error("Unknown Error");
+      if (error.response === undefined) return new BAD_GATEWAY();
+      const {
+        response: { headers, status },
+      } = error;
+      if (status === 429 || status === 503) {
+        const { data: retryAfter } = RetryAfterSchema.safeParse(
+          headers.get("retry-after"),
+        );
+        return new SERVICE_UNAVAILABLE({
+          retryAfter: retryAfter?.toString(),
+        });
+      }
+      if (is5xx(status)) return new BAD_GATEWAY();
+      throw new Error("Client Error");
+    },
+  });
+  return Effect.catchTags(task, {
+    BAD_GATEWAY: (_) =>
+      Effect.retry(task, {
+        while: (error) => error instanceof BAD_GATEWAY,
+        schedule: Schedule.addDelay(Schedule.recurs(2), (n) =>
+          ms(`${100 * 2 ** n}ms`),
+        ),
+      }),
+    SERVICE_UNAVAILABLE: (error) =>
+      Effect.gen(function* () {
+        const defaultRetryAfter = yield* Effect.succeed(DEFAULT_RETRY_AFTER);
+        const ExtendedRetryAfterSchema = RetryAfterSchema.catch(
+          defaultRetryAfter,
+        )
+          .refine((retryAfter) => retryAfter <= defaultRetryAfter, {
+            message: "'retry-after' header is too long",
+          })
+          .transform((retryAfter) => ms(`${retryAfter}s`));
+        const retryAfter = yield* Effect.sync(() =>
+          ExtendedRetryAfterSchema.parse(error.retryAfter),
+        );
+        yield* Effect.sleep(retryAfter);
+        return yield* Effect.retry(task, {
+          times: 1,
+        });
+      }),
+  });
+};
 
 const is4xx = (code: number) => code >= 400 && code < 500;
 const is5xx = (code: number) => code >= 500 && code < 600;
