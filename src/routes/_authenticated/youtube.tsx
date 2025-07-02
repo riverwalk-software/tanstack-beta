@@ -1,21 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { z } from "zod";
 import { GoogleOauthButton } from "@/components/oauth/GoogleOauthButton";
 import { CenteredContainer } from "@/containers/CenteredContainer";
+import { OauthSearchParamsSchema } from "@/utils/httpResponses";
 
 export const Route = createFileRoute("/_authenticated/youtube")({
   component: Youtube,
 });
-
-export const OauthSearchParamsSchema = z
-  .object({
-    oauthSucceeded: z.enum(["true", "false"]),
-  })
-  .transform((schema) => ({
-    oauthSucceeded: schema.oauthSucceeded === "true",
-  }));
 
 // const isGoogleOauthAuthenticatedFn = createServerFn()
 //   .middleware([authenticationMiddleware])

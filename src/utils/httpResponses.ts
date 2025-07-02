@@ -4,7 +4,6 @@ import ms from "ms";
 import type { KyHeadersInit } from "node_modules/ky/distribution/types/options";
 import { type ZodTypeAny, z } from "zod";
 import { httpClient } from "@/lib/httpClient";
-import { OauthSearchParamsSchema } from "@/routes/_authenticated/youtube";
 import { SITE_URL } from "./constants";
 import { s } from "./time";
 
@@ -146,6 +145,14 @@ const makeRedirect = ({
   });
   return Response.redirect(buildUrl({ base, path, searchParams }), code);
 };
+
+export const OauthSearchParamsSchema = z
+  .object({
+    oauthSucceeded: z.enum(["true", "false"]),
+  })
+  .transform((schema) => ({
+    oauthSucceeded: schema.oauthSucceeded === "true",
+  }));
 
 const DEFAULT_RETRY_AFTER = s("15s");
 const RetryAfterSchema = z.coerce.number().int().positive();
