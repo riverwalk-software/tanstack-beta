@@ -45,9 +45,6 @@ export function createRouter() {
       await router.invalidate({ sync: true });
     } else if (isRedirect(error)) {
     } else {
-      toast.error("This action cannot be performed right now.", {
-        description: "Please try again later.",
-      });
     }
   };
 
