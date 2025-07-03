@@ -24,9 +24,9 @@ const SecretsEnvironmentSchema = z.object({
   GOOGLE_CLIENT_SECRET: z
     .string()
     .nonempty({ message: "GOOGLE_CLIENT_SECRET is required" }),
-  // RESEND_API_KEY: z
-  //   .string()
-  //   .nonempty({ message: "RESEND_API_KEY is required" }),
+  RESEND_API_KEY: z
+    .string()
+    .nonempty({ message: "RESEND_API_KEY is required" }),
 });
 
 type SecretsEnvironment = z.infer<typeof SecretsEnvironmentSchema>;
