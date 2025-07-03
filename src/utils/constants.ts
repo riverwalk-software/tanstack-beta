@@ -13,5 +13,6 @@ export const TEST_USER = {
   email: "test@email.com",
   password: "passwordpassword",
 };
-export const AUTH_CALLBACK_URL: FileRouteTypes["fullPaths"] = "/";
-export const ERROR_CALLBACK_URL: FileRouteTypes["fullPaths"] = "/signin";
+export const AUTH_CALLBACK_URL: RouteType = "/";
+export const ERROR_CALLBACK_URL: RouteType = "/signin";
+type RouteType = FileRouteTypes["fullPaths"];
