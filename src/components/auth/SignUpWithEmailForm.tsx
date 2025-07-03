@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { atom, useSetAtom } from "jotai";
 import { type UseFormReturn, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import {
+  AUTH_CALLBACK_ROUTE,
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
 } from "@/utils/constants";
@@ -61,17 +62,15 @@ export function SignUpWithEmailForm() {
 export const emailAtom = atom("");
 
 const useSignUpWithEmail = () => {
+  const navigate = useNavigate();
   const setEmail = useSetAtom(emailAtom);
   const { mutate: signUpWithEmail, isPending } = useMutation({
     mutationKey: ["signUpWithEmail"],
     mutationFn: (formData: SignUpFormTransformed) =>
       authClient.signUp.email(formData),
-    onError: () =>
-      toast.error("Failed to sign up.", {
-        description: "Please try again later.",
-      }),
     onSuccess: (_data, { email }) => {
       setEmail(email);
+      navigate({ to: "/signup/success" });
     },
   });
   return { signUpWithEmail, isPending };
@@ -213,6 +212,7 @@ const SignUpFormTransformedSchema = SignUpFormSchema.transform(
     ({
       ...rest,
       name: `${firstName} ${lastName}`,
+      callbackURL: AUTH_CALLBACK_ROUTE,
     }) as Parameters<typeof authClient.signUp.email>[0],
 );
 

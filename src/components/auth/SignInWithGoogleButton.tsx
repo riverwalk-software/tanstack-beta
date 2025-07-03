@@ -1,8 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import GoogleButton from "react-google-button";
-import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
-import { ERROR_CALLBACK_URL } from "@/utils/constants";
+import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
 import { useTheme } from "@/utils/theme";
 
 export function SignInWithGoogleButton() {
@@ -23,11 +22,7 @@ const useSignInWithGoogle = () => {
     mutationFn: () =>
       authClient.signIn.social({
         provider: "google",
-        callbackURL: ERROR_CALLBACK_URL,
-      }),
-    onError: () =>
-      toast.error("Failed to sign in.", {
-        description: "Please try again later.",
+        callbackURL: AUTH_CALLBACK_ROUTE,
       }),
   });
   return { signInWithGoogle, isPending };
