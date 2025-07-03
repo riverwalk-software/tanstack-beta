@@ -2,7 +2,8 @@ import { betterAuth } from "better-auth";
 import { reactStartCookies } from "better-auth/react-start";
 import { D1Dialect } from "kysely-d1";
 import { Resend } from "resend";
-import { VerifyEmail } from "@/components/emails/VerifyEmail";
+import { ResetPasswordEmail } from "@/components/emails/ResetPasswordEmail";
+import { VerifyEmailEmail } from "@/components/emails/VerifyEmailEmail";
 import {
   EVENTUAL_CONSISTENCY_DELAY_S,
   MAXIMUM_PASSWORD_LENGTH,
@@ -18,8 +19,17 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
     requireEmailVerification: true,
+    revokeSessionsOnPasswordReset: true,
     minPasswordLength: MINIMUM_PASSWORD_LENGTH,
     maxPasswordLength: MAXIMUM_PASSWORD_LENGTH,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      await resend.emails.send({
+        from: "info@riverwalk.dev",
+        to: user.email,
+        subject: "Reset your password",
+        react: ResetPasswordEmail({ url }),
+      });
+    },
   },
   emailVerification: {
     autoSignInAfterVerification: true,
@@ -29,7 +39,7 @@ export const auth = betterAuth({
         from: "info@riverwalk.dev",
         to: user.email,
         subject: "Verify your email address",
-        react: VerifyEmail({ url }),
+        react: VerifyEmailEmail({ url }),
       });
     },
   },
