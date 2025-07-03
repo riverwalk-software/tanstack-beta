@@ -4,6 +4,7 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { SignInWithGoogle } from "@/components/auth/SignInWithGoogle";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -32,6 +33,7 @@ function SignIn() {
   return (
     <CenteredContainer>
       <MyForm />
+      <SignInWithGoogle />
     </CenteredContainer>
   );
 }
