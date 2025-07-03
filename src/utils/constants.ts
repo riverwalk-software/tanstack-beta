@@ -13,6 +13,6 @@ export const TEST_USER = {
   email: "test@email.com",
   password: "passwordpassword",
 };
-export const AUTH_CALLBACK_URL: RouteType = "/";
-export const ERROR_CALLBACK_URL: RouteType = "/signin";
+export const HOME_ROUTE: RouteType = "/";
+export const AUTH_CALLBACK_ROUTE: RouteType = "/signin";
 type RouteType = FileRouteTypes["fullPaths"];
