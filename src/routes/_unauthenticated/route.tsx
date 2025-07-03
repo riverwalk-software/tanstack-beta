@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { z } from "zod";
-import { AUTH_CALLBACK_URL } from "@/utils/constants";
+import { HOME_ROUTE } from "@/utils/constants";
 
 const SearchParamsSchema = z
   .object({
@@ -16,8 +16,7 @@ export const Route = createFileRoute("/_unauthenticated")({
     },
     search,
   }) => {
-    if (isAuthenticated)
-      throw redirect({ to: search.redirect ?? AUTH_CALLBACK_URL });
+    if (isAuthenticated) throw redirect({ to: search.redirect ?? HOME_ROUTE });
   },
   component: UnauthenticatedPathlessLayout,
 });
