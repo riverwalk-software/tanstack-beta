@@ -20,7 +20,6 @@ import { CenteredContainer } from "@/containers/CenteredContainer";
 import { authClient } from "@/lib/auth-client";
 import { authenticationQueryOptions } from "@/utils/authentication";
 import {
-  CALLBACK_URL,
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
 } from "@/utils/constants";
@@ -174,10 +173,7 @@ const SignInFormSchema = z.object({
 });
 
 const SignInFormTransformedSchema = SignInFormSchema.transform(
-  (schema) =>
-    ({ ...schema, callbackURL: CALLBACK_URL }) as Parameters<
-      typeof authClient.signIn.email
-    >[0],
+  (schema) => ({ ...schema }) as Parameters<typeof authClient.signIn.email>[0],
 );
 
 type SignInForm = z.infer<typeof SignInFormSchema>;

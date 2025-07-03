@@ -11,4 +11,4 @@ export const TEST_USER = {
   email: "test@email.com",
   password: "passwordpassword",
 };
-export const CALLBACK_URL = "/dashboard";
+export const AUTH_CALLBACK_URL = "/";

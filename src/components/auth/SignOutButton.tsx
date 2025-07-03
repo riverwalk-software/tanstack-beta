@@ -27,7 +27,7 @@ const useSignOut = () => {
       await queryClient.invalidateQueries({
         queryKey: authenticationQueryOptions.queryKey,
       });
-      await router.invalidate({ sync: true });
+      await router.navigate({ to: "/signin" });
     },
   });
   return { signOut, isPending };
