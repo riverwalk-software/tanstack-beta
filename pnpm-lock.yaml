@@ -119,6 +119,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.11
         version: 4.1.11
+      ts-pattern:
+        specifier: ^5.7.1
+        version: 5.7.1
       zod:
         specifier: ^3.25.71
         version: 3.25.71
@@ -4889,6 +4892,9 @@ packages:
     engines: {node: '>=18.12'}
     peerDependencies:
       typescript: '>=4.8.4'
+
+  ts-pattern@5.7.1:
+    resolution: {integrity: sha512-EGs8PguQqAAUIcQfK4E9xdXxB6s2GK4sJfT/vcc9V1ELIvC4LH/zXu2t/5fajtv6oiRCxdv7BgtVK3vWgROxag==}
 
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
@@ -10248,6 +10254,8 @@ snapshots:
   ts-api-utils@2.1.0(typescript@5.8.3):
     dependencies:
       typescript: 5.8.3
+
+  ts-pattern@5.7.1: {}
 
   tsconfck@3.1.6(typescript@5.8.3):
     optionalDependencies:
