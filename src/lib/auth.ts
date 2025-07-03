@@ -6,6 +6,7 @@ import {
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
 } from "@/utils/constants";
+import { environment } from "@/utils/environment";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 const { DB, SESSION_STORE } = getCloudflareBindings();
@@ -17,6 +18,12 @@ export const auth = betterAuth({
     // autoSignInAfterVerification: true,
     minPasswordLength: MINIMUM_PASSWORD_LENGTH,
     maxPasswordLength: MAXIMUM_PASSWORD_LENGTH,
+  },
+  socialProviders: {
+    google: {
+      clientId: environment.variables.GOOGLE_CLIENT_ID,
+      clientSecret: environment.secrets.GOOGLE_CLIENT_SECRET,
+    },
   },
   // database: new Database("./db/sqlite.db"),
   database: {
