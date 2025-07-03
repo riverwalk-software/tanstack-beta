@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { useMutation } from "@tanstack/react-query";
+import { queryOptions, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { Context, Effect } from "effect";
@@ -113,7 +113,13 @@ export const youtubeScopes = [
   "https://www.googleapis.com/auth/youtubepartner",
 ] as z.input<typeof GoogleConsentUrlSearchParamsSchema>["scopes"];
 
-export const googleOauthQueryKey = ["googleOauth"];
+export const googleOauthQueryOptions = queryOptions({
+  queryKey: ["googleOauth"],
+  queryFn: () => {},
+  retry: false,
+  staleTime: Infinity,
+  gcTime: Infinity,
+});
 
 export const useSignInWithGoogle = () => {
   const navigate = useNavigate();
