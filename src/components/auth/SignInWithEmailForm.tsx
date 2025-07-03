@@ -54,7 +54,7 @@ const useSignInWithEmail = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { mutate: signInWithEmail, isPending } = useMutation({
-    mutationKey: ["signin"],
+    mutationKey: ["signInWithEmail"],
     mutationFn: (formData: SignInFormTransformed) =>
       authClient.signIn.email(formData),
     onError: () =>

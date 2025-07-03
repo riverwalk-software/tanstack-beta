@@ -19,7 +19,7 @@ export function SignInWithGoogleButton() {
 
 const useSignInWithGoogle = () => {
   const { mutate: signInWithGoogle, isPending } = useMutation({
-    mutationKey: ["signin"],
+    mutationKey: ["signInWithGoogle"],
     mutationFn: () =>
       authClient.signIn.social({
         provider: "google",
