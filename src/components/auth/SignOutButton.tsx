@@ -18,8 +18,7 @@ const useSignOut = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { mutate: signOut, isPending } = useMutation({
-    mutationFn: () =>
-      authClient.signOut({ fetchOptions: { retry: 0, throw: true } }),
+    mutationFn: () => authClient.signOut(),
     onError: () =>
       toast.error("Failed to sign out.", {
         description: "Please try again.",
