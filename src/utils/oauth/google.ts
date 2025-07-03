@@ -54,7 +54,7 @@ const generateConsentUrl = (state: string) =>
       strictParse(GoogleConsentUrlSearchParamsSchema, {
         clientId: GOOGLE_CLIENT_ID,
         redirectUri: GOOGLE_REDIRECT_URI,
-        scopes: selectedScopes,
+        scopes: youtubeScopes,
         state,
         loginHint: email,
       }),
@@ -109,7 +109,7 @@ const GoogleConsentUrlSearchParamsSchema = z
     include_granted_scopes: "true",
     login_hint: schema.loginHint,
   }));
-export const selectedScopes = [
+export const youtubeScopes = [
   "https://www.googleapis.com/auth/youtubepartner",
 ] as z.input<typeof GoogleConsentUrlSearchParamsSchema>["scopes"];
 
