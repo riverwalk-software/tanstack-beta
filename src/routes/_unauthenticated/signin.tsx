@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -25,11 +26,18 @@ import {
   MINIMUM_PASSWORD_LENGTH,
 } from "@/utils/constants";
 
+const SearchParamsSchema = z
+  .object({
+    error: z.string(),
+  })
+  .partial();
+
 export const Route = createFileRoute("/_unauthenticated/signin")({
   component: SignIn,
 });
 
 function SignIn() {
+  useOauthFailedEffect();
   return (
     <CenteredContainer>
       <MyForm />
@@ -180,3 +188,11 @@ const SignInFormTransformedSchema = SignInFormSchema.transform(
 
 type SignInForm = z.infer<typeof SignInFormSchema>;
 type SignInFormTransformed = z.infer<typeof SignInFormTransformedSchema>;
+
+const useOauthFailedEffect = () => {
+  const searchParams = Route.useSearch();
+  useEffect(() => {
+    const { error } = SearchParamsSchema.parse(searchParams);
+    if (error !== undefined) toast.error("OAuth failed. Please try again.");
+  }, [searchParams]);
+};
