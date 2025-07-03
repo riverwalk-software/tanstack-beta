@@ -1,6 +1,8 @@
 import { betterAuth } from "better-auth";
 import { reactStartCookies } from "better-auth/react-start";
 import { D1Dialect } from "kysely-d1";
+import { Resend } from "resend";
+import { VerifyEmail } from "@/components/emails/VerifyEmail";
 import {
   EVENTUAL_CONSISTENCY_DELAY_S,
   MAXIMUM_PASSWORD_LENGTH,
@@ -10,14 +12,26 @@ import { environment } from "@/utils/environment";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 const { DB, SESSION_STORE } = getCloudflareBindings();
+const resend = new Resend(environment.secrets.RESEND_API_KEY);
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
-    // requireEmailVerification: true,
-    // autoSignInAfterVerification: true,
+    requireEmailVerification: true,
     minPasswordLength: MINIMUM_PASSWORD_LENGTH,
     maxPasswordLength: MAXIMUM_PASSWORD_LENGTH,
+  },
+  emailVerification: {
+    autoSignInAfterVerification: true,
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      await resend.emails.send({
+        from: "info@riverwalk.dev",
+        to: user.email,
+        subject: "Verify your email address",
+        react: VerifyEmail({ url }),
+      });
+    },
   },
   socialProviders: {
     google: {
