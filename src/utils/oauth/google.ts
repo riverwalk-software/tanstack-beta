@@ -4,7 +4,6 @@ import { useNavigate } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { Context, Effect } from "effect";
 import { useState } from "react";
-import { toast } from "sonner";
 import { z } from "zod";
 import { getSessionDataFn, SessionDataService } from "../authentication";
 import { EnvironmentService, getEnvironmentFn } from "../environment";
@@ -128,15 +127,8 @@ export const useSignInWithGoogle = () => {
     mutationKey: ["redirectToConsentUrl"],
     mutationFn: () => getConsentUrlFn(),
     onMutate: () => setIsPending(true),
-    onError: () => {
-      toast.error("Failed to sign in.", {
-        description: "Please try again.",
-      });
-      setIsPending(false);
-    },
-    onSuccess: async (consentUrl) => {
-      navigate({ href: consentUrl });
-    },
+    onError: () => setIsPending(false),
+    onSuccess: async (consentUrl) => navigate({ href: consentUrl }),
   });
   return { redirectToConsentUrl, isPending };
 };
