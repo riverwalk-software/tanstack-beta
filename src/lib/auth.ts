@@ -10,6 +10,14 @@ import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 const { DB, SESSION_STORE } = getCloudflareBindings();
 export const auth = betterAuth({
+  emailAndPassword: {
+    enabled: true,
+    autoSignIn: false,
+    // requireEmailVerification: true,
+    // autoSignInAfterVerification: true,
+    minPasswordLength: MINIMUM_PASSWORD_LENGTH,
+    maxPasswordLength: MAXIMUM_PASSWORD_LENGTH,
+  },
   // database: new Database("./db/sqlite.db"),
   database: {
     dialect: new D1Dialect({ database: DB }),
@@ -46,14 +54,6 @@ export const auth = betterAuth({
   //     },
   //   },
   // },
-  emailAndPassword: {
-    enabled: true,
-    autoSignIn: false,
-    // requireEmailVerification: true,
-    // autoSignInAfterVerification: true,
-    minPasswordLength: MINIMUM_PASSWORD_LENGTH,
-    maxPasswordLength: MAXIMUM_PASSWORD_LENGTH,
-  },
   plugins: [
     reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
   ],
