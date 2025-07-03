@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { CenteredContainer } from "@/containers/CenteredContainer";
 import { authClient } from "@/lib/auth-client";
 import {
+  CALLBACK_URL,
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
 } from "@/utils/constants";
@@ -234,6 +235,7 @@ const SignUpFormTransformedSchema = SignUpFormSchema.transform(
     ({
       ...rest,
       name: `${firstName} ${lastName}`,
+      callbackURL: CALLBACK_URL,
     }) as Parameters<typeof authClient.signUp.email>[0],
 );
 
