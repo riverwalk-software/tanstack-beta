@@ -1,3 +1,5 @@
+import type { FileRouteTypes } from "@/routeTree.gen.ts";
+
 export const EVENTUAL_CONSISTENCY_DELAY_S = 60 * 1;
 // export const IMGGEN_URL = "https://imggen.andrei-023.workers.dev";
 export const MAXIMUM_PASSWORD_LENGTH = 64;
@@ -11,4 +13,5 @@ export const TEST_USER = {
   email: "test@email.com",
   password: "passwordpassword",
 };
-export const AUTH_CALLBACK_URL = "/";
+export const AUTH_CALLBACK_URL: FileRouteTypes["fullPaths"] = "/";
+export const ERROR_CALLBACK_URL: FileRouteTypes["fullPaths"] = "/signin";
