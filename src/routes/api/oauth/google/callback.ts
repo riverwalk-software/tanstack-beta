@@ -20,8 +20,8 @@ import {
 } from "@/utils/httpResponses";
 import {
   scopeDelimiter,
-  selectedScopes,
   YouTubeDataScopeSchema,
+  youtubeScopes,
 } from "@/utils/oauth/google";
 import { checkIfExpired, ttlSToMs } from "@/utils/time";
 
@@ -148,7 +148,7 @@ const exchangeCodeForTokensAndScopes = (code: string) =>
 const verifyScopes = (acceptedScopes: string[]) =>
   Effect.gen(function* () {
     const allScopesAccepted = yield* Effect.sync(() =>
-      selectedScopes.every((scope) => acceptedScopes.includes(scope)),
+      youtubeScopes.every((scope) => acceptedScopes.includes(scope)),
     );
     yield* Effect.if(allScopesAccepted, {
       onFalse: () =>
@@ -340,7 +340,7 @@ const YoutubeChannelsListResponseSchema = z
     youtubeChannels: schema.items ?? [],
   }));
 
-interface UserValueSchema {
+export interface UserValueSchema {
   google?: {
     youtubeChannelIds: string[];
     tokens: TokensResponse["tokens"];
