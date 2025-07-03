@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { YoutubeManager } from "@/components/auth/YoutubeManager";
 import { CenteredContainer } from "@/containers/CenteredContainer";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -6,5 +7,9 @@ export const Route = createFileRoute("/_authenticated/")({
 });
 
 function Home() {
-  return <CenteredContainer></CenteredContainer>;
+  return (
+    <CenteredContainer>
+      <YoutubeManager />
+    </CenteredContainer>
+  );
 }

@@ -125,6 +125,7 @@ export const useSignInWithGoogle = () => {
   const navigate = useNavigate();
   const [isPending, setIsPending] = useState(false);
   const { mutate: redirectToConsentUrl } = useMutation({
+    mutationKey: ["redirectToConsentUrl"],
     mutationFn: () => getConsentUrlFn(),
     onMutate: () => setIsPending(true),
     onError: () => {

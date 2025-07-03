@@ -20,7 +20,7 @@ import {
 } from "@/utils/httpResponses";
 import {
   scopeDelimiter,
-  YouTubeDataScopeSchema,
+  YoutubeDataScopeSchema,
   youtubeScopes,
 } from "@/utils/oauth/google";
 import { checkIfExpired, ttlSToMs } from "@/utils/time";
@@ -245,7 +245,7 @@ export const TokensResponseSchema = z
       .nonempty()
       .transform((scopeString) => scopeString.split(scopeDelimiter))
       .transform((scopes) =>
-        scopes.map((scope) => YouTubeDataScopeSchema.parse(scope)),
+        scopes.map((scope) => YoutubeDataScopeSchema.parse(scope)),
       )
       .transform((scopes) => new Set(scopes))
       .transform((scopes) => Array.from(scopes)),
