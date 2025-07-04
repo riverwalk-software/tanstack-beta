@@ -81,48 +81,29 @@ export type EnvironmentValidation =
   | FailedEnvironmentValidation
   | SuccessfulEnvironmentValidation;
 
-const validateEnvironmentMw = createMiddleware({ type: "function" }).server(
-  async ({ next }) => {
+const validateEnvironmentFn = createServerFn().handler(
+  async (): Promise<EnvironmentValidation> => {
     const variables = VariablesEnvironmentSchema.safeParse(process.env);
     const secrets = SecretsEnvironmentSchema.safeParse(process.env);
-    return next({
-      context: {
-        environmentValidation: {
-          variables,
-          secrets,
+    if (variables.success && secrets.success)
+      return {
+        isError: false,
+        errors: null,
+      };
+    else
+      return {
+        isError: true,
+        errors: {
+          variables: variables.error?.issues.map(
+            (issue) => `${issue.path[0]}: ${issue.message}`,
+          ),
+          secrets: secrets.error?.issues.map((issue) =>
+            issue.path[0].toString(),
+          ),
         },
-      },
-    });
+      };
   },
 );
-
-const validateEnvironmentFn = createServerFn()
-  .middleware([validateEnvironmentMw])
-  .handler(
-    async ({
-      context: {
-        environmentValidation: { variables, secrets },
-      },
-    }): Promise<EnvironmentValidation> => {
-      if (variables.success && secrets.success)
-        return {
-          isError: false,
-          errors: null,
-        };
-      else
-        return {
-          isError: true,
-          errors: {
-            variables: variables.error?.issues.map(
-              (issue) => `${issue.path[0]}: ${issue.message}`,
-            ),
-            secrets: secrets.error?.issues.map((issue) =>
-              issue.path[0].toString(),
-            ),
-          },
-        };
-    },
-  );
 
 export const environmentValidationQueryOptions = queryOptions({
   queryKey: ["environmentValidation"],
