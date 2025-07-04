@@ -73,13 +73,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       { rel: "icon", href: "/favicon.ico" },
     ],
   }),
-  errorComponent: (props) => (
-    <RootDocument>
-      <DefaultCatchBoundary {...props} />
-    </RootDocument>
-  ),
-  notFoundComponent: () => <NotFound />,
-  component: RootComponent,
   beforeLoad: async ({
     context: { queryClient },
   }): Promise<{ authenticationData: AuthenticationData }> => {
@@ -96,6 +89,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       queryClient.prefetchQuery(themeQueryOptions),
     ]);
   },
+  errorComponent: (props) => (
+    <RootDocument>
+      <DefaultCatchBoundary {...props} />
+    </RootDocument>
+  ),
+  notFoundComponent: () => <NotFound />,
+  component: RootComponent,
 });
 
 function RootComponent() {
