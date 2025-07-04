@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { atom, useSetAtom } from "jotai";
 import { type UseFormReturn, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
+import { resendVerificationEmailDurationMs } from "@/routes/_unauthenticated/signup/success";
 import {
   AUTH_CALLBACK_ROUTE,
   MAXIMUM_PASSWORD_LENGTH,
@@ -59,17 +60,20 @@ export function SignUpWithEmailForm() {
   );
 }
 
-export const emailAtom = atom("");
-
+export const verifyEmailQueryKey = ["verifyEmail"];
 const useSignUpWithEmail = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const setEmail = useSetAtom(emailAtom);
   const { mutate: signUpWithEmail, isPending } = useMutation({
     mutationKey: ["signUpWithEmail"],
     mutationFn: (formData: SignUpFormTransformed) =>
       authClient.signUp.email(formData),
     onSuccess: (_data, { email }) => {
-      setEmail(email);
+      toast.success("Sign up successful!", {
+        description: "Please check your email to verify your account.",
+        duration: resendVerificationEmailDurationMs,
+      });
+      queryClient.setQueryData(verifyEmailQueryKey, email);
       navigate({ to: "/signup/success" });
     },
   });
