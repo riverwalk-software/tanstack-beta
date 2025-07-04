@@ -48,7 +48,7 @@ export const getSessionDataMw = createMiddleware({ type: "function" })
       },
     }) => {
       if (!isAuthenticated) throw new Error(ServerFnErrorCodes.UNAUTHENTICATED);
-      return next({
+      return next<{ sessionData: SessionData }>({
         context: {
           sessionData,
         },
