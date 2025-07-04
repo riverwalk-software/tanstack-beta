@@ -122,10 +122,6 @@ export const getEnvironmentMw = createMiddleware({ type: "function" }).server(
   },
 );
 
-export const getEnvironmentFn = createServerFn()
-  .middleware([getEnvironmentMw])
-  .handler(({ context: { environment } }) => environment);
-
 export type Environment = {
   variables: VariablesEnvironment;
   secrets: SecretsEnvironment;
