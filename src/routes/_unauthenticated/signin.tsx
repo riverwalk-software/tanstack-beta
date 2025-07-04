@@ -38,7 +38,7 @@ const FailedSignInEffect = () => {
       .with(undefined, () => {})
       .with("invalid_token", () =>
         toast.error("Email verification link expired", {
-          description: "Please try logging in to create a new link.",
+          description: "Please try signing in to create a new link.",
           duration: resendVerificationEmailDurationMs,
         }),
       )
