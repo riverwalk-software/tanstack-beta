@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
-import { authenticationQueryOptions } from "@/utils/authentication";
+import { authenticationDataQueryOptions } from "@/utils/authentication";
 import { Button } from "../ui/button";
 
 export function SignOutButton() {
@@ -21,7 +21,7 @@ const useSignOut = () => {
     mutationFn: () => authClient.signOut(),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: authenticationQueryOptions.queryKey,
+        queryKey: authenticationDataQueryOptions.queryKey,
       });
       await navigate({ to: "/signin" });
     },

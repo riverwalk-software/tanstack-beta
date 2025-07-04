@@ -20,7 +20,7 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import globalsCss from "@/styles/globals.css?url";
 import {
   type AuthenticationData,
-  authenticationQueryOptions,
+  authenticationDataQueryOptions,
 } from "@/utils/authentication";
 import {
   EnvironmentError,
@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     context: { queryClient },
   }): Promise<{ authenticationData: AuthenticationData }> => {
     const authenticationData = await queryClient.fetchQuery(
-      authenticationQueryOptions,
+      authenticationDataQueryOptions,
     );
     return { authenticationData };
   },

@@ -7,7 +7,7 @@ import { DefaultCatchBoundary } from "./components/DefaultCatchBoundary";
 import { NotFound } from "./components/NotFound";
 import { authClient } from "./lib/auth-client";
 import { routeTree } from "./routeTree.gen";
-import { authenticationQueryOptions } from "./utils/authentication";
+import { authenticationDataQueryOptions } from "./utils/authentication";
 import { type ServerFnErrorCode, ServerFnErrorCodes } from "./utils/errors";
 
 export function createRouter() {
@@ -49,7 +49,7 @@ export function createRouter() {
             console.warn("Sign out failed during error recovery:", error);
           }
           await queryClient.invalidateQueries({
-            queryKey: authenticationQueryOptions.queryKey,
+            queryKey: authenticationDataQueryOptions.queryKey,
           });
           await router.invalidate({ sync: true });
         })

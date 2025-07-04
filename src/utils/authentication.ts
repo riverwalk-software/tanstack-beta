@@ -5,8 +5,8 @@ import { Context } from "effect";
 import { auth } from "@/lib/auth";
 import { ServerFnErrorCodes } from "./errors";
 
-type SessionData = typeof auth.$Infer.Session;
-type AuthenticationData =
+export type SessionData = typeof auth.$Infer.Session;
+export type AuthenticationData =
   | {
       isAuthenticated: false;
       sessionData: null;
@@ -38,7 +38,7 @@ const getAuthenticationDataMw = createMiddleware({
   });
 });
 
-const getSessionDataMw = createMiddleware({ type: "function" })
+export const getSessionDataMw = createMiddleware({ type: "function" })
   .middleware([getAuthenticationDataMw])
   .server(
     async ({
@@ -63,7 +63,7 @@ const getAuthenticationDataFn = createServerFn()
       authenticationData,
   );
 
-const authenticationDataQueryOptions = queryOptions({
+export const authenticationDataQueryOptions = queryOptions({
   queryKey: ["authenticationData"],
   queryFn: getAuthenticationDataFn,
   retry: false,
@@ -71,15 +71,7 @@ const authenticationDataQueryOptions = queryOptions({
   gcTime: Infinity,
 });
 
-class SessionDataService extends Context.Tag("SessionDataService")<
+export class SessionDataService extends Context.Tag("SessionDataService")<
   SessionDataService,
   SessionData
 >() {}
-
-export {
-  type SessionData,
-  type AuthenticationData,
-  getSessionDataMw,
-  authenticationDataQueryOptions as authenticationQueryOptions,
-  SessionDataService,
-};

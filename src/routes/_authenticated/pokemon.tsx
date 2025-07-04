@@ -21,7 +21,7 @@ function Pokemon() {
   const [pokemonId, setPokemonId] = useState(1);
   const router = useRouter();
   // const doStuff = useMutation({
-  //   mutationKey: [authenticationQueryOptions.queryKey],
+  //   mutationKey: [authenticationDataQueryOptions.queryKey],
   //   mutationFn: () => doStuffFn(),
   // });
   return (

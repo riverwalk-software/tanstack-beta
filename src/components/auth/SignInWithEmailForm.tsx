@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { authClient } from "@/lib/auth-client";
-import { authenticationQueryOptions } from "@/utils/authentication";
+import { authenticationDataQueryOptions } from "@/utils/authentication";
 import {
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
@@ -59,7 +59,7 @@ const useSignInWithEmail = () => {
       authClient.signIn.email(formData),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: authenticationQueryOptions.queryKey,
+        queryKey: authenticationDataQueryOptions.queryKey,
       });
       await router.invalidate({ sync: true });
     },
