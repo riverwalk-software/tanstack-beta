@@ -74,6 +74,7 @@ interface FailedEnvironmentValidation {
 
 interface SuccessfulEnvironmentValidation {
   isError: false;
+  errors: null;
 }
 
 export type EnvironmentValidation =
@@ -106,6 +107,7 @@ const validateEnvironmentFn = createServerFn()
       if (variables.success && secrets.success)
         return {
           isError: false,
+          errors: null,
         };
       else
         return {
