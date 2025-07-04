@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
 import { authenticationQueryOptions } from "@/utils/authentication";
 import { Button } from "../ui/button";
@@ -15,7 +15,7 @@ export function SignOutButton() {
 
 const useSignOut = () => {
   const queryClient = useQueryClient();
-  const router = useRouter();
+  const navigate = useNavigate();
   const { mutate: signOut, isPending } = useMutation({
     mutationKey: ["signOut"],
     mutationFn: () => authClient.signOut(),
@@ -23,7 +23,7 @@ const useSignOut = () => {
       await queryClient.invalidateQueries({
         queryKey: authenticationQueryOptions.queryKey,
       });
-      await router.navigate({ to: "/signin" });
+      await navigate({ to: "/signin" });
     },
   });
   return { signOut, isPending };
