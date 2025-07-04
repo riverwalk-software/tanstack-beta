@@ -9,10 +9,9 @@ export const SITE_DOMAIN = "tanstack-beta.andrei-023.workers.dev";
 export const SITE_URL = `https://${SITE_DOMAIN}`;
 // export const SNAPGEN_PATH = "/api/snapgen";
 export const TEST_USER = {
-  name: "Test User",
-  email: "test@email.com",
+  email: "andrei@riverwalk.dev",
   password: "passwordpassword",
 };
 export const HOME_ROUTE: RouteType = "/";
 export const AUTH_CALLBACK_ROUTE: RouteType = "/signin";
-export type RouteType = FileRouteTypes["fullPaths"];
+type RouteType = FileRouteTypes["fullPaths"];
