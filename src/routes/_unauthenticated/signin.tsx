@@ -22,8 +22,10 @@ function SignIn() {
   FailedSignInEffect();
   return (
     <CenteredContainer>
-      <SignInWithEmailForm />
-      <SignInWithGoogleButton />
+      <div className="flex flex-col items-center gap-8">
+        <SignInWithEmailForm />
+        <SignInWithGoogleButton />
+      </div>
     </CenteredContainer>
   );
 }
