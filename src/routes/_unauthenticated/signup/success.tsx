@@ -37,8 +37,7 @@ function RouteComponent() {
   const { count, isPending, restartCountdown } =
     useResendVerificationEmailCountdown();
   return (
-    <>
-      <p>{count}</p>
+    <div className="flex flex-col items-center justify-center gap-4">
       <Button
         disabled={isPending}
         onClick={() => {
@@ -46,9 +45,11 @@ function RouteComponent() {
           restartCountdown();
         }}
       >
-        Verify Email
+        {isPending
+          ? `Time before another verification email can be sent: ${count}`
+          : "Resend Verification Email"}
       </Button>
-    </>
+    </div>
   );
 }
 
