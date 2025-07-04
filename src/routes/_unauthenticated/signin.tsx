@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import ms from "ms";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { match } from "ts-pattern";
@@ -7,6 +6,7 @@ import { z } from "zod";
 import { SignInWithEmailForm } from "@/components/auth/SignInWithEmailForm";
 import { SignInWithGoogleButton } from "@/components/auth/SignInWithGoogleButton";
 import { CenteredContainer } from "@/containers/CenteredContainer";
+import { resendVerificationEmailDurationMs } from "./signup/success";
 
 const SearchParamsSchema = z
   .object({
@@ -38,12 +38,8 @@ const FailedSignInEffect = () => {
       .with(undefined, () => {})
       .with("invalid_token", () =>
         toast.error("Email verification link expired", {
-          // action: {
-          //   label: "Resend verification email",
-          //   onClick: () => resendVerificationEmail(),
-          // },
-          description: "Please try verifying your email again.",
-          duration: ms("30s"),
+          description: "Please try logging in to create a new link.",
+          duration: resendVerificationEmailDurationMs,
         }),
       )
       .otherwise(() =>
