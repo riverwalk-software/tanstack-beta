@@ -122,7 +122,7 @@ export const getEnvironmentMw = createMiddleware({ type: "function" }).server(
   },
 );
 
-export type Environment = {
+type Environment = {
   variables: VariablesEnvironment;
   secrets: SecretsEnvironment;
 };
