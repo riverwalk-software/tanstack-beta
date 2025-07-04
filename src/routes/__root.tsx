@@ -163,7 +163,6 @@ function Navbar() {
           <SignOutButton />
         ) : (
           <>
-            <MagicLinkLink />
             <SigninLink />
             <SignupLink />
           </>
@@ -184,20 +183,6 @@ function HomeLink() {
       activeOptions={{ exact: true }}
     >
       Home
-    </Link>
-  );
-}
-
-function MagicLinkLink() {
-  return (
-    <Link
-      to="/magic-link"
-      activeProps={{
-        className: "font-bold",
-      }}
-      activeOptions={{ exact: true }}
-    >
-      Magic Link
     </Link>
   );
 }
