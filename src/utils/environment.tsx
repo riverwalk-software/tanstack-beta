@@ -127,10 +127,10 @@ type Environment = {
   secrets: SecretsEnvironment;
 };
 
-export const environment = {
-  variables: process.env,
-  secrets: process.env,
-} as Environment;
+export const environment: Environment = {
+  variables: process.env as VariablesEnvironment,
+  secrets: process.env as SecretsEnvironment,
+};
 
 export class EnvironmentService extends Context.Tag("EnvironmentService")<
   EnvironmentService,
