@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SignUpWithEmailForm } from "@/components/auth/SignUpWithEmailForm";
 import { CenteredContainer } from "@/containers/CenteredContainer";
 
-export const Route = createFileRoute("/_unauthenticated/signup")({
+export const Route = createFileRoute("/_unauthenticated/signup/")({
   component: SignUp,
 });
 
