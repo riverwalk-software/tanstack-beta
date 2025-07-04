@@ -15,4 +15,4 @@ export const TEST_USER = {
 };
 export const HOME_ROUTE: RouteType = "/";
 export const AUTH_CALLBACK_ROUTE: RouteType = "/signin";
-type RouteType = FileRouteTypes["fullPaths"];
+export type RouteType = FileRouteTypes["fullPaths"];
