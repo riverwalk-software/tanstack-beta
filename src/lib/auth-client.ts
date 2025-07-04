@@ -6,9 +6,8 @@ export const authClient = createAuthClient({
   fetchOptions: {
     retry: 0,
     throw: true,
-    onError: (error) => {
-      const code = error.error.code as AuthErrorCode;
-      match(code)
+    onError: ({ error }) => {
+      match(error.code as BetterAuthErrorCode)
         .with("EMAIL_NOT_VERIFIED", () =>
           alert(`Email not verified.
 
@@ -17,9 +16,9 @@ Please check your inbox and click the verification link.
 
 If you don't see the email, check your spam folder.`),
         )
-        .otherwise(() => toast.error(error.error.message));
+        .otherwise(() => toast.error(error.message));
     },
   },
 });
 
-type AuthErrorCode = keyof typeof authClient.$ERROR_CODES;
+type BetterAuthErrorCode = keyof typeof authClient.$ERROR_CODES;
