@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import z from "zod";
 import { Button } from "@/components/ui/button";
@@ -20,15 +20,15 @@ import { authenticationQueryOptions } from "@/utils/authentication";
 import {
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
-  type RouteType,
+  TEST_USER,
 } from "@/utils/constants";
 
 export function SignInWithEmailForm() {
   const form = useForm<SignInForm>({
     resolver: zodResolver(SignInFormSchema),
     defaultValues: {
-      email: "andrei@riverwalk.dev",
-      password: "passwordpassword",
+      email: TEST_USER.email,
+      password: TEST_USER.password,
       rememberMe: false,
     },
   });
@@ -96,7 +96,6 @@ function FormEmail({ form }: { form: UseFormReturn<SignInForm> }) {
   );
 }
 
-const forgotPasswordHref: RouteType = "/forgot-password";
 function FormPassword({ form }: { form: UseFormReturn<SignInForm> }) {
   return (
     <FormField
@@ -106,13 +105,12 @@ function FormPassword({ form }: { form: UseFormReturn<SignInForm> }) {
         <FormItem>
           <div className="flex items-center justify-between">
             <FormLabel>Password</FormLabel>
-            <a
-              href={forgotPasswordHref}
+            <Link
               className="text-muted-foreground text-sm underline"
-              tabIndex={0}
+              to="/forgot-password"
             >
               Forgot password?
-            </a>
+            </Link>
           </div>
           <FormControl>
             <Input type="password" placeholder="Password" {...field} />
