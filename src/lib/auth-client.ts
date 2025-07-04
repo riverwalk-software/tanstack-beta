@@ -8,6 +8,7 @@ export const authClient = createAuthClient({
     throw: true,
     onError: (error) => {
       const code = error.error.code as AuthErrorCode;
+      // resendVerificationEmail()
       match(code)
         .with("EMAIL_NOT_VERIFIED", () =>
           alert(`Email not verified.
