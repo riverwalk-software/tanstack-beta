@@ -3,9 +3,10 @@ import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
 import { Context } from "effect";
 import { auth } from "@/lib/auth";
+import { ServerFnErrorCodes } from "./errors";
 
-export type SessionData = typeof auth.$Infer.Session;
-export type AuthenticationData =
+type SessionData = typeof auth.$Infer.Session;
+type AuthenticationData =
   | {
       isAuthenticated: false;
       sessionData: null;
@@ -15,34 +16,27 @@ export type AuthenticationData =
       sessionData: SessionData;
     };
 
-const getAuthenticationDataMw = createMiddleware({ type: "function" }).server(
-  async ({ next }) => {
-    const { headers } = getWebRequest();
-    const sessionData = await auth.api.getSession({ headers });
-    const authenticationData =
-      sessionData === null
-        ? {
-            isAuthenticated: false as const,
-            sessionData: null,
-          }
-        : {
-            isAuthenticated: true as const,
-            sessionData,
-          };
-    return next({
-      context: {
-        authenticationData,
-      },
-    });
-  },
-);
-
-const getAuthenticationDataFn = createServerFn()
-  .middleware([getAuthenticationDataMw])
-  .handler(
-    async ({ context: { authenticationData } }): Promise<AuthenticationData> =>
+const getAuthenticationDataMw = createMiddleware({
+  type: "function",
+}).server(async ({ next }) => {
+  const { headers } = getWebRequest();
+  const sessionData = await auth.api.getSession({ headers });
+  const authenticationData =
+    sessionData === null
+      ? {
+          isAuthenticated: false as const,
+          sessionData,
+        }
+      : {
+          isAuthenticated: true as const,
+          sessionData,
+        };
+  return next<{ authenticationData: AuthenticationData }>({
+    context: {
       authenticationData,
-  );
+    },
+  });
+});
 
 const getSessionDataMw = createMiddleware({ type: "function" })
   .middleware([getAuthenticationDataMw])
@@ -53,7 +47,7 @@ const getSessionDataMw = createMiddleware({ type: "function" })
         authenticationData: { isAuthenticated, sessionData },
       },
     }) => {
-      if (!isAuthenticated) throw new Error("unauthorized");
+      if (!isAuthenticated) throw new Error(ServerFnErrorCodes.UNAUTHENTICATED);
       return next({
         context: {
           sessionData,
@@ -62,19 +56,30 @@ const getSessionDataMw = createMiddleware({ type: "function" })
     },
   );
 
-export const getSessionDataFn = createServerFn()
-  .middleware([getSessionDataMw])
-  .handler(({ context: { sessionData } }) => sessionData);
+const getAuthenticationDataFn = createServerFn()
+  .middleware([getAuthenticationDataMw])
+  .handler(
+    async ({ context: { authenticationData } }): Promise<AuthenticationData> =>
+      authenticationData,
+  );
 
-export const authenticationQueryOptions = queryOptions({
-  queryKey: ["authentication"],
+const authenticationDataQueryOptions = queryOptions({
+  queryKey: ["authenticationData"],
   queryFn: getAuthenticationDataFn,
   retry: false,
   staleTime: Infinity,
   gcTime: Infinity,
 });
 
-export class SessionDataService extends Context.Tag("SessionDataService")<
+class SessionDataService extends Context.Tag("SessionDataService")<
   SessionDataService,
   SessionData
 >() {}
+
+export {
+  type SessionData,
+  type AuthenticationData,
+  getSessionDataMw,
+  authenticationDataQueryOptions as authenticationQueryOptions,
+  SessionDataService,
+};
