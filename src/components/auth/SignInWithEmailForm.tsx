@@ -20,6 +20,7 @@ import { authenticationQueryOptions } from "@/utils/authentication";
 import {
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
+  type RouteType,
 } from "@/utils/constants";
 
 export function SignInWithEmailForm() {
@@ -95,6 +96,7 @@ function FormEmail({ form }: { form: UseFormReturn<SignInForm> }) {
   );
 }
 
+const forgotPasswordHref: RouteType = "/forgot-password";
 function FormPassword({ form }: { form: UseFormReturn<SignInForm> }) {
   return (
     <FormField
@@ -102,7 +104,16 @@ function FormPassword({ form }: { form: UseFormReturn<SignInForm> }) {
       name="password"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Password</FormLabel>
+          <div className="flex items-center justify-between">
+            <FormLabel>Password</FormLabel>
+            <a
+              href={forgotPasswordHref}
+              className="text-muted-foreground text-sm underline"
+              tabIndex={0}
+            >
+              Forgot password?
+            </a>
+          </div>
           <FormControl>
             <Input type="password" placeholder="Password" {...field} />
           </FormControl>
