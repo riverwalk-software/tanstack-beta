@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { toast } from "sonner";
 import z from "zod";
 import { verifyEmailQueryKey } from "@/components/auth/SignUpWithEmailForm";
@@ -71,12 +70,10 @@ export const useResendVerificationEmail = ({ email }: { email: string }) => {
 };
 
 function useResendVerificationEmailCountdown() {
-  const { count, startCountdown, restartCountdown, isFinished } = useCountdown({
+  const { count, restartCountdown, isFinished } = useCountdown({
     countStart: resendVerificationEmailDurationS,
+    startOnInit: true,
   });
-  useEffect(() => {
-    startCountdown();
-  }, [startCountdown]);
   const isPending = !isFinished;
   return { count, restartCountdown, isPending };
 }

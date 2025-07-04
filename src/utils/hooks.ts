@@ -1,14 +1,26 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCountdown as useHooksCountdown } from "usehooks-ts";
 import { s } from "./time";
 
 type CountDownStatus = "idle" | "running" | "stopped";
 const countStopDurationS = s("0s");
-export const useCountdown = ({ countStart }: { countStart: number }) => {
-  const [status, setStatus] = useState<CountDownStatus>("idle");
-  const isIdle = status === "idle";
-  const isRunning = status === "running";
-  const isStopped = status === "stopped";
+export const useCountdown = ({
+  countStart,
+  startOnInit,
+}: {
+  countStart: number;
+  startOnInit?: boolean;
+}) => {
+  const initialStatus: CountDownStatus = startOnInit ? "running" : "idle";
+  const [status, setStatus] = useState<CountDownStatus>(initialStatus);
+  const statusPredicates = useMemo(
+    () => ({
+      isIdle: status === "idle",
+      isRunning: status === "running",
+      isStopped: status === "stopped",
+    }),
+    [status],
+  );
 
   const [
     count,
@@ -35,15 +47,21 @@ export const useCountdown = ({ countStart }: { countStart: number }) => {
     reset();
     start();
   };
+
+  useEffect(() => {
+    if (startOnInit) {
+      setStatus("running");
+      start();
+    }
+  }, [startOnInit, start]);
+
   return {
     count,
     startCountdown,
     resetCountdown,
     restartCountdown,
     stopCountdown,
-    isRunning,
     isFinished,
-    isIdle,
-    isStopped,
+    ...statusPredicates,
   };
 };
