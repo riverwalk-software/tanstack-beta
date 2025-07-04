@@ -14,6 +14,7 @@ import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 const { DB, SESSION_STORE } = getCloudflareBindings();
 const resend = new Resend(environment.secrets.RESEND_API_KEY);
+const emailSender = "info@riverwalk.dev";
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
@@ -24,7 +25,7 @@ export const auth = betterAuth({
     maxPasswordLength: MAXIMUM_PASSWORD_LENGTH,
     sendResetPassword: async ({ user, url, token }, request) => {
       await resend.emails.send({
-        from: "info@riverwalk.dev",
+        from: emailSender,
         to: user.email,
         subject: "Reset your password",
         react: ResetPasswordEmail({ url }),
@@ -36,7 +37,7 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url, token }, request) => {
       await resend.emails.send({
-        from: "info@riverwalk.dev",
+        from: emailSender,
         to: user.email,
         subject: "Verify your email address",
         react: VerifyEmailEmail({ url }),
