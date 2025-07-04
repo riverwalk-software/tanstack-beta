@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { youtubeAuthorizationQueryOptions } from "@/components/auth/AuthorizeYoutubeButton";
 import { YoutubeManager } from "@/components/auth/YoutubeManager";
 import { CenteredContainer } from "@/containers/CenteredContainer";
+import { youtubeAuthorizationQueryOptions } from "@/utils/oauth/youtube";
 
 export const Route = createFileRoute("/_authenticated/")({
   loader: async ({ context: { queryClient } }) => {
