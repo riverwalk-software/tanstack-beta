@@ -9,7 +9,7 @@ export function AuthorizeYoutubeButton() {
   const { authorizeYoutube, isPending } = useAuthorizeYoutube();
   return (
     <Button disabled={isPending} onClick={() => authorizeYoutube()}>
-      Manage YouTube
+      Authorize YouTube
     </Button>
   );
 }
