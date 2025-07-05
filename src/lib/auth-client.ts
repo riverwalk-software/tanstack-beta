@@ -20,8 +20,8 @@ export const isBetterAuthErrorContext = (
     errorContext !== null &&
     typeof errorContext === "object" &&
     "error" in errorContext &&
-    typeof (errorContext as any).error === "object" &&
-    (errorContext as any).error !== null &&
-    "code" in (errorContext as any).error
+    typeof errorContext.error === "object" &&
+    errorContext.error !== null &&
+    "code" in errorContext.error
   );
 };
