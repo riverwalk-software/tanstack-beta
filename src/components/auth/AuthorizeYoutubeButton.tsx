@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
 import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
 import { youtubeScopes } from "@/utils/oauth/google";
@@ -10,23 +6,13 @@ import { youtubeAuthorizationQueryOptions } from "@/utils/oauth/youtube";
 import { Button } from "../ui/button";
 
 export function AuthorizeYoutubeButton() {
-  const { isYoutubeAuthorized } = useGetYoutubeAuthorization();
   const { authorizeYoutube, isPending } = useAuthorizeYoutube();
-  return isYoutubeAuthorized ? (
-    <p>Authorized</p>
-  ) : (
+  return (
     <Button disabled={isPending} onClick={() => authorizeYoutube()}>
       Manage YouTube
     </Button>
   );
 }
-
-const useGetYoutubeAuthorization = () => {
-  const { data: isYoutubeAuthorized } = useSuspenseQuery(
-    youtubeAuthorizationQueryOptions,
-  );
-  return { isYoutubeAuthorized };
-};
 
 const useAuthorizeYoutube = () => {
   const queryClient = useQueryClient();
