@@ -51,19 +51,25 @@ export function EnvironmentError({
   );
 }
 
-const renderMissingSection = (title: string, items: string[]) =>
-  items.length > 0 && (
-    <>
-      <p className="mb-2 text-gray-700 dark:text-gray-300">{title}:</p>
-      <ul className="mb-4 list-inside list-disc space-y-1">
-        {items.map((envVar) => (
-          <li key={envVar} className="font-mono text-red-600 dark:text-red-400">
-            {envVar}
-          </li>
-        ))}
-      </ul>
-    </>
+function renderMissingSection(title: string, items: string[]) {
+  return (
+    items.length > 0 && (
+      <>
+        <p className="mb-2 text-gray-700 dark:text-gray-300">{title}:</p>
+        <ul className="mb-4 list-inside list-disc space-y-1">
+          {items.map((envVar) => (
+            <li
+              key={envVar}
+              className="font-mono text-red-600 dark:text-red-400"
+            >
+              {envVar}
+            </li>
+          ))}
+        </ul>
+      </>
+    )
   );
+}
 
 interface FailedEnvironmentValidation {
   isError: true;
