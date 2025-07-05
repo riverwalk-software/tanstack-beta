@@ -81,7 +81,7 @@ export type EnvironmentValidation =
   | FailedEnvironmentValidation
   | SuccessfulEnvironmentValidation;
 
-const validateEnvironmentFn = createServerFn().handler(
+const getEnvironmentValidationFn = createServerFn().handler(
   async (): Promise<EnvironmentValidation> => {
     const variables = VariablesEnvironmentSchema.safeParse(process.env);
     const secrets = SecretsEnvironmentSchema.safeParse(process.env);
@@ -107,7 +107,7 @@ const validateEnvironmentFn = createServerFn().handler(
 
 export const environmentValidationQueryOptions = queryOptions({
   queryKey: ["environmentValidation"],
-  queryFn: validateEnvironmentFn,
+  queryFn: getEnvironmentValidationFn,
   retry: false,
   staleTime: Infinity,
   gcTime: Infinity,
