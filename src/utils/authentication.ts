@@ -3,7 +3,7 @@ import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
 import { Context } from "effect";
 import { auth } from "@/lib/auth";
-import { ServerFnErrorCodes } from "./errors";
+import { ServerFnError } from "./errors";
 
 export type SessionData = typeof auth.$Infer.Session;
 export type AuthenticationData =
@@ -47,7 +47,7 @@ export const getSessionDataMw = createMiddleware({ type: "function" })
         authenticationData: { isAuthenticated, sessionData },
       },
     }) => {
-      if (!isAuthenticated) throw new Error(ServerFnErrorCodes.UNAUTHENTICATED);
+      if (!isAuthenticated) throw new ServerFnError("UNAUTHENTICATED");
       return next<{ sessionData: SessionData }>({
         context: {
           sessionData,

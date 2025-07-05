@@ -3,4 +3,15 @@ export enum ServerFnErrorCodes {
   YOUTUBE_UNAUTHORIZED = "YOUTUBE_UNAUTHORIZED",
 }
 
-export type ServerFnErrorCode = keyof typeof ServerFnErrorCodes;
+type ServerFnErrorCode = keyof typeof ServerFnErrorCodes;
+
+export class ServerFnError extends Error {
+  code: ServerFnErrorCode;
+
+  constructor(code: ServerFnErrorCode, message?: string) {
+    super(message || code);
+    this.name = "ServerFnError";
+    this.code = code;
+    Object.setPrototypeOf(this, ServerFnError.prototype);
+  }
+}

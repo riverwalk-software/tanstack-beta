@@ -1,14 +1,14 @@
-import { type DefaultError, QueryClient } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { routerWithQueryClient } from "@tanstack/react-router-with-query";
 import { toast } from "sonner";
 import { match } from "ts-pattern";
 import { DefaultCatchBoundary } from "./components/DefaultCatchBoundary";
 import { NotFound } from "./components/NotFound";
-import { authClient } from "./lib/auth-client";
+import { authClient, isBetterAuthErrorContext } from "./lib/auth-client";
 import { routeTree } from "./routeTree.gen";
 import { authenticationDataQueryOptions } from "./utils/authentication";
-import { type ServerFnErrorCode, ServerFnErrorCodes } from "./utils/errors";
+import { ServerFnError } from "./utils/errors";
 
 export function createRouter() {
   const queryClient = new QueryClient({
@@ -16,8 +16,8 @@ export function createRouter() {
       queries: {
         retry: (failureCount, error) => {
           if (failureCount >= 3) return false;
-          return error.message in ServerFnErrorCodes
-            ? match(error.message as ServerFnErrorCode)
+          return error instanceof ServerFnError
+            ? match(error.code)
                 .with("UNAUTHENTICATED", () => false)
                 .with("YOUTUBE_UNAUTHORIZED", () => false)
                 .exhaustive()
@@ -36,9 +36,21 @@ export function createRouter() {
     defaultNotFoundComponent: () => <NotFound />,
   });
 
-  const onError = async (error: DefaultError) => {
-    if (error.message in ServerFnErrorCodes)
-      match(error.message as ServerFnErrorCode)
+  const onError = async (unknownError: unknown) => {
+    if (isBetterAuthErrorContext(unknownError)) {
+      const { error } = unknownError;
+      match(error.code)
+        .with("EMAIL_NOT_VERIFIED", () =>
+          alert(`Email not verified.
+
+      An email has been sent to verify your account.
+      Please check your inbox and click the verification link.
+
+      If you don't see the email, check your spam folder.`),
+        )
+        .otherwise(() => toast.error(error.message));
+    } else if (unknownError instanceof ServerFnError)
+      match(unknownError.code)
         .with("UNAUTHENTICATED", async () => {
           toast.error("You are no longer signed in.", {
             description: "Redirecting to sign in page...",
@@ -60,7 +72,7 @@ export function createRouter() {
         })
         .exhaustive();
     else {
-      console.error("Unexpected error", error);
+      console.error("Unexpected error", unknownError);
       toast.error("Something went wrong.", {
         description: "Please try again later.",
       });
