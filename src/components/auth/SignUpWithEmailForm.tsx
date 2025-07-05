@@ -100,7 +100,7 @@ function FormFirstName({ form }: { form: UseFormReturn<SignUpForm> }) {
         <FormItem>
           <FormLabel>First Name</FormLabel>
           <FormControl>
-            <Input type="text" placeholder="First Name" {...field} />
+            <Input type="text" placeholder="First" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -118,7 +118,7 @@ function FormLastName({ form }: { form: UseFormReturn<SignUpForm> }) {
         <FormItem>
           <FormLabel>Last Name</FormLabel>
           <FormControl>
-            <Input type="text" placeholder="Last Name" {...field} />
+            <Input type="text" placeholder="Last" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -136,7 +136,7 @@ function FormEmail({ form }: { form: UseFormReturn<SignUpForm> }) {
         <FormItem>
           <FormLabel>Email</FormLabel>
           <FormControl>
-            <Input type="email" placeholder="you@example.com" {...field} />
+            <Input type="email" placeholder="Email" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

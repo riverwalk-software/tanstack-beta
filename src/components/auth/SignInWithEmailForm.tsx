@@ -87,7 +87,7 @@ function FormEmail({ form }: { form: UseFormReturn<SignInForm> }) {
         <FormItem>
           <FormLabel>Email</FormLabel>
           <FormControl>
-            <Input type="email" placeholder="you@example.com" {...field} />
+            <Input type="email" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -113,7 +113,7 @@ function FormPassword({ form }: { form: UseFormReturn<SignInForm> }) {
             </Link>
           </div>
           <FormControl>
-            <Input type="password" placeholder="Password" {...field} />
+            <Input type="password" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
