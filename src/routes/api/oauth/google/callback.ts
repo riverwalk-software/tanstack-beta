@@ -306,7 +306,7 @@ const YoutubeChannelsListPartSchema = z.enum([
   "topicDetails",
 ]);
 
-const YoutubeChannelsListRequestSchema = z
+export const YoutubeChannelsListRequestSchema = z
   .object({
     part: z
       .array(YoutubeChannelsListPartSchema)
@@ -326,7 +326,7 @@ const YoutubeChannelsListRequestSchema = z
     mine: "true",
   }));
 
-const YoutubeChannelsListResponseSchema = z
+export const YoutubeChannelsListResponseSchema = z
   .object({
     items: z
       .array(
@@ -334,11 +334,13 @@ const YoutubeChannelsListResponseSchema = z
           id: z.string().nonempty(),
         }),
       )
-      .optional(),
+      .default([]),
   })
-  .transform((schema) => ({
-    youtubeChannels: schema.items ?? [],
-  }));
+  .transform(({ items }) => items);
+
+export type YoutubeChannelsData = z.infer<
+  typeof YoutubeChannelsListResponseSchema
+>;
 
 export interface UserValueSchema {
   google?: {
