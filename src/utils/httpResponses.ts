@@ -209,7 +209,7 @@ export const upstream = <T extends ZodTypeAny>({
   schema,
   urlParts,
 }: {
-  body?: unknown;
+  body?: Record<string, unknown>;
   headers?: KyHeadersInit;
   method: "delete" | "get" | "head" | "patch" | "post" | "put";
   schema: T;
@@ -241,6 +241,7 @@ export const upstream = <T extends ZodTypeAny>({
         });
       }
       if (is5xx(status)) return new BAD_GATEWAY();
+      if (is4xx(status)) return new INTERNAL_SERVER_ERROR();
       throw error;
     },
   });
