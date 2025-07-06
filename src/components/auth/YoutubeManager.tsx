@@ -1,15 +1,17 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { youtubeAuthorizationQueryOptions } from "@/utils/oauth/youtube";
+import { youtubeAuthorizationDataQueryOptions } from "@/utils/oauth/youtube";
 import { AuthorizeYoutubeButton } from "./AuthorizeYoutubeButton";
 
 export function YoutubeManager() {
-  const { isYoutubeAuthorized } = useGetYoutubeAuthorization();
-  return isYoutubeAuthorized ? <p>Authorized</p> : <AuthorizeYoutubeButton />;
+  const {
+    youtubeAuthorizationData: { isAuthorized, channelsData },
+  } = useYoutubeAuthorization();
+  return isAuthorized ? <p>Authorized</p> : <AuthorizeYoutubeButton />;
 }
 
-const useGetYoutubeAuthorization = () => {
-  const { data: isYoutubeAuthorized } = useSuspenseQuery(
-    youtubeAuthorizationQueryOptions,
+const useYoutubeAuthorization = () => {
+  const { data: youtubeAuthorizationData } = useSuspenseQuery(
+    youtubeAuthorizationDataQueryOptions,
   );
-  return { isYoutubeAuthorized };
+  return { youtubeAuthorizationData };
 };
