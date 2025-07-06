@@ -75,3 +75,38 @@ export class SessionDataService extends Context.Tag("SessionDataService")<
   SessionDataService,
   SessionData
 >() {}
+
+export class AccessTokenDataService extends Context.Tag(
+  "AccessTokenDataService",
+)<AccessTokenDataService, AccessTokenData>() {}
+export interface AccessTokenData {
+  accessToken: string | undefined;
+  acceptedScopes: string[];
+}
+
+export const getAccessTokenDataMw = createMiddleware({ type: "function" })
+  .middleware([getSessionDataMw])
+  .server(
+    async ({
+      next,
+      context: {
+        sessionData: { user },
+      },
+    }) => {
+      const { accessToken, scopes: acceptedScopes } =
+        await auth.api.getAccessToken({
+          body: {
+            providerId: "google",
+            userId: user.id,
+          },
+        });
+      return next<{ accessTokenData: AccessTokenData }>({
+        context: {
+          accessTokenData: {
+            accessToken,
+            acceptedScopes,
+          },
+        },
+      });
+    },
+  );
