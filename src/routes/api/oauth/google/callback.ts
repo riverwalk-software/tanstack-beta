@@ -308,11 +308,6 @@ const YoutubeChannelsListPartSchema = z.enum([
 
 export const YoutubeChannelsListRequestSchema = z
   .object({
-    part: z
-      .array(YoutubeChannelsListPartSchema)
-      .nonempty()
-      .transform((parts) => new Set(parts))
-      .transform((parts) => Array.from(parts).join(",")),
     maxResults: z
       .number()
       .int()
@@ -324,26 +319,37 @@ export const YoutubeChannelsListRequestSchema = z
   .transform((schema) => ({
     ...schema,
     mine: "true",
+    part: ["id", "snippet", "contentDetails"] as z.infer<
+      typeof YoutubeChannelsListPartSchema
+    >[],
+  }))
+  .transform((schema) => ({
+    ...schema,
+    part: schema.part.join(","),
   }));
+
+const YoutubeChannelSchema = z.object({
+  id: z.string().nonempty(),
+  snippet: z.object({
+    title: z.string().nonempty(),
+  }),
+  contentDetails: z.object({
+    relatedPlaylists: z.object({
+      likes: z.string(),
+      favorites: z.string(),
+      uploads: z.string(),
+    }),
+  }),
+});
 
 export const YoutubeChannelsListResponseSchema = z
   .object({
-    items: z
-      .array(
-        z.object({
-          id: z.string().nonempty(),
-          snippet: z.object({
-            title: z.string().nonempty(),
-          }),
-        }),
-      )
-      .default([]),
+    items: z.array(YoutubeChannelSchema).default([]),
   })
   .transform(({ items }) => items);
 
-export type YoutubeChannelsData = z.infer<
-  typeof YoutubeChannelsListResponseSchema
->;
+export type YoutubeChannel = z.infer<typeof YoutubeChannelSchema>;
+export type YoutubeChannels = YoutubeChannel[];
 
 export interface UserValueSchema {
   google?: {
