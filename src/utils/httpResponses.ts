@@ -1,4 +1,4 @@
-import { Data, Effect, pipe, Schedule } from "effect";
+import { Data, Duration, Effect, pipe, Schedule } from "effect";
 import { HTTPError } from "ky";
 import ms from "ms";
 import type { KyHeadersInit } from "node_modules/ky/distribution/types/options";
@@ -49,6 +49,9 @@ export const buildUrl = ({
 //     (effect) => handleErrors(effect),
 //     Effect.runPromise,
 //   );
+
+// export const runPromiseNoError = <A>(effect: Effect.Effect<A, never, never>) =>
+//   Effect.runPromise(effect);
 
 export const effectToRedirect = <A>({
   request,
@@ -154,8 +157,13 @@ export const OauthSearchParamsSchema = z
     oauthSucceeded: schema.oauthSucceeded === "true",
   }));
 
-const DEFAULT_RETRY_AFTER = s("15s");
-const RetryAfterSchema = z.coerce.number().int().positive();
+const MAXIMUM_RETRY_AFTER = s("15s");
+const RetryAfterSchema = z.coerce
+  .number()
+  .int()
+  .positive()
+  .max(MAXIMUM_RETRY_AFTER)
+  .default(MAXIMUM_RETRY_AFTER);
 const ContentTypeSchema = z.enum([
   "application/json",
   "application/x-www-form-urlencoded",
@@ -219,7 +227,7 @@ export const upstream = <T extends ZodTypeAny>({
     },
     catch: (error) => {
       console.error(error);
-      if (!(error instanceof HTTPError)) throw new Error("Unknown Error");
+      if (!(error instanceof HTTPError)) throw error;
       const {
         response: { headers, status },
       } = error;
@@ -228,37 +236,33 @@ export const upstream = <T extends ZodTypeAny>({
           headers.get("retry-after"),
         );
         return new SERVICE_UNAVAILABLE({
-          retryAfter: retryAfter?.toString(),
+          retryAfter,
         });
       }
       if (is5xx(status)) return new BAD_GATEWAY();
-      throw new Error("Client Error");
+      throw error;
     },
   });
   return Effect.catchTags(task, {
-    BAD_GATEWAY: (_) =>
+    BAD_GATEWAY: () =>
       Effect.retry(task, {
         while: (error) => error instanceof BAD_GATEWAY,
         schedule: Schedule.addDelay(Schedule.recurs(2), (n) =>
           ms(`${100 * 2 ** n}ms`),
         ),
       }),
-    SERVICE_UNAVAILABLE: (error) =>
+    SERVICE_UNAVAILABLE: ({ retryAfter }) =>
       Effect.gen(function* () {
-        const defaultRetryAfter = yield* Effect.succeed(DEFAULT_RETRY_AFTER);
-        const ExtendedRetryAfterSchema = RetryAfterSchema.catch(
-          defaultRetryAfter,
-        )
-          .refine((retryAfter) => retryAfter <= defaultRetryAfter, {
-            message: "'retry-after' header is too long",
-          })
-          .transform((retryAfter) => ms(`${retryAfter}s`));
-        const retryAfter = yield* Effect.sync(() =>
-          ExtendedRetryAfterSchema.parse(error.retryAfter),
-        );
-        yield* Effect.sleep(retryAfter);
+        const times = yield* Effect.if(retryAfter !== undefined, {
+          onFalse: () => Effect.succeed(0),
+          onTrue: () =>
+            Effect.gen(function* () {
+              yield* Effect.sleep(Duration.seconds(retryAfter!));
+              return yield* Effect.succeed(1);
+            }),
+        });
         return yield* Effect.retry(task, {
-          times: 1,
+          times,
         });
       }),
   });
@@ -276,7 +280,7 @@ export type SuccessResponse<T> = {
 export type ErrorResponse = {
   code: number;
   message: string;
-  retryAfter?: string;
+  retryAfter?: number;
 };
 
 export type HttpResponse<T> = SuccessResponse<T> | ErrorResponse;
@@ -492,7 +496,7 @@ export class UNPROCESSABLE_CONTENT extends Data.TaggedError(
 export class TOO_MANY_REQUESTS extends Data.TaggedError(
   "TOO_MANY_REQUESTS",
 )<ErrorResponse> {
-  constructor(args?: { message?: string; retryAfter?: string }) {
+  constructor(args?: { message?: string; retryAfter?: number }) {
     super({
       code: 429,
       message:
@@ -554,7 +558,7 @@ export class BAD_GATEWAY extends Data.TaggedError(
 export class SERVICE_UNAVAILABLE extends Data.TaggedError(
   "SERVICE_UNAVAILABLE",
 )<ErrorResponse> {
-  constructor(args?: { message?: string; retryAfter?: string }) {
+  constructor(args?: { message?: string; retryAfter?: number }) {
     super({
       code: 503,
       message: args?.message ?? "The server is temporarily unavailable.",
