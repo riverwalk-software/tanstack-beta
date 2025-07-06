@@ -70,9 +70,22 @@ export function createRouter() {
         .exhaustive();
     else {
       console.error("Unexpected error", unknownError);
-      toast.error("Something went wrong.", {
-        description: "Please try again later.",
-      });
+      toast.error(
+        <div>
+          Something went wrong.{" "}
+          {/* <a
+            href="https://emilkowal.ski/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            report this issue
+          </a> */}
+        </div>,
+        {
+          description: "Please try again later.",
+        },
+      );
     }
   };
 
