@@ -11,12 +11,7 @@ import {
   getAccessTokenDataMw,
 } from "../authentication";
 import { ServerFnError } from "../errors";
-import {
-  buildUrl,
-  RequestHeadersSchema,
-  strictParse,
-  upstream,
-} from "../httpResponses";
+import { RequestHeadersSchema, strictParse, upstream } from "../httpResponses";
 import { youtubeScopes } from "./google";
 
 export type YoutubeAuthorizationData =
@@ -121,9 +116,6 @@ const getYoutubeChannelsData = (accessToken: string) =>
         part: ["id"],
       }),
     );
-    const url = yield* Effect.sync(() =>
-      buildUrl({ base, path, searchParams }),
-    );
     const headers = yield* Effect.sync(() =>
       strictParse(RequestHeadersSchema, {
         authorization: {
@@ -133,7 +125,7 @@ const getYoutubeChannelsData = (accessToken: string) =>
       }),
     );
     return yield* upstream({
-      url,
+      urlParts: { base, path, searchParams },
       headers,
       method: "get",
       schema: YoutubeChannelsListResponseSchema,

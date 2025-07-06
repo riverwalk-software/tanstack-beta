@@ -14,7 +14,7 @@ export function strictParse<T extends ZodTypeAny>(
   return schema.parse(obj);
 }
 
-export const buildUrl = ({
+const buildUrl = ({
   base,
   path,
   searchParams,
@@ -207,16 +207,17 @@ export const upstream = <T extends ZodTypeAny>({
   headers,
   method,
   schema,
-  url,
+  urlParts,
 }: {
   body?: unknown;
   headers?: KyHeadersInit;
   method: "delete" | "get" | "head" | "patch" | "post" | "put";
   schema: T;
-  url: Parameters<typeof httpClient>[0];
+  urlParts: Parameters<typeof buildUrl>[0];
 }) => {
   const task = Effect.tryPromise({
     try: async () => {
+      const url = buildUrl(urlParts);
       const response = httpClient(url, {
         method,
         headers,
