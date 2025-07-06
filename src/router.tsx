@@ -20,6 +20,7 @@ export function createRouter() {
             ? match(error.code)
                 .with("UNAUTHENTICATED", () => false)
                 .with("YOUTUBE_UNAUTHORIZED", () => false)
+                .with("SERVICE_UNAVAILABLE", () => false)
                 .exhaustive()
             : false;
         },
@@ -65,11 +66,16 @@ export function createRouter() {
           });
           await router.invalidate({ sync: true });
         })
-        .with("YOUTUBE_UNAUTHORIZED", async () => {
+        .with("YOUTUBE_UNAUTHORIZED", () =>
           toast.error("YouTube API access is unauthorized.", {
             description: "Please reauthorize your YouTube account.",
-          });
-        })
+          }),
+        )
+        .with("SERVICE_UNAVAILABLE", () =>
+          toast.error("This service is currently down.", {
+            description: "Please try again later.",
+          }),
+        )
         .exhaustive();
     else {
       console.error("Unexpected error", unknownError);

@@ -1,6 +1,7 @@
 export enum ServerFnErrorCodes {
   UNAUTHENTICATED = "UNAUTHENTICATED",
   YOUTUBE_UNAUTHORIZED = "YOUTUBE_UNAUTHORIZED",
+  SERVICE_UNAVAILABLE = "SERVICE_UNAVAILABLE",
 }
 
 type ServerFnErrorCode = keyof typeof ServerFnErrorCodes;
