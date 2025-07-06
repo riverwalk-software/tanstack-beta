@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
 import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
 import { youtubeScopes } from "@/utils/oauth/google";
-import { youtubeAuthorizationQueryOptions } from "@/utils/oauth/youtube";
+import { youtubeAuthorizationDataQueryOptions } from "@/utils/oauth/youtube";
 import { Button } from "../ui/button";
 
 export function AuthorizeYoutubeButton() {
@@ -26,7 +26,7 @@ const useAuthorizeYoutube = () => {
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: youtubeAuthorizationQueryOptions.queryKey,
+        queryKey: youtubeAuthorizationDataQueryOptions.queryKey,
       });
     },
   });
