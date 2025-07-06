@@ -28,15 +28,6 @@ export function createRouter() {
     },
   });
 
-  const router = createTanStackRouter({
-    routeTree,
-    scrollRestoration: true,
-    context: { queryClient },
-    defaultPreload: "intent",
-    defaultErrorComponent: DefaultCatchBoundary,
-    defaultNotFoundComponent: () => <NotFound />,
-  });
-
   const onError = async (unknownError: unknown) => {
     if (isBetterAuthErrorContext(unknownError)) {
       const { error } = unknownError;
@@ -87,6 +78,15 @@ export function createRouter() {
 
   queryClient.getQueryCache().config.onError = onError;
   queryClient.getMutationCache().config.onError = onError;
+
+  const router = createTanStackRouter({
+    routeTree,
+    scrollRestoration: true,
+    context: { queryClient },
+    defaultPreload: "intent",
+    defaultErrorComponent: DefaultCatchBoundary,
+    defaultNotFoundComponent: () => <NotFound />,
+  });
 
   return routerWithQueryClient(router, queryClient);
 }
