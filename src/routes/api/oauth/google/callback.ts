@@ -332,6 +332,9 @@ export const YoutubeChannelsListResponseSchema = z
       .array(
         z.object({
           id: z.string().nonempty(),
+          snippet: z.object({
+            title: z.string().nonempty(),
+          }),
         }),
       )
       .default([]),
