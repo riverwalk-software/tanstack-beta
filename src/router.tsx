@@ -22,7 +22,6 @@ export function createRouter() {
     },
   });
 
-  const redirectingDescription = "Redirecting to sign in page...";
   const onError = async (unknownError: unknown) => {
     if (isBetterAuthErrorContext(unknownError)) {
       const { error, response } = unknownError;
@@ -36,12 +35,9 @@ export function createRouter() {
         match(error.code)
           .with("SESSION_EXPIRED", async () => {
             toast.error(error.message, {
-              description: redirectingDescription,
+              description: redirectDescription,
             });
-            await queryClient.invalidateQueries({
-              queryKey: authenticationDataQueryOptions.queryKey,
-            });
-            await router.invalidate({ sync: true });
+            await redirectFlow();
           })
           .with("EMAIL_NOT_VERIFIED", () =>
             alert(
@@ -58,17 +54,9 @@ If you don't see the email, check your spam folder and whitelist our email addre
       match(unknownError.code)
         .with("UNAUTHENTICATED", async () => {
           toast.error("You are no longer signed in.", {
-            description: redirectingDescription,
+            description: redirectDescription,
           });
-          try {
-            await authClient.signOut();
-          } catch (error) {
-            console.warn("Sign out failed during error recovery:", error);
-          }
-          await queryClient.invalidateQueries({
-            queryKey: authenticationDataQueryOptions.queryKey,
-          });
-          await router.invalidate({ sync: true });
+          await redirectFlow();
         })
         .with("YOUTUBE_UNAUTHORIZED", () =>
           toast.error("YouTube API access is unauthorized.", {
@@ -100,6 +88,19 @@ If you don't see the email, check your spam folder and whitelist our email addre
         },
       );
     }
+  };
+
+  const redirectDescription = "Redirecting to sign in page...";
+  const redirectFlow = async () => {
+    try {
+      await authClient.signOut();
+    } catch (error) {
+      console.warn("Sign out failed during error recovery:", error);
+    }
+    await queryClient.invalidateQueries({
+      queryKey: authenticationDataQueryOptions.queryKey,
+    });
+    await router.navigate({ to: "/signin" });
   };
 
   queryClient.getQueryCache().config.onError = onError;
