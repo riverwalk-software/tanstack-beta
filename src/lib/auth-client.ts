@@ -4,6 +4,9 @@ export const authClient = createAuthClient({
   fetchOptions: {
     retry: 0,
     throw: true,
+    onError: (errorContext) => {
+      throw errorContext;
+    },
   },
 });
 
@@ -12,6 +15,7 @@ type BetterAuthErrorContext = {
   error: (BetterFetchError & Record<string, any>) & {
     code: BetterAuthErrorCode;
   };
+  response: Response;
 };
 export const isBetterAuthErrorContext = (
   errorContext: unknown,
@@ -22,6 +26,8 @@ export const isBetterAuthErrorContext = (
     "error" in errorContext &&
     typeof errorContext.error === "object" &&
     errorContext.error !== null &&
-    "code" in errorContext.error
+    "code" in errorContext.error &&
+    "response" in errorContext &&
+    errorContext.response instanceof Response
   );
 };

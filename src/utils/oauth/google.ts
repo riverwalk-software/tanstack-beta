@@ -115,7 +115,6 @@ export const youtubeScopes = [
 export const googleOauthQueryOptions = queryOptions({
   queryKey: ["googleOauth"],
   queryFn: () => {},
-  retry: false,
   staleTime: Infinity,
   gcTime: Infinity,
 });

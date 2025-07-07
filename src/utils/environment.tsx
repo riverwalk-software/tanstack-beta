@@ -115,7 +115,6 @@ const getEnvironmentValidationFn = createServerFn().handler(
 export const environmentValidationQueryOptions = queryOptions({
   queryKey: ["environmentValidation"],
   queryFn: getEnvironmentValidationFn,
-  retry: false,
   staleTime: Infinity,
   gcTime: Infinity,
   subscribed: false,

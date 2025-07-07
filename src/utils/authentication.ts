@@ -66,7 +66,6 @@ const getAuthenticationDataFn = createServerFn()
 export const authenticationDataQueryOptions = queryOptions({
   queryKey: ["authenticationData"],
   queryFn: getAuthenticationDataFn,
-  retry: false,
   staleTime: Infinity,
   gcTime: Infinity,
 });

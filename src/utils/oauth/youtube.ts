@@ -13,10 +13,10 @@ import {
   getAccessTokenDataMw,
 } from "../authentication";
 import { ServerFnError } from "../errors";
-import { RequestHeadersSchema, strictParse, upstream } from "../httpResponses";
+import { fetchApi, RequestHeadersSchema, strictParse } from "../httpResponses";
 import { youtubeScopes } from "./google";
 
-const BASE_URL = "https://www.googleapis.com";
+const YOUTUBE_API_DOMAIN = "www.googleapis.com";
 export type YoutubeAuthorizationData =
   | {
       isAuthorized: false;
@@ -120,7 +120,7 @@ const verifyAcceptedScopes = () =>
 
 const getYoutubeChannelsData = (accessToken: string) =>
   Effect.gen(function* () {
-    const base = yield* Effect.succeed(BASE_URL);
+    const domain = yield* Effect.succeed(YOUTUBE_API_DOMAIN);
     const path = yield* Effect.succeed("/youtube/v3/channels");
     const searchParams = yield* Effect.sync(() =>
       strictParse(YoutubeChannelsListRequestSchema, {
@@ -135,8 +135,8 @@ const getYoutubeChannelsData = (accessToken: string) =>
         },
       }),
     );
-    return yield* upstream({
-      urlParts: { base, path, searchParams },
+    return yield* fetchApi({
+      urlParts: { domain, path, searchParams },
       headers,
       method: "get",
       schema: YoutubeChannelsListResponseSchema,
@@ -154,7 +154,6 @@ const getYoutubeAuthorizationDataFn = createServerFn()
 export const youtubeAuthorizationDataQueryOptions = queryOptions({
   queryKey: ["youtubeAuthorizationData"],
   queryFn: async () => getYoutubeAuthorizationDataFn(),
-  retry: false,
   staleTime: Infinity,
   gcTime: Infinity,
 });

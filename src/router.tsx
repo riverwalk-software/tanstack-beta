@@ -14,38 +14,51 @@ export function createRouter() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: (failureCount, error) => {
-          if (failureCount >= 3) return false;
-          return error instanceof ServerFnError
-            ? match(error.code)
-                .with("UNAUTHENTICATED", () => false)
-                .with("YOUTUBE_UNAUTHORIZED", () => false)
-                .with("SERVICE_UNAVAILABLE", () => false)
-                .exhaustive()
-            : false;
-        },
+        retry: false,
+      },
+      mutations: {
+        retry: false,
       },
     },
   });
 
+  const redirectingDescription = "Redirecting to sign in page...";
   const onError = async (unknownError: unknown) => {
     if (isBetterAuthErrorContext(unknownError)) {
-      const { error } = unknownError;
-      match(error.code)
-        .with("EMAIL_NOT_VERIFIED", () =>
-          alert(`Email not verified.
+      const { error, response } = unknownError;
+      // https://www.better-auth.com/docs/concepts/rate-limit#handling-rate-limit-errors
+      if (response.status === 429) {
+        const retryAfter = response.headers.get("X-Retry-After");
+        toast.error("Rate limit exceeded", {
+          description: `Retry after ${retryAfter} seconds`,
+        });
+      } else
+        match(error.code)
+          .with("SESSION_EXPIRED", async () => {
+            toast.error(error.message, {
+              description: redirectingDescription,
+            });
+            await queryClient.invalidateQueries({
+              queryKey: authenticationDataQueryOptions.queryKey,
+            });
+            await router.invalidate({ sync: true });
+          })
+          .with("EMAIL_NOT_VERIFIED", () =>
+            alert(
+              `Email not verified.
 
-      An email has been sent to verify your account.
-      Please check your inbox and click the verification link.
+An email has been sent to verify your account.
+Please check your inbox and click the verification link.
 
-      If you don't see the email, check your spam folder.`),
-        )
-        .otherwise(() => toast.error(error.message));
+If you don't see the email, check your spam folder and whitelist our email address.`,
+            ),
+          )
+          .otherwise(() => toast.error(error.message));
     } else if (unknownError instanceof ServerFnError)
       match(unknownError.code)
         .with("UNAUTHENTICATED", async () => {
           toast.error("You are no longer signed in.", {
-            description: "Redirecting to sign in page...",
+            description: redirectingDescription,
           });
           try {
             await authClient.signOut();

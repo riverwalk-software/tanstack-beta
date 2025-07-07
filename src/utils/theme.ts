@@ -20,7 +20,6 @@ const getThemeFn = createServerFn().handler(
 export const themeQueryOptions = queryOptions({
   queryKey: [cookieName],
   queryFn: getThemeFn,
-  retry: false,
   staleTime: Infinity,
   gcTime: Infinity,
 });

@@ -1,10 +1,9 @@
-import { Data, Duration, Effect, pipe, Schedule } from "effect";
+import { Data, Duration, Effect, Schedule } from "effect";
 import { HTTPError } from "ky";
 import ms from "ms";
 import type { KyHeadersInit } from "node_modules/ky/distribution/types/options";
 import { type ZodTypeAny, z } from "zod";
 import { httpClient } from "@/lib/httpClient";
-import { SITE_URL } from "./constants";
 import { s } from "./time";
 
 export function strictParse<T extends ZodTypeAny>(
@@ -15,15 +14,18 @@ export function strictParse<T extends ZodTypeAny>(
 }
 
 const buildUrl = ({
-  base,
+  domain,
+  protocol = "https",
   path,
   searchParams,
 }: {
-  base: string;
+  domain: string;
+  protocol?: "http" | "https";
   path: string;
   searchParams?: Record<string, string | number | boolean>;
-}): URL =>
-  new URL(
+}): URL => {
+  const base = `${protocol}://${domain}`;
+  return new URL(
     searchParams !== undefined
       ? `${path}?${new URLSearchParams(
           Object.fromEntries(
@@ -33,6 +35,7 @@ const buildUrl = ({
       : path,
     base,
   );
+};
 
 // export const effectToResponse = <A>({
 //   request,
@@ -53,23 +56,23 @@ const buildUrl = ({
 // export const runPromiseNoError = <A>(effect: Effect.Effect<A, never, never>) =>
 //   Effect.runPromise(effect);
 
-export const effectToRedirect = <A>({
-  request,
-  effect,
-  path,
-}: {
-  request: Request;
-  effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>;
-  path: string;
-}): Promise<Response> =>
-  pipe(
-    // checkContentType(request),
-    // Effect.zipRight(program),
-    effect,
-    handleDefects,
-    (effect) => handleErrorsForRedirect({ effect, path, code: 302 }),
-    Effect.runPromise,
-  );
+// export const effectToRedirect = <A>({
+//   request,
+//   effect,
+//   path,
+// }: {
+//   request: Request;
+//   effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>;
+//   path: string;
+// }): Promise<Response> =>
+//   pipe(
+//     // checkContentType(request),
+//     // Effect.zipRight(program),
+//     effect,
+//     handleDefects,
+//     (effect) => handleErrorsForRedirect({ effect, path, code: 302 }),
+//     Effect.runPromise,
+//   );
 
 // const checkContentType = (request: Request) =>
 //   Either.try({
@@ -80,10 +83,10 @@ export const effectToRedirect = <A>({
 //     },
 //   });
 
-const handleDefects = Effect.catchAllDefect((defect) => {
-  console.error(defect);
-  return Effect.fail(new INTERNAL_SERVER_ERROR());
-});
+// const handleDefects = Effect.catchAllDefect((defect) => {
+//   console.error(defect);
+//   return Effect.fail(new INTERNAL_SERVER_ERROR());
+// });
 
 // const handleErrors = <A>(
 //   effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>,
@@ -95,19 +98,19 @@ const handleDefects = Effect.catchAllDefect((defect) => {
 //       makeResponse({ code, message, data }),
 //   });
 
-const handleErrorsForRedirect = <A>({
-  effect,
-  path,
-  code,
-}: {
-  effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>;
-  path: string;
-  code: number;
-}) =>
-  Effect.match(effect, {
-    onFailure: () => makeRedirect({ path, oauthSucceeded: false, code }),
-    onSuccess: () => makeRedirect({ path, oauthSucceeded: true, code }),
-  });
+// const handleErrorsForRedirect = <A>({
+//   effect,
+//   path,
+//   code,
+// }: {
+//   effect: Effect.Effect<SuccessResponse<A>, ErrorResponse, never>;
+//   path: string;
+//   code: number;
+// }) =>
+//   Effect.match(effect, {
+//     onFailure: () => makeRedirect({ path, oauthSucceeded: false, code }),
+//     onSuccess: () => makeRedirect({ path, oauthSucceeded: true, code }),
+//   });
 
 // const makeResponse = ({
 //   code,
@@ -133,21 +136,21 @@ const handleErrorsForRedirect = <A>({
 //   });
 // };
 
-const makeRedirect = ({
-  path,
-  oauthSucceeded,
-  code,
-}: {
-  path: string;
-  oauthSucceeded: boolean;
-  code: number;
-}) => {
-  const base = SITE_URL;
-  const searchParams = strictParse(OauthSearchParamsSchema, {
-    oauthSucceeded: oauthSucceeded ? "true" : "false",
-  });
-  return Response.redirect(buildUrl({ base, path, searchParams }), code);
-};
+// const makeRedirect = ({
+//   path,
+//   oauthSucceeded,
+//   code,
+// }: {
+//   path: string;
+//   oauthSucceeded: boolean;
+//   code: number;
+// }) => {
+//   const base = SITE_URL;
+//   const searchParams = strictParse(OauthSearchParamsSchema, {
+//     oauthSucceeded: oauthSucceeded ? "true" : "false",
+//   });
+//   return Response.redirect(buildUrl({ base, path, searchParams }), code);
+// };
 
 export const OauthSearchParamsSchema = z
   .object({
@@ -202,7 +205,7 @@ export const concurrent = <
   arg: Arg,
 ) => Effect.all(arg, { concurrency: "inherit" });
 
-export const upstream = <T extends ZodTypeAny>({
+export const fetchApi = <T extends ZodTypeAny>({
   body,
   headers,
   method,
@@ -240,8 +243,8 @@ export const upstream = <T extends ZodTypeAny>({
           retryAfter,
         });
       }
-      if (is5xx(status)) return new BAD_GATEWAY();
       if (is4xx(status)) return new INTERNAL_SERVER_ERROR();
+      if (is5xx(status)) return new BAD_GATEWAY();
       throw error;
     },
   });
