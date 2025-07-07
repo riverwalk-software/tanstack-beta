@@ -8,6 +8,7 @@ import { NotFound } from "./components/NotFound";
 import { authClient, isBetterAuthErrorContext } from "./lib/auth-client";
 import { routeTree } from "./routeTree.gen";
 import { authenticationDataQueryOptions } from "./utils/authentication";
+import { AUTH_CALLBACK_ROUTE } from "./utils/constants";
 import { ServerFnError } from "./utils/errors";
 
 export function createRouter() {
@@ -100,7 +101,7 @@ If you don't see the email, check your spam folder and whitelist our email addre
     await queryClient.invalidateQueries({
       queryKey: authenticationDataQueryOptions.queryKey,
     });
-    await router.navigate({ to: "/signin" });
+    await router.navigate({ to: AUTH_CALLBACK_ROUTE });
   };
 
   queryClient.getQueryCache().config.onError = onError;

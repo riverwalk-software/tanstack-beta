@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import type { SessionData } from "@/utils/authentication";
+import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({
@@ -10,7 +11,7 @@ export const Route = createFileRoute("/_authenticated")({
   }): Promise<{ sessionData: SessionData }> => {
     if (!isAuthenticated)
       throw redirect({
-        to: "/signin",
+        to: AUTH_CALLBACK_ROUTE,
         search: {
           redirect: location.href,
         },
