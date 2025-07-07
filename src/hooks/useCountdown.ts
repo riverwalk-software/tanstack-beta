@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useCountdown as useHooksCountdown } from "usehooks-ts";
-import { s } from "./time";
+import { s } from "../utils/time";
 
 type CountDownStatus = "idle" | "running" | "stopped";
 const countStopDurationS = s("0s");

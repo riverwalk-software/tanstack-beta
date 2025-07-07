@@ -4,9 +4,9 @@ import { toast } from "sonner";
 import z from "zod";
 import { verifyEmailQueryKey } from "@/components/auth/SignUpWithEmailForm";
 import { Button } from "@/components/ui/button";
+import { useCountdown } from "@/hooks/useCountdown";
 import { authClient } from "@/lib/auth-client";
 import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
-import { useCountdown } from "@/utils/hooks";
 import { s, ttlSToMs } from "@/utils/time";
 
 const VerifyEmailSchema = z.string().email();
