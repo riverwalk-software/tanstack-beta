@@ -35,7 +35,7 @@
  * } = useCountdown({ countStart: 60, startOnInit: true });
  * ```
  */
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCountdown as useHooksCountdown } from "usehooks-ts";
 import { s } from "../utils/time";
 
@@ -58,7 +58,6 @@ export const useCountdown = ({
     }),
     [status],
   );
-
   const [
     count,
     { startCountdown: start, resetCountdown: reset, stopCountdown: stop },
@@ -67,38 +66,40 @@ export const useCountdown = ({
     countStop: countStopDurationS,
   });
   const isFinished = count === countStopDurationS;
-  const startCountdown = () => {
+  const startCountdown = useCallback(() => {
     setStatus("running");
     start();
-  };
-  const stopCountdown = () => {
+  }, [start]);
+
+  const stopCountdown = useCallback(() => {
     setStatus("stopped");
     stop();
-  };
-  const resetCountdown = () => {
+  }, [stop]);
+
+  const resetCountdown = useCallback(() => {
     setStatus("idle");
     reset();
-  };
-  const restartCountdown = () => {
+  }, [reset]);
+
+  const restartCountdown = useCallback(() => {
     setStatus("running");
     reset();
     start();
-  };
+  }, [reset, start]);
 
   useEffect(() => {
     if (startOnInit) {
-      setStatus("running");
-      start();
+      startCountdown();
     }
-  }, [startOnInit, start]);
+  }, [startOnInit, startCountdown]);
 
   return {
+    ...statusPredicates,
     count,
     startCountdown,
     resetCountdown,
     restartCountdown,
     stopCountdown,
     isFinished,
-    ...statusPredicates,
   };
 };
