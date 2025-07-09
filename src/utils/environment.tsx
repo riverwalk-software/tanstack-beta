@@ -93,11 +93,11 @@ const getEnvironmentValidationFn = createServerFn().handler(
     const variables = VariablesEnvironmentSchema.safeParse(process.env);
     const secrets = SecretsEnvironmentSchema.safeParse(process.env);
     return variables.success && secrets.success
-      ? {
+      ? ({
           isError: false,
           errors: null,
-        }
-      : {
+        } as const)
+      : ({
           isError: true,
           errors: {
             variables: variables.error?.issues.map(
@@ -107,7 +107,7 @@ const getEnvironmentValidationFn = createServerFn().handler(
               issue.path[0].toString(),
             ),
           },
-        };
+        } as const);
   },
 );
 
