@@ -88,9 +88,7 @@ export const useCountdown = ({
   }, [reset, start]);
 
   useEffect(() => {
-    if (startOnInit) {
-      startCountdown();
-    }
+    if (startOnInit) startCountdown();
   }, [startOnInit, startCountdown]);
 
   return {

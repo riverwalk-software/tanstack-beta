@@ -92,23 +92,22 @@ const getEnvironmentValidationFn = createServerFn().handler(
   async (): Promise<EnvironmentValidation> => {
     const variables = VariablesEnvironmentSchema.safeParse(process.env);
     const secrets = SecretsEnvironmentSchema.safeParse(process.env);
-    if (variables.success && secrets.success)
-      return {
-        isError: false,
-        errors: null,
-      };
-    else
-      return {
-        isError: true,
-        errors: {
-          variables: variables.error?.issues.map(
-            (issue) => `${issue.path[0]}: ${issue.message}`,
-          ),
-          secrets: secrets.error?.issues.map((issue) =>
-            issue.path[0].toString(),
-          ),
-        },
-      };
+    return variables.success && secrets.success
+      ? {
+          isError: false,
+          errors: null,
+        }
+      : {
+          isError: true,
+          errors: {
+            variables: variables.error?.issues.map(
+              (issue) => `${issue.path[0]}: ${issue.message}`,
+            ),
+            secrets: secrets.error?.issues.map((issue) =>
+              issue.path[0].toString(),
+            ),
+          },
+        };
   },
 );
 

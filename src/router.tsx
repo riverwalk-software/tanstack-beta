@@ -23,73 +23,84 @@ export function createRouter() {
     },
   });
 
-  const onError = async (unknownError: unknown) => {
-    if (isBetterAuthErrorContext(unknownError)) {
-      const { error, response } = unknownError;
-      // https://www.better-auth.com/docs/concepts/rate-limit#handling-rate-limit-errors
-      if (response.status === 429) {
-        const retryAfter = response.headers.get("X-Retry-After");
-        toast.error("Rate limit exceeded", {
-          description: `Retry after ${retryAfter} seconds`,
-        });
-      } else
-        match(error.code)
-          .with("SESSION_EXPIRED", async () => {
-            toast.error(error.message, {
-              description: redirectDescription,
+  const onError = async (unknownError: unknown) =>
+    match(unknownError)
+      .when(
+        (unknownError) => isBetterAuthErrorContext(unknownError),
+        ({ error, response }) => {
+          match(response.status)
+            .when(
+              (status) => status === 429,
+              () => {
+                const retryAfter = response.headers.get("X-Retry-After");
+                toast.error("Rate limit exceeded", {
+                  description: `Retry after ${retryAfter} seconds`,
+                });
+              },
+            )
+            .otherwise(() => {
+              match(error.code)
+                .with("SESSION_EXPIRED", async () => {
+                  toast.error(error.message, {
+                    description: redirectDescription,
+                  });
+                  await redirectFlow();
+                })
+                .with("EMAIL_NOT_VERIFIED", () =>
+                  alert(
+                    `Email not verified.
+
+  An email has been sent to verify your account.
+  Please check your inbox and click the verification link.
+
+  If you don't see the email, check your spam folder and whitelist our email address.`,
+                  ),
+                )
+                .otherwise(() => toast.error(error.message));
             });
-            await redirectFlow();
-          })
-          .with("EMAIL_NOT_VERIFIED", () =>
-            alert(
-              `Email not verified.
-
-An email has been sent to verify your account.
-Please check your inbox and click the verification link.
-
-If you don't see the email, check your spam folder and whitelist our email address.`,
-            ),
-          )
-          .otherwise(() => toast.error(error.message));
-    } else if (unknownError instanceof ServerFnError)
-      match(unknownError.code)
-        .with("UNAUTHENTICATED", async () => {
-          toast.error("You are no longer signed in.", {
-            description: redirectDescription,
-          });
-          await redirectFlow();
-        })
-        .with("YOUTUBE_UNAUTHORIZED", () =>
-          toast.error("YouTube API access is unauthorized.", {
-            description: "Please reauthorize your YouTube account.",
-          }),
-        )
-        .with("SERVICE_UNAVAILABLE", () =>
-          toast.error("This service is currently down.", {
-            description: "Please try again later.",
-          }),
-        )
-        .exhaustive();
-    else {
-      console.error("Unexpected error", unknownError);
-      toast.error(
-        <div>
-          Something went wrong.{" "}
-          {/* <a
-            href="https://emilkowal.ski/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            report this issue
-          </a> */}
-        </div>,
-        {
-          description: "Please try again later.",
         },
-      );
-    }
-  };
+      )
+      .when(
+        (unknownError) => unknownError instanceof ServerFnError,
+        ({ code }) =>
+          match(code)
+            .with("UNAUTHENTICATED", async () => {
+              toast.error("You are no longer signed in.", {
+                description: redirectDescription,
+              });
+              await redirectFlow();
+            })
+            .with("YOUTUBE_UNAUTHORIZED", () =>
+              toast.error("YouTube API access is unauthorized.", {
+                description: "Please reauthorize your YouTube account.",
+              }),
+            )
+            .with("SERVICE_UNAVAILABLE", () =>
+              toast.error("This service is currently down.", {
+                description: "Please try again later.",
+              }),
+            )
+            .exhaustive(),
+      )
+      .otherwise(() => {
+        console.error("Unexpected error", unknownError);
+        toast.error(
+          <div>
+            Something went wrong.{" "}
+            {/* <a
+              href="https://emilkowal.ski/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              report this issue
+            </a> */}
+          </div>,
+          {
+            description: "Please try again later.",
+          },
+        );
+      });
 
   const redirectDescription = "Redirecting to sign in page...";
   const redirectFlow = async () => {
