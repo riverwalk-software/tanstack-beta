@@ -60,32 +60,43 @@ const getYoutubeAuthorizationDataMw = createMiddleware({
         {
           onFalse: () =>
             Effect.succeed({
-              isAuthorized: false as const,
+              isAuthorized: false,
               channelsData: null,
-            }),
+            } as const),
           onTrue: () =>
             Effect.gen(function* () {
               console.log("accessToken", accessToken);
               const channels = yield* getYoutubeChannelsData(accessToken!);
               const channelsData = yield* Effect.succeed(
                 match(channels.length)
-                  .with(0, () => ({
-                    channelCount: "zero" as const,
-                    channels: null,
-                  }))
-                  .with(1, () => ({
-                    channelCount: "one" as const,
-                    channels: channels[0],
-                  }))
-                  .otherwise(() => ({
-                    channelCount: "multiple" as const,
-                    channels: channels,
-                  })),
+                  .with(
+                    0,
+                    () =>
+                      ({
+                        channelCount: "zero",
+                        channels: null,
+                      }) as const,
+                  )
+                  .with(
+                    1,
+                    () =>
+                      ({
+                        channelCount: "one",
+                        channels: channels[0],
+                      }) as const,
+                  )
+                  .otherwise(
+                    () =>
+                      ({
+                        channelCount: "multiple",
+                        channels: channels,
+                      }) as const,
+                  ),
               );
               return yield* Effect.succeed({
-                isAuthorized: true as const,
+                isAuthorized: true,
                 channelsData,
-              });
+              } as const);
             }),
         },
       );
