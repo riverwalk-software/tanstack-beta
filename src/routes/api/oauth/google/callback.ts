@@ -58,9 +58,9 @@ const getSearchParams = (requestUrlString: string) =>
     const maybeError = yield* Effect.sync(() =>
       requestUrl.searchParams.get("error"),
     );
-    yield* Effect.if(maybeError !== null, {
-      onFalse: () => Effect.void,
-      onTrue: () => Effect.fail(new UNAUTHORIZED()),
+    yield* Effect.if(maybeError === null, {
+      onTrue: () => Effect.void,
+      onFalse: () => Effect.fail(new UNAUTHORIZED()),
     });
     const code = yield* Effect.sync(() => requestUrl.searchParams.get("code")!);
     const state = yield* Effect.sync(

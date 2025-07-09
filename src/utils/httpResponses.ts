@@ -224,7 +224,7 @@ export const fetchApi = <T extends ZodTypeAny>({
       const response = httpClient(url, {
         method,
         headers,
-        ...(body !== undefined ? { json: body } : {}),
+        ...(body === undefined ? {} : { json: body }),
       });
       const data = await response.json();
       return strictParse(schema, data);
@@ -258,9 +258,9 @@ export const fetchApi = <T extends ZodTypeAny>({
       }),
     SERVICE_UNAVAILABLE: ({ retryAfter }) =>
       Effect.gen(function* () {
-        const times = yield* Effect.if(retryAfter !== undefined, {
-          onFalse: () => Effect.succeed(0),
-          onTrue: () =>
+        const times = yield* Effect.if(retryAfter === undefined, {
+          onTrue: () => Effect.succeed(0),
+          onFalse: () =>
             Effect.gen(function* () {
               yield* Effect.sleep(Duration.seconds(retryAfter!));
               return yield* Effect.succeed(1);
