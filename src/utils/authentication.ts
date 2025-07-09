@@ -23,14 +23,14 @@ const getAuthenticationDataMw = createMiddleware({
   const sessionData = await auth.api.getSession({ headers });
   const authenticationData =
     sessionData === null
-      ? {
-          isAuthenticated: false as const,
+      ? ({
+          isAuthenticated: false,
           sessionData,
-        }
-      : {
-          isAuthenticated: true as const,
+        } as const)
+      : ({
+          isAuthenticated: true,
           sessionData,
-        };
+        } as const);
   return next<{ authenticationData: AuthenticationData }>({
     context: {
       authenticationData,
