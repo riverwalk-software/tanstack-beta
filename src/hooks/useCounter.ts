@@ -4,7 +4,7 @@ import { match } from "ts-pattern";
 export function useCounter({
   initialValue = 0,
   resetValue = initialValue,
-}: UseCounterProps): UseCounterReturn {
+}: UseCounterParams): UseCounterReturn {
   const initialState: State = { count: initialValue };
   const [{ count }, dispatch] = useReducer(reducer, initialState);
   const increment = () => dispatch(counterActions.increment());
@@ -22,7 +22,7 @@ const reducer = (state: State, action: Action): State =>
     }))
     .exhaustive();
 
-interface UseCounterProps {
+interface UseCounterParams {
   initialValue?: number;
   resetValue?: number;
 }
@@ -32,27 +32,26 @@ interface UseCounterReturn {
   decrement: () => void;
   reset: () => void;
 }
-type State = {
+interface State {
   count: number;
-};
+}
 
 type Action =
   | { tag: typeof ActionTags.INCREMENT }
   | { tag: typeof ActionTags.DECREMENT }
   | { tag: typeof ActionTags.RESET; resetValue: number };
 
-const counterActions = {
-  increment: () => ({ tag: ActionTags.INCREMENT }) as const,
-  decrement: () => ({ tag: ActionTags.DECREMENT }) as const,
-  reset: (resetValue: number) =>
-    ({
-      tag: ActionTags.RESET,
-      resetValue,
-    }) as const,
-};
-
 const ActionTags = {
   INCREMENT: "counter/increment",
   DECREMENT: "counter/decrement",
   RESET: "counter/reset",
+} as const;
+
+const counterActions = {
+  increment: () => ({ tag: ActionTags.INCREMENT }),
+  decrement: () => ({ tag: ActionTags.DECREMENT }),
+  reset: (resetValue: number) => ({
+    tag: ActionTags.RESET,
+    resetValue,
+  }),
 } as const;
