@@ -26,13 +26,13 @@ const buildUrl = ({
 }): URL => {
   const base = `${protocol}://${domain}`;
   return new URL(
-    searchParams !== undefined
-      ? `${path}?${new URLSearchParams(
+    searchParams === undefined
+      ? path
+      : `${path}?${new URLSearchParams(
           Object.fromEntries(
             Object.entries(searchParams).map(([k, v]) => [k, String(v)]),
           ),
-        )}`
-      : path,
+        )}`,
     base,
   );
 };
