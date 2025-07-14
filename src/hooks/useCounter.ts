@@ -1,57 +1,94 @@
-import { useReducer } from "react";
-import { match } from "ts-pattern";
+import { atom } from "jotai";
+import { useAtom } from "jotai/react";
+import { atomFamily } from "jotai/utils";
+import { useMemo } from "react";
+import z from "zod";
+import { clamp, validateRange } from "@/utils/prelude";
 
-export function useCounter({
-  initialValue = 0,
-  resetValue = initialValue,
-}: UseCounterParams): UseCounterReturn {
-  const initialState: State = { count: initialValue };
-  const [{ count }, dispatch] = useReducer(reducer, initialState);
-  const increment = () => dispatch(counterActions.increment());
-  const decrement = () => dispatch(counterActions.decrement());
-  const reset = () => dispatch(counterActions.reset(resetValue));
-  return { count, increment, decrement, reset };
+/**
+ * A counter hook with configurable bounds and step size.
+ * Uses global state that can be shared across components via atomKey.
+ *
+ * @param params - Counter configuration options
+ * @returns Object with current count and action functions
+ */
+export function useCounter(params: Params = {}): Return {
+  const { initialValue, maxValue, minValue, resetValue, step, key } =
+    ParamsSchema.parse(params);
+  const atomKey = useMemo(() => key ?? crypto.randomUUID(), [key]);
+  const atom = counterAtomFamily({ initialValue, atomKey });
+  const [state, setState] = useAtom(atom);
+  const clampToRange = clamp(minValue, maxValue);
+
+  const actions: Actions = {
+    increment: () =>
+      setState(({ count }) => ({
+        count: clampToRange(count + step),
+      })),
+    decrement: () =>
+      setState(({ count }) => ({
+        count: clampToRange(count - step),
+      })),
+    reset: () => setState(() => ({ count: resetValue })),
+  };
+  return { ...state, ...actions };
 }
 
-const reducer = (state: State, action: Action): State =>
-  match(action)
-    .with({ tag: ActionTags.INCREMENT }, () => ({ count: state.count + 1 }))
-    .with({ tag: ActionTags.DECREMENT }, () => ({ count: state.count - 1 }))
-    .with({ tag: ActionTags.RESET }, ({ resetValue }) => ({
-      count: resetValue,
-    }))
-    .exhaustive();
+const counterAtomFamily = atomFamily(
+  (params: { initialValue: number; atomKey: string }) =>
+    atom({ count: params.initialValue }),
+  (a, b) => a.atomKey === b.atomKey,
+);
 
-interface UseCounterParams {
-  initialValue?: number;
-  resetValue?: number;
-}
-interface UseCounterReturn {
+const ParamsSchema = z
+  .object({
+    initialValue: z.number().default(0),
+    resetValue: z.number().optional(),
+    minValue: z.number().default(0),
+    maxValue: z.number().default(Infinity),
+    step: z.number().positive().default(1),
+    key: z.string().optional(),
+  })
+  .transform((params) => ({
+    ...params,
+    resetValue: params.resetValue ?? params.initialValue,
+  }))
+  .refine((params) => params.minValue <= params.maxValue, {
+    message: "minValue must be less than or equal to maxValue",
+    path: ["minValue"],
+  })
+  .superRefine((params, ctx) => {
+    const isInRange = validateRange(params.minValue, params.maxValue);
+    if (!isInRange(params.initialValue)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "initialValue must be between minValue and maxValue",
+        path: ["initialValue"],
+      });
+    }
+    if (!isInRange(params.resetValue)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "resetValue must be between minValue and maxValue",
+        path: ["resetValue"],
+      });
+    }
+
+    // if (!divisibleBy(params.initialValue, params.step)) {
+    //   ctx.addIssue({
+    //     code: z.ZodIssueCode.custom,
+    //     message: "initialValue must be divisible by step",
+    //     path: ["initialValue"],
+    //   });
+    // }
+  });
+type Params = z.input<typeof ParamsSchema>;
+interface State {
   count: number;
+}
+interface Actions {
   increment: () => void;
   decrement: () => void;
   reset: () => void;
 }
-interface State {
-  count: number;
-}
-
-type Action =
-  | { tag: typeof ActionTags.INCREMENT }
-  | { tag: typeof ActionTags.DECREMENT }
-  | { tag: typeof ActionTags.RESET; resetValue: number };
-
-const ActionTags = {
-  INCREMENT: "counter/increment",
-  DECREMENT: "counter/decrement",
-  RESET: "counter/reset",
-} as const;
-
-const counterActions = {
-  increment: () => ({ tag: ActionTags.INCREMENT }),
-  decrement: () => ({ tag: ActionTags.DECREMENT }),
-  reset: (resetValue: number) => ({
-    tag: ActionTags.RESET,
-    resetValue,
-  }),
-} as const;
+interface Return extends State, Actions {}
