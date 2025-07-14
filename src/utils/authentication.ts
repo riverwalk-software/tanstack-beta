@@ -68,6 +68,7 @@ export const authenticationDataQueryOptions = queryOptions({
   queryFn: getAuthenticationDataFn,
   staleTime: Infinity,
   gcTime: Infinity,
+  subscribed: false,
 });
 
 export class SessionDataService extends Context.Tag("SessionDataService")<
