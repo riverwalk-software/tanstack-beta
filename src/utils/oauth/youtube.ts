@@ -12,7 +12,7 @@ import {
   AccessTokenDataService,
   getAccessTokenDataMw,
 } from "../authentication";
-import { ServerFnError } from "../errors";
+import { SERVICE_UNAVAILABLE } from "../errors";
 import { fetchApi, RequestHeadersSchema, strictParse } from "../httpResponses";
 import { youtubeScopes } from "./google";
 
@@ -104,10 +104,10 @@ const getYoutubeAuthorizationDataMw = createMiddleware({
     const runnable = Effect.provide(program, context);
     Effect.catchTags(runnable, {
       BAD_GATEWAY: () => {
-        throw new ServerFnError("SERVICE_UNAVAILABLE");
+        throw new SERVICE_UNAVAILABLE();
       },
       SERVICE_UNAVAILABLE: () => {
-        throw new ServerFnError("SERVICE_UNAVAILABLE");
+        throw new SERVICE_UNAVAILABLE();
       },
     });
     const youtubeAuthorizationData = await Effect.runPromise(runnable);

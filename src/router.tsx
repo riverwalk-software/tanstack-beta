@@ -8,7 +8,8 @@ import { NotFound } from "./components/NotFound";
 import { authClient, isBetterAuthErrorContext } from "./lib/auth-client";
 import { routeTree } from "./routeTree.gen";
 import { AUTH_CALLBACK_ROUTE } from "./utils/constants";
-import { ServerFnError } from "./utils/errors";
+import { isClientError, redirectDescription } from "./utils/errors";
+import { youtubeAuthorizationDataQueryOptions } from "./utils/oauth/youtube";
 
 export function createRouter() {
   const queryClient = new QueryClient({
@@ -60,26 +61,19 @@ export function createRouter() {
         },
       )
       .when(
-        (unknownError) => unknownError instanceof ServerFnError,
-        ({ code }) =>
-          match(code)
+        (unknownError) => isClientError(unknownError),
+        ({ _tag, message, description }) => {
+          toast.error(message, { description });
+          match(_tag)
             .with("UNAUTHENTICATED", async () => {
-              toast.error("You are no longer signed in.", {
-                description: redirectDescription,
-              });
               await redirectFlow();
             })
-            .with("YOUTUBE_UNAUTHORIZED", () =>
-              toast.error("YouTube API access is unauthorized.", {
-                description: "Please reauthorize your YouTube account.",
-              }),
-            )
-            .with("SERVICE_UNAVAILABLE", () =>
-              toast.error("This service is currently down.", {
-                description: "Please try again later.",
-              }),
-            )
-            .exhaustive(),
+            .with("YOUTUBE_UNAUTHORIZED", () => {
+              queryClient.invalidateQueries({
+                queryKey: youtubeAuthorizationDataQueryOptions.queryKey,
+              });
+            });
+        },
       )
       .otherwise(() => {
         console.error("Unexpected error", unknownError);
@@ -101,7 +95,6 @@ export function createRouter() {
         );
       });
 
-  const redirectDescription = "Redirecting to sign in page...";
   const redirectFlow = async () => {
     try {
       await authClient.signOut();
