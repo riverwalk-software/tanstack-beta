@@ -7,7 +7,6 @@ import { DefaultCatchBoundary } from "./components/DefaultCatchBoundary";
 import { NotFound } from "./components/NotFound";
 import { authClient, isBetterAuthErrorContext } from "./lib/auth-client";
 import { routeTree } from "./routeTree.gen";
-import { authenticationDataQueryOptions } from "./utils/authentication";
 import { AUTH_CALLBACK_ROUTE } from "./utils/constants";
 import { ServerFnError } from "./utils/errors";
 
@@ -109,9 +108,7 @@ export function createRouter() {
     } catch (error) {
       console.warn("Sign out failed during error recovery:", error);
     }
-    await queryClient.invalidateQueries({
-      queryKey: authenticationDataQueryOptions.queryKey,
-    });
+    queryClient.clear();
     await router.navigate({ to: AUTH_CALLBACK_ROUTE });
   };
 

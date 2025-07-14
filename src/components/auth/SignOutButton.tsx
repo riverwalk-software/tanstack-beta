@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth-client";
-import { authenticationDataQueryOptions } from "@/utils/authentication";
 import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
 import { Button } from "../ui/button";
 
@@ -21,9 +20,7 @@ const useSignOut = () => {
     mutationKey: ["signOut"],
     mutationFn: () => authClient.signOut(),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: authenticationDataQueryOptions.queryKey,
-      });
+      queryClient.clear();
       await navigate({ to: AUTH_CALLBACK_ROUTE });
     },
   });
