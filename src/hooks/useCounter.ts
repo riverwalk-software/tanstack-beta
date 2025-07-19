@@ -19,15 +19,14 @@ export function useCounter(params: Params = {}): Return {
   const atom = counterAtomFamily({ initialValue, atomKey });
   const [state, setState] = useAtom(atom);
   const clampToRange = clamp(minValue, maxValue);
-
   const actions: Actions = {
     increment: () =>
-      setState(({ count }) => ({
-        count: clampToRange(count + step),
+      setState((prevState) => ({
+        count: clampToRange(prevState.count + step),
       })),
     decrement: () =>
-      setState(({ count }) => ({
-        count: clampToRange(count - step),
+      setState((prevState) => ({
+        count: clampToRange(prevState.count - step),
       })),
     reset: () => setState(() => ({ count: resetValue })),
   };

@@ -1,6 +1,10 @@
 import { type BetterFetchError, createAuthClient } from "better-auth/react";
 
-export const authClient = createAuthClient({
+const {
+  signIn: oldSignIn,
+  signOut: oldSignOut,
+  ...rest
+} = createAuthClient({
   fetchOptions: {
     retry: 0,
     throw: true,
@@ -9,6 +13,12 @@ export const authClient = createAuthClient({
     },
   },
 });
+
+export const authClient = {
+  ...rest,
+  signIn: oldSignIn, // TODO
+  signOut: oldSignOut, // TODO
+};
 
 type BetterAuthErrorCode = keyof typeof authClient.$ERROR_CODES;
 type BetterAuthErrorContext = {
