@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import z from "zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -22,6 +21,7 @@ import {
   MINIMUM_PASSWORD_LENGTH,
   TEST_USER,
 } from "@/utils/constants";
+import { FormButton } from "../FormButton";
 
 export function SignInWithEmailForm() {
   const form = useForm<SignInForm>({
@@ -141,9 +141,9 @@ function FormRememberMe({ form }: { form: UseFormReturn<SignInForm> }) {
 
 function FormSubmitButton({ isPending }: { isPending: boolean }) {
   return (
-    <Button disabled={isPending} className="w-full">
+    <FormButton disabled={isPending} className="w-full">
       {isPending ? "Signing in..." : "Sign In"}
-    </Button>
+    </FormButton>
   );
 }
 

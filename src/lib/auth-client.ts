@@ -17,7 +17,13 @@ const {
 export const authClient = {
   ...rest,
   signIn: oldSignIn, // TODO
-  signOut: oldSignOut, // TODO
+  signOut: async () => {
+    try {
+      await oldSignOut();
+    } catch (error) {
+      console.error("Error during sign out:", error);
+    }
+  },
 };
 
 type BetterAuthErrorCode = keyof typeof authClient.$ERROR_CODES;

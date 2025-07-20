@@ -4,7 +4,6 @@ import { useNavigate } from "@tanstack/react-router";
 import { type UseFormReturn, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -22,6 +21,7 @@ import {
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
 } from "@/utils/constants";
+import { FormButton } from "../FormButton";
 
 export function SignUpWithEmailForm() {
   const form = useForm<SignUpForm>({
@@ -183,9 +183,9 @@ function FormConfirmPassword({ form }: { form: UseFormReturn<SignUpForm> }) {
 
 function FormSubmitButton({ isPending }: { isPending: boolean }) {
   return (
-    <Button disabled={isPending} className="w-full">
+    <FormButton disabled={isPending} className="w-full">
       {isPending ? "Signing Up..." : "Sign Up"}
-    </Button>
+    </FormButton>
   );
 }
 

@@ -18,7 +18,7 @@ const useSignOut = () => {
   const navigate = useNavigate();
   const { mutate: signOut, isPending } = useMutation({
     mutationKey: ["signOut"],
-    mutationFn: () => authClient.signOut(),
+    mutationFn: () => authClient.signOut(), // Does not throw
     onSuccess: async () => {
       queryClient.clear();
       await navigate({ to: AUTH_CALLBACK_ROUTE });

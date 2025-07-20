@@ -96,11 +96,7 @@ export function createRouter() {
       });
 
   const redirectFlow = async () => {
-    try {
-      await authClient.signOut();
-    } catch (error) {
-      console.warn("Sign out failed during error recovery:", error);
-    }
+    await authClient.signOut(); // Does not throw
     queryClient.clear();
     await router.navigate({ to: AUTH_CALLBACK_ROUTE });
   };

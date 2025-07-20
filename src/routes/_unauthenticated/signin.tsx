@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { match } from "ts-pattern";
 import { z } from "zod";
 import { SignInWithEmailForm } from "@/components/auth/SignInWithEmailForm";
+import { SignOutButton } from "@/components/auth/SignOutButton";
 import { CenteredContainer } from "@/containers/CenteredContainer";
 import { resendVerificationEmailDurationMs } from "./signup/success";
 
@@ -24,6 +25,7 @@ function SignIn() {
       <div className="flex flex-col items-center gap-8">
         <SignInWithEmailForm />
         {/* <SignInWithGoogleButton /> */}
+        <SignOutButton />
       </div>
     </CenteredContainer>
   );

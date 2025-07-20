@@ -5,6 +5,7 @@ import { Resend } from "resend";
 import { ResetPasswordEmail } from "@/components/emails/ResetPasswordEmail";
 import { VerifyEmailEmail } from "@/components/emails/VerifyEmailEmail";
 import {
+  AUTH_COOKIE_PREFIX,
   EVENTUAL_CONSISTENCY_DELAY_S,
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
@@ -86,6 +87,9 @@ export const auth = betterAuth({
   //     },
   //   },
   // },
+  advanced: {
+    cookiePrefix: AUTH_COOKIE_PREFIX,
+  },
   plugins: [
     reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
   ],
