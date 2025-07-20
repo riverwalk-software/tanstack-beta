@@ -1,10 +1,6 @@
 import { type BetterFetchError, createAuthClient } from "better-auth/react";
 
-const {
-  signIn: oldSignIn,
-  signOut: oldSignOut,
-  ...rest
-} = createAuthClient({
+const { signOut: oldSignOut, ...rest } = createAuthClient({
   fetchOptions: {
     retry: 0,
     throw: true,
@@ -16,7 +12,6 @@ const {
 
 export const authClient = {
   ...rest,
-  signIn: oldSignIn, // TODO
   signOut: async () => {
     try {
       await oldSignOut();
