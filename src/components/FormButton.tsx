@@ -11,6 +11,7 @@ export function FormButton({
 }) {
   return (
     <Button
+      className={className}
       disabled={disabled}
       onClick={() => {}} // Prevent default click behavior
       {...props}
