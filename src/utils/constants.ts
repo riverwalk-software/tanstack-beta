@@ -5,6 +5,11 @@ export const EVENTUAL_CONSISTENCY_DELAY_S = 60 * 1;
 export const MAXIMUM_PASSWORD_LENGTH = 64;
 export const MINIMUM_PASSWORD_LENGTH = 16;
 export const AUTH_COOKIE_PREFIX = "auth";
+export const AUTH_COOKIE_NAMES = [
+  "session_token",
+  "session_data",
+  "dont_remember",
+];
 export const PRIVACY_POLICY_LINK = "https://rockthejvm.com/policies/privacy";
 export const TERMS_OF_USE_LINK = "https://rockthejvm.com/policies/terms";
 export const SITE_NAME = "Rock the JVM";
