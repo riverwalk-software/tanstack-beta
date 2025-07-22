@@ -13,7 +13,7 @@
   "editor.wordWrapColumn": 80,
   "explorer.excludeGitIgnore": true,
   "explorer.fileNesting.patterns": {
-    ".gitignore": ".git*"
+    ".gitignore": ".gitattributes"
   },
   "files.associations": {
     "wrangler.json": "jsonc",
@@ -25,7 +25,8 @@
   "files.insertFinalNewline": true,
   "files.readonlyInclude": {
     "**/.editorconfig": true,
-    "**/.git*": true,
+    "**/.gitattributes": true,
+    "**/.gitignore": true,
     "**/{,*-,*.}{lock,lockfile}{,-*,.*}": true,
     "**/{,*-,*.}{gen,generated}{,-*,.*}": true,
     "**/{CHANGELOG,LICENSE,LEGAL}{,.*}": true,
@@ -55,7 +56,8 @@
   "scm.defaultViewMode": "tree",
   "search.exclude": {
     "**/.editorconfig": true,
-    "**/.git*": true,
+    "**/.gitattributes": true,
+    "**/.gitignore": true,
     "**/{,*-,*.}{lock,lockfile}{,-*,.*}": true,
     "**/{,*-,*.}{gen,generated}{,-*,.*}": true,
     "**/{CHANGELOG,LICENSE,LEGAL}{,.*}": true,
