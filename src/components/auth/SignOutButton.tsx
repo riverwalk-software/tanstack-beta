@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import { authClient } from "@/lib/auth-client";
-import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
+import { useRouter } from "@tanstack/react-router";
+import { afterSignOut, authClient } from "@/lib/auth-client";
 import { Button } from "../ui/button";
 
 export function SignOutButton() {
@@ -15,14 +14,11 @@ export function SignOutButton() {
 
 const useSignOut = () => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { mutate: signOut, isPending } = useMutation({
     mutationKey: ["signOut"],
     mutationFn: () => authClient.signOut(), // Does not throw
-    onSuccess: async () => {
-      queryClient.clear();
-      await navigate({ to: AUTH_CALLBACK_ROUTE });
-    },
+    onSettled: () => afterSignOut(queryClient, router),
   });
   return { signOut, isPending };
 };

@@ -5,9 +5,12 @@ import { toast } from "sonner";
 import { match } from "ts-pattern";
 import { DefaultCatchBoundary } from "./components/DefaultCatchBoundary";
 import { NotFound } from "./components/NotFound";
-import { authClient, isBetterAuthErrorContext } from "./lib/auth-client";
+import {
+  afterSignOut,
+  authClient,
+  isBetterAuthErrorContext,
+} from "./lib/auth-client";
 import { routeTree } from "./routeTree.gen";
-import { AUTH_CALLBACK_ROUTE } from "./utils/constants";
 import { isClientError, redirectDescription } from "./utils/errors";
 import { youtubeAuthorizationDataQueryOptions } from "./utils/oauth/youtube";
 
@@ -97,8 +100,7 @@ export function createRouter() {
 
   const redirectFlow = async () => {
     await authClient.signOut(); // Does not throw
-    queryClient.clear();
-    await router.navigate({ to: AUTH_CALLBACK_ROUTE });
+    await afterSignOut(queryClient, router);
   };
 
   queryClient.getQueryCache().config.onError = onError;
