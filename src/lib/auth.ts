@@ -24,7 +24,7 @@ export const auth = betterAuth({
     revokeSessionsOnPasswordReset: true,
     minPasswordLength: MINIMUM_PASSWORD_LENGTH,
     maxPasswordLength: MAXIMUM_PASSWORD_LENGTH,
-    sendResetPassword: async ({ user, url, token }, request) => {
+    sendResetPassword: async ({ user, url }) => {
       await resend.emails.send({
         from: emailSender,
         to: user.email,
@@ -35,8 +35,9 @@ export const auth = betterAuth({
   },
   emailVerification: {
     autoSignInAfterVerification: true,
+    sendOnSignIn: true,
     sendOnSignUp: true,
-    sendVerificationEmail: async ({ user, url, token }, request) => {
+    sendVerificationEmail: async ({ user, url }) => {
       await resend.emails.send({
         from: emailSender,
         to: user.email,
