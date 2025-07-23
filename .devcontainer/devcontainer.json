@@ -22,6 +22,7 @@
         "github.vscode-github-actions",
         "GitHub.vscode-pull-request-github", // Needs more configuration
         "ms-vsliveshare.vsliveshare",
+        "Prisma.prisma",
         "redhat.vscode-yaml"
         // "WallabyJs.console-ninja"
       ]

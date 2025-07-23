@@ -12,7 +12,7 @@ import { clamp, validateRange } from "@/utils/prelude";
  * @param params - Counter configuration options
  * @returns Object with current count and action functions
  */
-export function useCounter(params: Params = {}): Return {
+export const useCounter = (params: Params = {}): Return => {
   const { initialValue, maxValue, minValue, resetValue, step, key } =
     ParamsSchema.parse(params);
   const atomKey = useMemo(() => key ?? crypto.randomUUID(), [key]);
@@ -31,7 +31,7 @@ export function useCounter(params: Params = {}): Return {
     reset: () => setState(() => ({ count: resetValue })),
   };
   return { ...state, ...actions };
-}
+};
 
 const counterAtomFamily = atomFamily(
   (params: { initialValue: number; atomKey: string }) =>

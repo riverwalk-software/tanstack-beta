@@ -87,9 +87,9 @@ const getSessionId = (state: string) =>
 
 const getUserId = (sessionId: string) =>
   Effect.gen(function* () {
-    const { DB } = yield* CloudflareBindingsService;
+    const { AUTH_DB } = yield* CloudflareBindingsService;
     const maybeUnknownEntry = yield* Effect.promise(() =>
-      DB.prepare("SELECT userId, expiresAt FROM session where id = ?")
+      AUTH_DB.prepare("SELECT userId, expiresAt FROM session where id = ?")
         .bind(sessionId)
         .first(),
     );

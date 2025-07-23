@@ -15,8 +15,9 @@ import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 // https://www.better-auth.com/docs/guides/optimizing-for-performance
 // https://www.better-auth.com/docs/guides/browser-extension-guide
-const { DB, SESSION_STORE } = getCloudflareBindings();
-const resend = new Resend(environment.secrets.RESEND_API_KEY);
+const { AUTH_DB, SESSION_STORE } = getCloudflareBindings();
+const { RESEND_API_KEY } = environment.secrets;
+const resend = new Resend(RESEND_API_KEY);
 const emailSender = "info@riverwalk.dev";
 export const auth = betterAuth({
   emailAndPassword: {
@@ -48,15 +49,15 @@ export const auth = betterAuth({
       });
     },
   },
-  socialProviders: {
-    google: {
-      clientId: environment.variables.GOOGLE_CLIENT_ID,
-      clientSecret: environment.secrets.GOOGLE_CLIENT_SECRET,
-    },
-  },
-  // database: new Database("./db/sqlite.db"),
+  // socialProviders: {
+  //   google: {
+  //     clientId: environment.variables.GOOGLE_CLIENT_ID,
+  //     clientSecret: environment.secrets.GOOGLE_CLIENT_SECRET,
+  //   },
+  // },
+  // database: new Database("./db/auth/sqlite.db"),
   database: {
-    dialect: new D1Dialect({ database: DB }),
+    dialect: new D1Dialect({ database: AUTH_DB }),
     type: "sqlite",
   },
   session: {

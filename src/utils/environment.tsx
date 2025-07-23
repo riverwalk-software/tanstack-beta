@@ -5,15 +5,13 @@ import { z } from "zod";
 import { getCloudflareBindings } from "./getCloudflareBindings";
 
 const VariablesEnvironmentSchema = z.object({
-  BETTER_AUTH_URL: z
-    .string()
-    .url({ message: "BETTER_AUTH_URL must be a valid URL" }),
-  GOOGLE_CLIENT_ID: z
-    .string()
-    .nonempty({ message: "GOOGLE_CLIENT_ID is required" }),
-  GOOGLE_REDIRECT_URI: z
-    .string()
-    .url({ message: "GOOGLE_REDIRECT_URI must be a valid URL" }),
+  BETTER_AUTH_URL: z.string().url(),
+  // GOOGLE_CLIENT_ID: z
+  //   .string()
+  //   .nonempty({ message: "GOOGLE_CLIENT_ID is required" }),
+  // GOOGLE_REDIRECT_URI: z
+  //   .string()
+  //   .url(),
 });
 
 type VariablesEnvironment = z.infer<typeof VariablesEnvironmentSchema>;
@@ -22,9 +20,9 @@ const SecretsEnvironmentSchema = z.object({
   BETTER_AUTH_SECRET: z
     .string()
     .nonempty({ message: "BETTER_AUTH_SECRET is required" }),
-  GOOGLE_CLIENT_SECRET: z
-    .string()
-    .nonempty({ message: "GOOGLE_CLIENT_SECRET is required" }),
+  // GOOGLE_CLIENT_SECRET: z
+  //   .string()
+  //   .nonempty({ message: "GOOGLE_CLIENT_SECRET is required" }),
   RESEND_API_KEY: z
     .string()
     .nonempty({ message: "RESEND_API_KEY is required" }),
@@ -101,7 +99,7 @@ const getEnvironmentValidationFn = createServerFn().handler(
           isError: true,
           errors: {
             variables: variables.error?.issues.map(
-              (issue) => `${issue.path[0]}: ${issue.message}`,
+              (issue) => `${String(issue.path[0])}: ${issue.message}`,
             ),
             secrets: secrets.error?.issues.map((issue) =>
               issue.path[0].toString(),

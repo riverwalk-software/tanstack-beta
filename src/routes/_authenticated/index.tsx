@@ -1,3 +1,5 @@
+// import { PrismaD1 } from "@prisma/adapter-d1";
+// import { PrismaClient } from "@prisma/client";
 import { createFileRoute } from "@tanstack/react-router";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -18,12 +20,21 @@ export const Route = createFileRoute("/_authenticated/")({
   component: Home,
 });
 
+// const meme = async () => {
+//   const { DB } = getCloudflareBindings();
+//   const adapter = new PrismaD1(DB);
+//   const prisma = new PrismaClient({ adapter });
+//   return prisma;
+// };
+// const memeFn = createServerFn().handler(() => meme());
+
 function Home() {
-  return (
-    <CenteredContainer>
-      <Chart />
-    </CenteredContainer>
-  );
+  // const data = "hello"
+  // const { data } = useSuspenseQuery({
+  //   queryKey: ["asdg"],
+  //   queryFn: async () => meme(),
+  // });
+  return <CenteredContainer>{/* <p>{data}</p> */}</CenteredContainer>;
 }
 
 interface PreChartData {

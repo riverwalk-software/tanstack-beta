@@ -123,5 +123,9 @@
   "yaml.extension.recommendations": false,
   "yaml.format.enable": false,
   "yaml.schemaStore.enable": false,
-  "yaml.validate": false
+  "yaml.validate": false,
+  // Prisma.prisma
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
 }

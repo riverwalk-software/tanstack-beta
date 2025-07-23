@@ -26,10 +26,15 @@
   ],
   "d1_databases": [
     {
-      "binding": "DB",
+      "binding": "AUTH_DB",
       "database_name": "tanstack-beta-auth-db",
       "database_id": "b782d4c8-861c-401d-9ee3-88c9ca479533",
-      "migrations_dir": "./db/migrations/"
+      "migrations_dir": "./db/auth/migrations/"
+    },
+    {
+      "binding": "DB",
+      "database_name": "tanstack-beta-db",
+      "database_id": "3406e27c-588c-4752-90bc-071c83f0ba6f"
     }
   ]
 }
