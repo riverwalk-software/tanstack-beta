@@ -13,6 +13,8 @@ import {
 import { environment } from "@/utils/environment";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
+// https://www.better-auth.com/docs/guides/optimizing-for-performance
+// https://www.better-auth.com/docs/guides/browser-extension-guide
 const { DB, SESSION_STORE } = getCloudflareBindings();
 const resend = new Resend(environment.secrets.RESEND_API_KEY);
 const emailSender = "info@riverwalk.dev";
@@ -70,7 +72,7 @@ export const auth = betterAuth({
       SESSION_STORE.put(key, value, { expirationTtl: ttl }),
     delete: (key) => SESSION_STORE.delete(key),
   },
-  // rateLimit: {
+  // rateLimit: { // https://www.better-auth.com/docs/concepts/rate-limit
   //   enabled: true,
   //   customStorage: {
   //     get: async (key) => {

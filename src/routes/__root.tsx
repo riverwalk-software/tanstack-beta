@@ -151,16 +151,14 @@ function Navbar() {
   return (
     <div className="flex gap-2 p-2 text-lg">
       <div className="flex flex-1 gap-2">
-        {isAuthenticated ? (
-          <>
-            <HomeLink />
-            {/* <ProfileLink /> */}
-          </>
-        ) : null}
+        {isAuthenticated ? <HomeLink /> : null}
       </div>
       <div className="ml-auto flex gap-2">
         {isAuthenticated ? (
-          <SignOutButton />
+          <>
+            <ProfileLink />
+            <SignOutButton />
+          </>
         ) : (
           <>
             <SigninLink />
@@ -211,6 +209,19 @@ function SignupLink() {
       activeOptions={{ exact: true }}
     >
       Sign Up
+    </Link>
+  );
+}
+function ProfileLink() {
+  return (
+    <Link
+      to="/profile"
+      activeProps={{
+        className: "font-bold",
+      }}
+      activeOptions={{ exact: true }}
+    >
+      Profile
     </Link>
   );
 }

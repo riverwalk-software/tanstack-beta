@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { match } from "ts-pattern";
 import { z } from "zod";
 import { SignInWithEmailForm } from "@/components/auth/SignInWithEmailForm";
-import { SignOutButton } from "@/components/auth/SignOutButton";
 import { Button } from "@/components/ui/button";
 import { CenteredContainer } from "@/containers/CenteredContainer";
 import { PRIVACY_POLICY_LINK, TERMS_OF_USE_LINK } from "@/utils/constants";
@@ -21,20 +20,19 @@ export const Route = createFileRoute("/_unauthenticated/signin")({
 });
 
 function SignIn() {
-  FailedSignInEffect();
+  useFailedSignIn();
   return (
     <CenteredContainer>
       <div className="flex flex-col items-center gap-8">
         <SignInWithEmailForm />
         <AlternativeSignInButtons />
         <LegalFooter />
-        <SignOutButton />
       </div>
     </CenteredContainer>
   );
 }
 
-const FailedSignInEffect = () => {
+const useFailedSignIn = () => {
   const searchParams = Route.useSearch();
   useEffect(() => {
     const { error } = SearchParamsSchema.parse(searchParams);
