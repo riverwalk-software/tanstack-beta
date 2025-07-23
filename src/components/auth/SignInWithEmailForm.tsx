@@ -158,7 +158,7 @@ function FormSubmitButton({ isPending }: { isPending: boolean }) {
 }
 
 const SignInFormSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z
     .string()
     .min(

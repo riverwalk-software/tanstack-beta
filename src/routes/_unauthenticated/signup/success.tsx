@@ -9,7 +9,7 @@ import { authClient } from "@/lib/auth-client";
 import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
 import { s, ttlSToMs } from "@/utils/time";
 
-const VerifyEmailSchema = z.string().email();
+const VerifyEmailSchema = z.email();
 const resendVerificationEmailDurationS = s("30s");
 export const resendVerificationEmailDurationMs = ttlSToMs(
   resendVerificationEmailDurationS,
