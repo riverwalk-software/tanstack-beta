@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "tanstack-beta",
   "main": "./.output/server/index.mjs",
-  "compatibility_date": "2025-04-14",
+  "compatibility_date": "2025-06-08",
   "observability": {
     "enabled": true
   },
@@ -34,7 +34,8 @@
     {
       "binding": "DB",
       "database_name": "tanstack-beta-db",
-      "database_id": "2a09152c-a531-4228-bd37-2cab1c73eec7"
+      "database_id": "2a09152c-a531-4228-bd37-2cab1c73eec7",
+      "migrations_dir": "./db/main/migrations/"
     }
   ]
 }

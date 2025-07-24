@@ -1,7 +1,10 @@
-// import { PrismaD1 } from "@prisma/adapter-d1";
-// import { PrismaClient } from "@prisma/client";
+import { PrismaD1 } from "@prisma/adapter-d1";
+import { PrismaClient } from "@prisma/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   type ChartConfig,
@@ -12,6 +15,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { CenteredContainer } from "@/containers/CenteredContainer";
+import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 export const Route = createFileRoute("/_authenticated/")({
   // loader: async ({ context: { queryClient } }) => {
@@ -20,21 +24,47 @@ export const Route = createFileRoute("/_authenticated/")({
   component: Home,
 });
 
-// const meme = async () => {
-//   const { DB } = getCloudflareBindings();
-//   const adapter = new PrismaD1(DB);
-//   const prisma = new PrismaClient({ adapter });
-//   return prisma;
-// };
-// const memeFn = createServerFn().handler(() => meme());
+const memeFn = createServerFn().handler(async () => {
+  const { DB } = getCloudflareBindings();
+  const adapter = new PrismaD1(DB);
+  const prisma = new PrismaClient({ adapter });
+  const users = await prisma.user.findMany();
+  return users;
+});
+
+const onClickFn = createServerFn({ method: "POST" }).handler(async () => {
+  const { DB } = getCloudflareBindings();
+  const adapter = new PrismaD1(DB);
+  const prisma = new PrismaClient({ adapter });
+  const users = await prisma.user.create({
+    data: {
+      email: "TEST@gmail.com",
+      name: "Test User",
+    },
+  });
+  return users;
+});
 
 function Home() {
-  // const data = "hello"
-  // const { data } = useSuspenseQuery({
-  //   queryKey: ["asdg"],
-  //   queryFn: async () => meme(),
-  // });
-  return <CenteredContainer>{/* <p>{data}</p> */}</CenteredContainer>;
+  const { data } = useSuspenseQuery({
+    queryKey: ["asdg"],
+    queryFn: async () => memeFn(),
+  });
+  return (
+    <CenteredContainer>
+      {data.map((user) => (
+        <p key={user.id}>{user.email}</p>
+      ))}
+      <Button
+        onClick={(event) => {
+          onClickFn();
+        }}
+        disabled={false}
+      >
+        Click
+      </Button>
+    </CenteredContainer>
+  );
 }
 
 interface PreChartData {

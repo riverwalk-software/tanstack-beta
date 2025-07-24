@@ -2,9 +2,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm run cf-typegen && vite dev",
-    "build": "pnpm run cf-typegen && vite build && tsc --noEmit",
+    "dev": "pnpm run typegen && vite dev",
+    "build": "pnpm run typegen && vite build && tsc --noEmit",
+    "typegen": "pnpm run cf-typegen && pnpm run prisma-typegen",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "prisma-typegen": "prisma generate",
     "email": "email dev --dir src/components/emails"
   },
   "dependencies": {
