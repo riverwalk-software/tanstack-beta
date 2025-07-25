@@ -27,15 +27,15 @@
   "d1_databases": [
     {
       "binding": "AUTH_DB",
-      "database_name": "tanstack-beta-auth-db",
-      "database_id": "b782d4c8-861c-401d-9ee3-88c9ca479533",
-      "migrations_dir": "./db/auth/migrations/"
+      "database_name": "auth_database",
+      "database_id": "24960691-14e2-4e0a-9b85-942154cfea0a",
+      "migrations_dir": "./src/db/auth/migrations/"
     },
     {
-      "binding": "DB",
-      "database_name": "tanstack-beta-main-db",
-      "database_id": "34865771-f249-49d4-9db8-d0f0a52b1d16",
-      "migrations_dir": "./db/main/migrations/"
+      "binding": "SCHOOL_DB",
+      "database_name": "school_database",
+      "database_id": "3f532e7d-e963-4de5-bb87-a09e2f5e9f4d",
+      "migrations_dir": "./src/db/main/migrations/"
     }
   ]
 }

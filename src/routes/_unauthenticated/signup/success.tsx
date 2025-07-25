@@ -3,8 +3,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { toast } from "sonner";
 import z from "zod";
 import { verifyEmailQueryKey } from "@/components/auth/SignUpWithEmailForm";
-import { Button } from "@/components/ui/button";
-import { useCountdown } from "@/hooks/useCountdown";
+// import { useCountdown } from "@/hooks/useCountdown";
 import { authClient } from "@/lib/auth-client";
 import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
 import { s, ttlSToMs } from "@/utils/time";
@@ -31,13 +30,13 @@ export const Route = createFileRoute("/_unauthenticated/signup/success")({
 });
 
 function RouteComponent() {
-  const { email } = Route.useLoaderData();
-  const { resendVerificationEmail } = useResendVerificationEmail({ email });
-  const { count, isPending, restartCountdown } =
-    useResendVerificationEmailCountdown();
+  // const { email } = Route.useLoaderData();
+  // const { resendVerificationEmail } = useResendVerificationEmail({ email });
+  // const { count, isPending, restartCountdown } =
+  //   useResendVerificationEmailCountdown();
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <Button
+      {/* <Button
         disabled={isPending}
         onClick={() => {
           resendVerificationEmail();
@@ -47,7 +46,7 @@ function RouteComponent() {
         {isPending
           ? `Time before another verification email can be sent: ${count}`
           : "Resend Verification Email"}
-      </Button>
+      </Button> */}
     </div>
   );
 }
@@ -69,11 +68,11 @@ export const useResendVerificationEmail = ({ email }: { email: string }) => {
   return { resendVerificationEmail };
 };
 
-function useResendVerificationEmailCountdown() {
-  const { count, restartCountdown, isFinished } = useCountdown({
-    countStart: resendVerificationEmailDurationS,
-    startOnInit: true,
-  });
-  const isPending = !isFinished;
-  return { count, restartCountdown, isPending };
-}
+// function useResendVerificationEmailCountdown() {
+//   const { count, restartCountdown, isFinished } = useCountdown({
+//     countStart: resendVerificationEmailDurationS,
+//     startOnInit: true,
+//   });
+//   const isPending = !isFinished;
+//   return { count, restartCountdown, isPending };
+// }

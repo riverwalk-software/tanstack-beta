@@ -8,6 +8,9 @@
       "version": "22"
     }
   },
+  "containerEnv": {
+    "NODE_ENV": "development"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -30,7 +33,7 @@
   "onCreateCommand": "git lfs install",
   "postCreateCommand": "git lfs pull",
   // "postAttachCommand": "pnpm install --prefer-offline --frozen-lockfile && pnpm dev",
-  "postAttachCommand": "npm ci && npm run dev",
+  "postAttachCommand": "npm run db:seed && npm ci && npm run dev",
   "forwardPorts": [3000],
   "portsAttributes": {
     "3000": {

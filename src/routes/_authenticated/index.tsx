@@ -1,7 +1,9 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { drizzle } from "drizzle-orm/d1";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { match } from "ts-pattern";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -13,6 +15,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { CenteredContainer } from "@/containers/CenteredContainer";
+import { postsTable2 } from "@/db/main/schema";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -22,43 +25,79 @@ export const Route = createFileRoute("/_authenticated/")({
   component: Home,
 });
 
-// const memeFn = createServerFn().handler(async () => {
-//   const { DB } = getCloudflareBindings();
-//   const db = drizzle(DB);
-//   const result = await db.select().from(users).all();
-//   return result;
-// });
+const memeFn = createServerFn().handler(async () => {
+  const { SCHOOL_DB } = getCloudflareBindings();
+  const db = drizzle(SCHOOL_DB);
+  const result = await db.select().from(postsTable2).all();
+  return result;
+});
 
-// const onClickFn = createServerFn({ method: "POST" }).handler(async () => {
-//   const { DB } = getCloudflareBindings();
-//   const adapter = new PrismaD1(DB);
-//   const prisma = new PrismaClient({ adapter });
-//   const users = await prisma.user.create({
-//     data: {
-//       email: "TEST@gmail.com",
-//       name: "Test User",
-//     },
-//   });
-//   return users;
-// });
+const addPostFn = createServerFn({ method: "POST" }).handler(async () => {
+  const { SCHOOL_DB } = getCloudflareBindings();
+  const db = drizzle(SCHOOL_DB);
+  const result = db
+    .insert(postsTable2)
+    .values({
+      content: "This is a sample post content",
+      title: "Sample Post Title",
+    })
+    .returning();
+  return result;
+});
+const clearPostsFn = createServerFn({ method: "POST" }).handler(async () => {
+  const { SCHOOL_DB } = getCloudflareBindings();
+  const db = drizzle(SCHOOL_DB);
+  await db.delete(postsTable2);
+});
+
+const useOnClick = () => {
+  const queryClient = useQueryClient();
+  const { mutate: addUser, isPending } = useMutation({
+    mutationFn: () => addPostFn(),
+    onSuccess: () => {
+      // Refetch the users list to show the new user
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+  const { mutate: clear } = useMutation({
+    mutationFn: () => clearPostsFn(),
+    onSuccess: () => {
+      // Refetch the users list to show the new user
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+
+  return { addUser, isPending, clear };
+};
 
 function Home() {
-  // const { data } = useSuspenseQuery({
-  //   queryKey: ["asdg"],
-  //   queryFn: async () => {},
-  // });
+  const { addUser, isPending, clear } = useOnClick();
+  const {
+    data: posts,
+    status,
+    error,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => memeFn(),
+  });
   return (
     <CenteredContainer>
-      {/* {data.map((user) => (
-        <p key={user.id}>{user.email}</p>
-      ))} */}
-      <Button
-        onClick={(event) => {
-          // onClickFn();
-        }}
-        disabled={false}
-      >
-        Click
+      {match(status)
+        .with("pending", () => <p>Loading...</p>)
+        .with("error", () => <p>{`Error loading data: ${error!.message}`}</p>)
+        .with("success", () => (
+          <div>
+            {posts!.map(({ id, content, title }) => (
+              <p key={id}>{`${id}: ${title}`}</p>
+            ))}
+          </div>
+        ))
+        .exhaustive()}
+      <Button onClick={() => addUser()} disabled={isPending}>
+        Add
+      </Button>
+      <Button onClick={() => clear()} disabled={isPending}>
+        Clear
       </Button>
     </CenteredContainer>
   );
