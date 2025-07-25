@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { drizzle } from "drizzle-orm/d1";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -11,6 +13,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { CenteredContainer } from "@/containers/CenteredContainer";
+import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 export const Route = createFileRoute("/_authenticated/")({
   // loader: async ({ context: { queryClient } }) => {
@@ -21,10 +24,9 @@ export const Route = createFileRoute("/_authenticated/")({
 
 // const memeFn = createServerFn().handler(async () => {
 //   const { DB } = getCloudflareBindings();
-//   const adapter = new PrismaD1(DB);
-//   const prisma = new PrismaClient({ adapter });
-//   const users = await prisma.user.findMany();
-//   return users;
+//   const db = drizzle(DB);
+//   const result = await db.select().from(users).all();
+//   return result;
 // });
 
 // const onClickFn = createServerFn({ method: "POST" }).handler(async () => {

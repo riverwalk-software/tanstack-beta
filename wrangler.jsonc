@@ -33,8 +33,8 @@
     },
     {
       "binding": "DB",
-      "database_name": "tanstack-beta-db",
-      "database_id": "2a09152c-a531-4228-bd37-2cab1c73eec7",
+      "database_name": "tanstack-beta-main-db",
+      "database_id": "34865771-f249-49d4-9db8-d0f0a52b1d16",
       "migrations_dir": "./db/main/migrations/"
     }
   ]

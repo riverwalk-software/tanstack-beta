@@ -8,7 +8,7 @@ const VariablesEnvironmentSchema = z.object({
   BETTER_AUTH_URL: z.string().url(),
   // GOOGLE_CLIENT_ID: z
   //   .string()
-  //   .nonempty({ message: "GOOGLE_CLIENT_ID is required" }),
+  //   .nonempty(),
   // GOOGLE_REDIRECT_URI: z
   //   .string()
   //   .url(),
@@ -17,15 +17,14 @@ const VariablesEnvironmentSchema = z.object({
 type VariablesEnvironment = z.infer<typeof VariablesEnvironmentSchema>;
 
 const SecretsEnvironmentSchema = z.object({
-  BETTER_AUTH_SECRET: z
-    .string()
-    .nonempty({ message: "BETTER_AUTH_SECRET is required" }),
+  BETTER_AUTH_SECRET: z.string().nonempty(),
   // GOOGLE_CLIENT_SECRET: z
   //   .string()
-  //   .nonempty({ message: "GOOGLE_CLIENT_SECRET is required" }),
-  RESEND_API_KEY: z
-    .string()
-    .nonempty({ message: "RESEND_API_KEY is required" }),
+  //   .nonempty(),
+  CLOUDFLARE_ACCOUNT_ID: z.string().nonempty(),
+  CLOUDFLARE_D1_TOKEN: z.string().nonempty(),
+  CLOUDFLARE_DATABASE_ID: z.string().nonempty(),
+  RESEND_API_KEY: z.string().nonempty(),
 });
 
 type SecretsEnvironment = z.infer<typeof SecretsEnvironmentSchema>;
