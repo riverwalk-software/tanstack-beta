@@ -26,6 +26,7 @@ async function main() {
   await seed(db, schema, { count: 1, seed: 0 }).refine(
     ({ intPrimaryKey, companyName, timestamp, uuid, city, loremIpsum }) => ({
       SchoolEntity: {
+        count: 1,
         columns: {
           // id: intPrimaryKey(),
           createdAt: timestamp(),
@@ -35,6 +36,7 @@ async function main() {
         },
       },
       CourseEntity: {
+        count: 2,
         columns: {
           // id: intPrimaryKey(),
           createdAt: timestamp(),
@@ -45,6 +47,7 @@ async function main() {
         },
       },
       ChapterEntity: {
+        count: 5,
         columns: {
           // id: intPrimaryKey(),
           createdAt: timestamp(),
@@ -55,6 +58,7 @@ async function main() {
         },
       },
       LectureEntity: {
+        count: 8,
         columns: {
           // id: intPrimaryKey(),
           createdAt: timestamp(),
