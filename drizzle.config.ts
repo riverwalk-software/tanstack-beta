@@ -25,5 +25,6 @@ export default defineConfig({
   schema: "./src/db/main/schema.ts",
   out: "./src/db/main/migrations/",
   dialect: "sqlite",
+  casing: "snake_case",
   ...getCredentials(),
 });

@@ -15,7 +15,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { CenteredContainer } from "@/containers/CenteredContainer";
-import { postsTable2 } from "@/db/main/schema";
+import { SchoolEntity } from "@/db/main/schema";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 export const Route = createFileRoute("/_authenticated/")({
@@ -27,27 +27,27 @@ export const Route = createFileRoute("/_authenticated/")({
 
 const memeFn = createServerFn().handler(async () => {
   const { SCHOOL_DB } = getCloudflareBindings();
-  const db = drizzle(SCHOOL_DB);
-  const result = await db.select().from(postsTable2).all();
-  return result;
+  const db = drizzle(SCHOOL_DB, { casing: "snake_case" });
+  const schools = await db.select().from(SchoolEntity).all();
+  return schools;
 });
 
 const addPostFn = createServerFn({ method: "POST" }).handler(async () => {
   const { SCHOOL_DB } = getCloudflareBindings();
-  const db = drizzle(SCHOOL_DB);
+  const db = drizzle(SCHOOL_DB, { casing: "snake_case" });
   const result = db
-    .insert(postsTable2)
+    .insert(SchoolEntity)
     .values({
-      content: "This is a sample post content",
-      title: "Sample Post Title",
+      name: "New School",
+      slug: "new-school",
     })
     .returning();
   return result;
 });
 const clearPostsFn = createServerFn({ method: "POST" }).handler(async () => {
   const { SCHOOL_DB } = getCloudflareBindings();
-  const db = drizzle(SCHOOL_DB);
-  await db.delete(postsTable2);
+  const db = drizzle(SCHOOL_DB, { casing: "snake_case" });
+  await db.delete(SchoolEntity);
 });
 
 const useOnClick = () => {
@@ -87,8 +87,8 @@ function Home() {
         .with("error", () => <p>{`Error loading data: ${error!.message}`}</p>)
         .with("success", () => (
           <div>
-            {posts!.map(({ id, content, title }) => (
-              <p key={id}>{`${id}: ${title}`}</p>
+            {posts!.map(({ id, name }) => (
+              <p key={id}>{`${name}`}</p>
             ))}
           </div>
         ))

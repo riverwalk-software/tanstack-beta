@@ -1,41 +1,222 @@
-import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { relations, sql } from "drizzle-orm";
+import * as d from "drizzle-orm/sqlite-core";
+import { sqliteTable as table, unique } from "drizzle-orm/sqlite-core";
 
-export const usersTable = sqliteTable("users_table", {
-  id: int().primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
-  age: int().notNull(),
-  email: text().notNull().unique(),
+const timestamps = {
+  createdAt: d
+    .integer({ mode: "timestamp_ms" })
+    .notNull()
+    .default(sql`(CAST(unixepoch('subsec') * 1000 AS INTEGER))`),
+  updatedAt: d
+    .integer({ mode: "timestamp_ms" })
+    .notNull()
+    .$onUpdateFn(() => sql`(CAST(unixepoch('subsec') * 1000 AS INTEGER))`),
+};
+
+export const SchoolEntity = table("schools", {
+  id: d.integer().primaryKey({ autoIncrement: true }),
+  ...timestamps,
+  slug: d.text({ length: 100 }).notNull().unique(),
+  name: d.text({ length: 100 }).notNull().unique(),
+  // status: d
+  //   .text({ enum: ["active", "inactive"] })
+  //   .notNull()
+  //   .default("active"),
 });
 
-export const usersTable2 = sqliteTable("users_table2", {
-  id: int().primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
-  age: int().notNull(),
-  email: text().notNull().unique(),
+export const SchoolRelationships = relations(SchoolEntity, ({ many }) => ({
+  courses: many(CourseEntity),
+}));
+
+export const CourseEntity = table(
+  "courses",
+  {
+    id: d.integer().primaryKey({ autoIncrement: true }),
+    ...timestamps,
+    slug: d.text({ length: 100 }).notNull(),
+    title: d
+      .text({
+        length: 200,
+      })
+      .notNull(),
+    description: d
+      .text({
+        length: 500,
+      })
+      .notNull(),
+    // status: d
+    //   .text({ enum: ["archived", "active"] })
+    //   .notNull()
+    //   .default("active"),
+    schoolId: d
+      .integer()
+      .notNull()
+      .references(() => SchoolEntity.id, {
+        onDelete: "cascade",
+      }),
+  },
+  (table) => [
+    unique("unique_slug_per_school").on(table.slug, table.schoolId),
+    unique("unique_title_per_school").on(table.title, table.schoolId),
+  ],
+);
+
+export const CourseRelationships = relations(CourseEntity, ({ many, one }) => ({
+  school: one(SchoolEntity, {
+    fields: [CourseEntity.schoolId],
+    references: [SchoolEntity.id],
+  }),
+  chapters: many(ChapterEntity),
+}));
+
+export const ChapterEntity = table(
+  "chapters",
+  {
+    id: d.integer().primaryKey({ autoIncrement: true }),
+    ...timestamps,
+    ordinal: d.integer().notNull(),
+    slug: d
+      .text({
+        length: 100,
+      })
+      .notNull(),
+    title: d
+      .text({
+        length: 200,
+      })
+      .notNull(),
+    courseId: d
+      .integer()
+      .notNull()
+      .references(() => CourseEntity.id, {
+        onDelete: "cascade",
+      }),
+  },
+  (table) => [
+    unique("unique_ordinal_per_course").on(table.ordinal, table.courseId),
+    unique("unique_slug_per_course").on(table.slug, table.courseId),
+    unique("unique_title_per_course").on(table.title, table.courseId),
+  ],
+);
+
+export const ChapterRelationships = relations(
+  ChapterEntity,
+  ({ one, many }) => ({
+    course: one(CourseEntity, {
+      fields: [ChapterEntity.courseId],
+      references: [CourseEntity.id],
+    }),
+    lectures: many(LectureEntity),
+  }),
+);
+
+export const LectureEntity = table(
+  "lectures",
+  {
+    id: d.integer().primaryKey({ autoIncrement: true }),
+    ...timestamps,
+    ordinal: d.integer().notNull(),
+    slug: d
+      .text({
+        length: 100,
+      })
+      .notNull(),
+    title: d
+      .text({
+        length: 200,
+      })
+      .notNull(),
+    description: d
+      .text({
+        length: 500,
+      })
+      .notNull(),
+    chapterId: d
+      .integer()
+      .notNull()
+      .references(() => ChapterEntity.id, {
+        onDelete: "cascade",
+      }),
+  },
+  (table) => [
+    unique("unique_ordinal_per_chapter").on(table.ordinal, table.chapterId),
+    unique("unique_slug_per_chapter").on(table.slug, table.chapterId),
+    unique("unique_title_per_chapter").on(table.title, table.chapterId),
+  ],
+);
+
+export const LectureRelationships = relations(
+  LectureEntity,
+  ({ one, many }) => ({
+    chapter: one(ChapterEntity, {
+      fields: [LectureEntity.chapterId],
+      references: [ChapterEntity.id],
+    }),
+    video: one(VideoEntity),
+    attachments: many(AttachmentEntity),
+  }),
+);
+
+export const VideoEntity = table("videos", {
+  id: d.integer().primaryKey({ autoIncrement: true }),
+  ...timestamps,
+  url: d.text({ length: 200 }).notNull(),
+  lectureId: d
+    .integer()
+    .notNull()
+    .unique()
+    .references(() => LectureEntity.id, {
+      onDelete: "cascade",
+    }),
 });
 
-export const usersTable3 = sqliteTable("users_table3", {
-  id: int().primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
-  age: int().notNull(),
-  email: text().notNull().unique(),
-});
+export const VideoRelationships = relations(VideoEntity, ({ one }) => ({
+  lecture: one(LectureEntity, {
+    fields: [VideoEntity.lectureId],
+    references: [LectureEntity.id],
+  }),
+}));
 
-export const usersTable4 = sqliteTable("users_table4", {
-  id: int().primaryKey({ autoIncrement: true }),
-  name: text().notNull(),
-  age: int().notNull(),
-  email: text().notNull().unique(),
-});
+export const AttachmentEntity = table(
+  "attachments",
+  {
+    id: d.integer().primaryKey({ autoIncrement: true }),
+    ...timestamps,
+    url: d
+      .text({
+        length: 200,
+      })
+      .notNull(),
+    name: d
+      .text({
+        length: 200,
+      })
+      .notNull(),
+    mimeType: d
+      .text({
+        length: 100,
+      })
+      .notNull(),
+    size: d.integer().notNull(),
+    lectureId: d
+      .integer()
+      .notNull()
+      .references(() => LectureEntity.id, {
+        onDelete: "cascade",
+      }),
+  },
+  (table) => [
+    unique("unique_url_per_lecture").on(table.url, table.lectureId),
+    unique("unique_name_per_lecture").on(table.name, table.lectureId),
+  ],
+);
 
-export const postsTable = sqliteTable("posts_table", {
-  id: int().primaryKey({ autoIncrement: true }),
-  title: text().notNull(),
-  content: text().notNull(),
-});
-
-export const postsTable2 = sqliteTable("posts_table2", {
-  id: int().primaryKey({ autoIncrement: true }),
-  title: text().notNull(),
-  content: text().notNull(),
-});
+export const AttachmentRelationships = relations(
+  AttachmentEntity,
+  ({ one }) => ({
+    lecture: one(LectureEntity, {
+      fields: [AttachmentEntity.lectureId],
+      references: [LectureEntity.id],
+    }),
+  }),
+);

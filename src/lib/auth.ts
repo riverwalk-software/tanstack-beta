@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { reactStartCookies } from "better-auth/react-start";
-import Database from "better-sqlite3";
+import { Kysely } from "kysely";
+import { D1Dialect } from "kysely-d1";
 import { Resend } from "resend";
 import { ResetPasswordEmail } from "@/components/emails/ResetPasswordEmail";
 import { VerifyEmailEmail } from "@/components/emails/VerifyEmailEmail";
@@ -55,16 +56,13 @@ export const auth = betterAuth({
   //     clientSecret: environment.secrets.GOOGLE_CLIENT_SECRET,
   //   },
   // },
+  // database: new Database("./src/db/auth/sqlite.db"),
   database: {
-    casing: "snake_case",
-    dialect: new Database("./db/auth/sqlite.db"),
+    db: new Kysely({
+      dialect: new D1Dialect({ database: AUTH_DB }),
+    }),
     type: "sqlite",
   },
-  // database: {
-  //   casing: "snake_case",
-  //   dialect: new D1Dialect({ database: AUTH_DB }),
-  //   type: "sqlite",
-  // },
   session: {
     storeSessionInDatabase: true, // TODO: remove this when issue fixed https://github.com/better-auth/better-auth/issues/2007
     cookieCache: {
