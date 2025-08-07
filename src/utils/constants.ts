@@ -18,7 +18,7 @@ export const SITE_URL = `https://${SITE_DOMAIN}`;
 // export const SNAPGEN_PATH = "/api/snapgen";
 export const TEST_USER = {
   email: "andrei+50@andreigeorgescu.com",
-  password: "passwordpassword",
+  password: "andrei+50@andreigeorgescu.com",
 };
 export const HOME_ROUTE: RouteType = "/";
 export const AUTH_CALLBACK_ROUTE: RouteType = "/signin";

@@ -23,7 +23,7 @@ import {
   YoutubeDataScopeSchema,
   youtubeScopes,
 } from "@/utils/oauth/google";
-import { checkIfExpired, ttlSToMs } from "@/utils/time";
+import { checkIfExpiredMs, ttlSToMs } from "@/utils/time";
 
 export const ServerRoute = createServerFileRoute(
   "/api/oauth/google/callback",
@@ -103,7 +103,7 @@ const getUserId = (sessionId: string) =>
     const { userId, expiresAt } = yield* Effect.sync(() =>
       SessionEntrySchema.parse(unknownEntry),
     );
-    const isExpired = yield* Effect.sync(() => checkIfExpired(expiresAt));
+    const isExpired = yield* Effect.sync(() => checkIfExpiredMs(expiresAt));
     yield* Effect.if(isExpired, {
       onFalse: () => Effect.void,
       onTrue: () =>

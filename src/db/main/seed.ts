@@ -24,7 +24,15 @@ async function main() {
   };
   await reset(db, schema);
   await seed(db, schema, { count: 1, seed: 0 }).refine(
-    ({ intPrimaryKey, companyName, timestamp, uuid, city, loremIpsum }) => ({
+    ({
+      intPrimaryKey,
+      companyName,
+      timestamp,
+      uuid,
+      city,
+      loremIpsum,
+      valuesFromArray,
+    }) => ({
       SchoolEntity: {
         count: 1,
         columns: {
@@ -32,7 +40,8 @@ async function main() {
           createdAt: timestamp(),
           updatedAt: timestamp(),
           slug: uuid(),
-          name: companyName({ isUnique: true }),
+          name: valuesFromArray({ values: ["Rock the JVM"], isUnique: true }),
+          description: loremIpsum(),
         },
       },
       CourseEntity: {
@@ -42,7 +51,15 @@ async function main() {
           createdAt: timestamp(),
           updatedAt: timestamp(),
           slug: uuid(),
-          title: city({ isUnique: true }),
+          title: valuesFromArray({
+            values: [
+              "Scala for the Impatient",
+              "Advanced Scala",
+              "Scala for Data Science",
+              "Haskell for the Impatient",
+            ],
+            isUnique: true,
+          }),
           description: loremIpsum(),
         },
       },
@@ -54,7 +71,16 @@ async function main() {
           updatedAt: timestamp(),
           ordinal: intPrimaryKey(),
           slug: uuid(),
-          title: city({ isUnique: true }),
+          title: valuesFromArray({
+            values: [
+              "Introduction to Scala",
+              "Advanced Scala Concepts",
+              "Data Science with Scala",
+              "Haskell Basics",
+              "Functional Programming in Haskell",
+            ],
+            isUnique: true,
+          }),
         },
       },
       LectureEntity: {
@@ -65,8 +91,41 @@ async function main() {
           updatedAt: timestamp(),
           ordinal: intPrimaryKey(),
           slug: uuid(),
-          title: city({ isUnique: true }),
+          title: valuesFromArray({
+            values: [
+              "Introduction",
+              "Advanced Topics",
+              "Data Science Applications",
+              "Haskell Fundamentals",
+              "Functional Programming Techniques",
+              "Scala for Data Engineers",
+              "Haskell for Data Scientists",
+              "Advanced Haskell Patterns",
+            ],
+            isUnique: true,
+          }),
           description: loremIpsum(),
+        },
+      },
+      VideoEntity: {
+        count: 8,
+        columns: {
+          createdAt: timestamp(),
+          updatedAt: timestamp(),
+          videoId: valuesFromArray({
+            values: [
+              "1659d835-79fc-466a-9088-f9ae05a735a9",
+              "c8d11043-24ea-4dc8-854a-78d6c3e7f832",
+              "ef8bf91d-e221-4d6b-b43b-2986778f612c",
+              "fdf7f71f-00ab-4ccb-9808-7dd22ea24427",
+              "d6066363-eb8e-4d47-81bb-e7bb62526a24",
+              "38b0a916-5759-4caf-b4d1-335ac2307f7b",
+              "e8bdf362-1789-4643-8c24-e241e8609ac2",
+              "ca2dbda4-aa6f-4197-8f05-54a0b5660c21",
+            ],
+            isUnique: true,
+          }),
+          lectureId: intPrimaryKey(),
         },
       },
     }),

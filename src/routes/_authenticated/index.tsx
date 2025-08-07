@@ -1,10 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { drizzle } from "drizzle-orm/d1";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import { match } from "ts-pattern";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   type ChartConfig,
@@ -14,9 +9,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { CenteredContainer } from "@/containers/CenteredContainer";
-import { SchoolEntity } from "@/db/main/schema";
-import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 export const Route = createFileRoute("/_authenticated/")({
   // loader: async ({ context: { queryClient } }) => {
@@ -25,82 +17,8 @@ export const Route = createFileRoute("/_authenticated/")({
   component: Home,
 });
 
-const memeFn = createServerFn().handler(async () => {
-  const { SCHOOL_DB } = getCloudflareBindings();
-  const db = drizzle(SCHOOL_DB, { casing: "snake_case" });
-  const schools = await db.select().from(SchoolEntity).all();
-  return schools;
-});
-
-const addPostFn = createServerFn({ method: "POST" }).handler(async () => {
-  const { SCHOOL_DB } = getCloudflareBindings();
-  const db = drizzle(SCHOOL_DB, { casing: "snake_case" });
-  const result = db
-    .insert(SchoolEntity)
-    .values({
-      name: "New School",
-      slug: "new-school",
-    })
-    .returning();
-  return result;
-});
-const clearPostsFn = createServerFn({ method: "POST" }).handler(async () => {
-  const { SCHOOL_DB } = getCloudflareBindings();
-  const db = drizzle(SCHOOL_DB, { casing: "snake_case" });
-  await db.delete(SchoolEntity);
-});
-
-const useOnClick = () => {
-  const queryClient = useQueryClient();
-  const { mutate: addUser, isPending } = useMutation({
-    mutationFn: () => addPostFn(),
-    onSuccess: () => {
-      // Refetch the users list to show the new user
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
-  });
-  const { mutate: clear } = useMutation({
-    mutationFn: () => clearPostsFn(),
-    onSuccess: () => {
-      // Refetch the users list to show the new user
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
-  });
-
-  return { addUser, isPending, clear };
-};
-
 function Home() {
-  const { addUser, isPending, clear } = useOnClick();
-  const {
-    data: posts,
-    status,
-    error,
-  } = useQuery({
-    queryKey: ["users"],
-    queryFn: async () => memeFn(),
-  });
-  return (
-    <CenteredContainer>
-      {match(status)
-        .with("pending", () => <p>Loading...</p>)
-        .with("error", () => <p>{`Error loading data: ${error!.message}`}</p>)
-        .with("success", () => (
-          <div>
-            {posts!.map(({ id, name }) => (
-              <p key={id}>{`${name}`}</p>
-            ))}
-          </div>
-        ))
-        .exhaustive()}
-      <Button onClick={() => addUser()} disabled={isPending}>
-        Add
-      </Button>
-      <Button onClick={() => clear()} disabled={isPending}>
-        Clear
-      </Button>
-    </CenteredContainer>
-  );
+  return <p>Home</p>;
 }
 
 interface PreChartData {

@@ -18,6 +18,11 @@ export const SchoolEntity = table("schools", {
   ...timestamps,
   slug: d.text({ length: 100 }).notNull().unique(),
   name: d.text({ length: 100 }).notNull().unique(),
+  description: d
+    .text({
+      length: 500,
+    })
+    .notNull(),
   // status: d
   //   .text({ enum: ["active", "inactive"] })
   //   .notNull()
@@ -160,7 +165,7 @@ export const LectureRelationships = relations(
 export const VideoEntity = table("videos", {
   id: d.integer().primaryKey({ autoIncrement: true }),
   ...timestamps,
-  url: d.text({ length: 200 }).notNull(),
+  videoId: d.text({ length: 200 }).notNull(),
   lectureId: d
     .integer()
     .notNull()

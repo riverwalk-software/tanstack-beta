@@ -6,21 +6,13 @@ import { getCloudflareBindings } from "./getCloudflareBindings";
 
 const VariablesEnvironmentSchema = z.object({
   BETTER_AUTH_URL: z.string().url(),
-  // GOOGLE_CLIENT_ID: z
-  //   .string()
-  //   .nonempty(),
-  // GOOGLE_REDIRECT_URI: z
-  //   .string()
-  //   .url(),
 });
 
 type VariablesEnvironment = z.infer<typeof VariablesEnvironmentSchema>;
 
 const SecretsEnvironmentSchema = z.object({
   BETTER_AUTH_SECRET: z.string().nonempty(),
-  // GOOGLE_CLIENT_SECRET: z
-  //   .string()
-  //   .nonempty(),
+  BUNNY_TOKEN_API_KEY: z.string().nonempty(),
   CLOUDFLARE_ACCOUNT_ID: z.string().nonempty(),
   CLOUDFLARE_D1_TOKEN: z.string().nonempty(),
   CLOUDFLARE_DATABASE_ID: z.string().nonempty(),
