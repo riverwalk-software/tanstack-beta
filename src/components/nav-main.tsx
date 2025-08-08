@@ -1,8 +1,8 @@
-"use client";
-
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { ChevronRight, SquareTerminal } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -18,27 +18,58 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { chaptersAndLecturesQueryOptions } from "@/utils/schools";
+import type { ProgressStore } from "@/db/main/seed";
+import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
+import { courseQueryOptions } from "@/utils/schools";
 
 export function NavMain() {
   const { schoolSlug, courseSlug, lectureSlug } = useParams({
     from: "/_authenticated/schools/$schoolSlug/$courseSlug/$lectureSlug/",
   });
-  const { data: chaptersAndLectures } = useSuspenseQuery(
-    chaptersAndLecturesQueryOptions(schoolSlug, courseSlug),
+  const {
+    data: { chapters },
+  } = useSuspenseQuery(courseQueryOptions(schoolSlug, courseSlug));
+  const activeChapter = chapters.find((chapter) =>
+    chapter.lectures.some((lecture) => lecture.slug === lectureSlug),
+  )!;
+  const [openChapters, setOpenChapters] = useState<Set<string>>(
+    new Set([activeChapter.title]),
   );
+  useEffect(() => {
+    const newActiveChapter = chapters.find((chapter) =>
+      chapter.lectures.some((lecture) => lecture.slug === lectureSlug),
+    )!;
+    setOpenChapters(new Set([newActiveChapter.title]));
+  }, [lectureSlug, chapters]);
+  const handleChapterToggle = (chapterTitle: string, isOpen: boolean) => {
+    setOpenChapters((prev) => {
+      const newSet = new Set(prev);
+      if (isOpen) {
+        newSet.add(chapterTitle);
+      } else {
+        newSet.delete(chapterTitle);
+      }
+      return newSet;
+    });
+  };
+  const { data: progressLectures } = useSuspenseQuery({
+    queryKey: ["progressLectures", schoolSlug, courseSlug],
+    queryFn: async () =>
+      getProgressLectures({
+        data: { schoolSlug, courseSlug },
+      }),
+  });
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Chapters</SidebarGroupLabel>
       <SidebarMenu>
-        {chaptersAndLectures.map(({ title, lectures }) => (
+        {chapters.map(({ title, lectures }) => (
           <Collapsible
             key={title}
             asChild
-            defaultOpen={lectures.some(
-              (lecture) => lecture.slug === lectureSlug,
-            )}
-            className="group/collapsible"
+            open={openChapters.has(title)}
+            onOpenChange={(isOpen) => handleChapterToggle(title, isOpen)}
+            className="group/collapsible text-sky-100"
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
@@ -51,14 +82,23 @@ export function NavMain() {
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {lectures.map((lecture) => (
-                    <SidebarMenuSubItem
-                      key={lecture.title}
-                      className={
-                        lecture.slug === lectureSlug ? "underline" : undefined
-                      }
-                    >
-                      <SidebarMenuSubButton asChild>
+                    <SidebarMenuSubItem key={lecture.title}>
+                      <SidebarMenuSubButton
+                        asChild
+                        className={
+                          progressLectures.find(
+                            (progressLecture) =>
+                              progressLecture.lectureSlug === lecture.slug,
+                          )!.completed
+                            ? "text-green-300"
+                            : ""
+                        }
+                      >
                         <Link
+                          activeProps={{
+                            className: "font-bold underline",
+                          }}
+                          activeOptions={{ exact: true }}
                           to={"/schools/$schoolSlug/$courseSlug/$lectureSlug"}
                           params={{
                             schoolSlug,
@@ -80,3 +120,19 @@ export function NavMain() {
     </SidebarGroup>
   );
 }
+
+const getProgressLectures = createServerFn()
+  .validator((data: { schoolSlug: string; courseSlug: string }) => data)
+  .handler(async ({ data: { schoolSlug, courseSlug } }) => {
+    const { PROGRESS_STORE } = getCloudflareBindings();
+    const store = await PROGRESS_STORE.get<ProgressStore>("TestUser", {
+      type: "json",
+    });
+    if (!store) return [];
+    const course = store.schools
+      .find((school) => school.schoolSlug === schoolSlug)
+      ?.courses.find((course) => course.courseSlug === courseSlug);
+    if (!course) return [];
+    const { lectures } = course;
+    return lectures;
+  });

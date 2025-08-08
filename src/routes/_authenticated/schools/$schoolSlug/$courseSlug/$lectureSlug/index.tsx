@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { chaptersAndLecturesQueryOptions } from "@/utils/schools";
+import { courseQueryOptions } from "@/utils/schools";
 export const Route = createFileRoute(
   "/_authenticated/schools/$schoolSlug/$courseSlug/$lectureSlug/",
 )({
@@ -11,8 +11,8 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { schoolSlug, courseSlug, lectureSlug } = Route.useParams();
-  const { data: chaptersAndLectures } = useSuspenseQuery(
-    chaptersAndLecturesQueryOptions(schoolSlug, courseSlug),
+  const { data: course } = useSuspenseQuery(
+    courseQueryOptions(schoolSlug, courseSlug),
   );
   return (
     <SidebarProvider>

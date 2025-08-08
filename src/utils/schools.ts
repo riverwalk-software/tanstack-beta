@@ -52,7 +52,7 @@ export const coursesQueryOptions = (schoolSlug: string) =>
     queryFn: () => getCoursesFn({ data: schoolSlug }),
   });
 
-const getChaptersAndLecturesFn = createServerFn()
+const getCourseFn = createServerFn()
   .validator((data: { schoolSlug: string; courseSlug: string }) => data)
   .handler(async ({ data: { schoolSlug, courseSlug } }) => {
     const { SCHOOL_DB } = getCloudflareBindings();
@@ -79,18 +79,12 @@ const getChaptersAndLecturesFn = createServerFn()
         },
       },
     });
-    if (school === undefined) return [];
-    if (school.courses.length === 0) return [];
-    const chaptersAndLectures = school.courses.flatMap(
-      ({ chapters }) => chapters,
-    );
-    return chaptersAndLectures;
+    const { courses } = school!;
+    const course = courses.find((course) => course.slug === courseSlug)!;
+    return course;
   });
 
-export const chaptersAndLecturesQueryOptions = (
-  schoolSlug: string,
-  courseSlug: string,
-) =>
+export const courseQueryOptions = (schoolSlug: string, courseSlug: string) =>
   queryOptions({
     queryKey: [
       "schools",
@@ -99,39 +93,5 @@ export const chaptersAndLecturesQueryOptions = (
       courseSlug,
       "chaptersAndLectures",
     ],
-    queryFn: () =>
-      getChaptersAndLecturesFn({ data: { schoolSlug, courseSlug } }),
-  });
-
-const getLectureFn = createServerFn()
-  .validator(
-    (data: { schoolSlug: string; courseSlug: string; lectureSlug: string }) =>
-      data,
-  )
-  .handler(async ({ data: { schoolSlug, courseSlug, lectureSlug } }) => {
-    const chaptersAndLectures = await getChaptersAndLecturesFn({
-      data: { schoolSlug, courseSlug },
-    });
-    const lectures = chaptersAndLectures.flatMap(({ lectures }) => lectures);
-    const lecture = lectures.find((lecture) => lecture.slug === lectureSlug)!;
-    return lecture;
-  });
-
-export const lectureQueryOptions = (
-  schoolSlug: string,
-  courseSlug: string,
-  lectureSlug: string,
-) =>
-  queryOptions({
-    queryKey: [
-      "schools",
-      schoolSlug,
-      "courses",
-      courseSlug,
-      "chaptersAndLectures",
-      lectureSlug,
-      "lecture",
-    ],
-    queryFn: () =>
-      getLectureFn({ data: { schoolSlug, courseSlug, lectureSlug } }),
+    queryFn: () => getCourseFn({ data: { schoolSlug, courseSlug } }),
   });

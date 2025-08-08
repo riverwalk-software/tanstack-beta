@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "@tanstack/react-router";
 import { ChevronsUpDown, GalleryVerticalEnd, Plus, Square } from "lucide-react";
 import * as React from "react";
+import { useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,16 +23,24 @@ import { coursesQueryOptions } from "@/utils/schools";
 export function CourseSwitcher() {
   const { isMobile } = useSidebar();
   const router = useRouter();
-  const { schoolSlug } = useParams({
+  const { schoolSlug, courseSlug } = useParams({
     from: "/_authenticated/schools/$schoolSlug/$courseSlug/$lectureSlug/",
   });
   const { data: courses } = useSuspenseQuery(coursesQueryOptions(schoolSlug));
-  const [activeCourse, setActiveCourse] = React.useState(courses[0]);
+  const currentCourse =
+    courses.find((course) => course.slug === courseSlug) || courses[0];
+  const [activeCourse, setActiveCourse] = React.useState(currentCourse);
+
+  useEffect(() => {
+    const urlCourse = courses.find((course) => course.slug === courseSlug);
+    if (urlCourse) {
+      setActiveCourse(urlCourse);
+    }
+  }, [courses, courseSlug]);
 
   if (!activeCourse) {
     return null;
   }
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>

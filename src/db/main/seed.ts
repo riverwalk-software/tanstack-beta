@@ -1,27 +1,23 @@
 import { drizzle } from "drizzle-orm/d1";
 import { reset, seed } from "drizzle-seed";
-import {
-  AttachmentEntity,
-  ChapterEntity,
-  CourseEntity,
-  LectureEntity,
-  SchoolEntity,
-  VideoEntity,
-} from "./schema";
+import * as schema from "src/db/main/schema";
 
 async function main() {
   const { getPlatformProxy } = await import("wrangler");
   const proxy = await getPlatformProxy();
-  const { SCHOOL_DB } = proxy.env as unknown as CloudflareBindings;
+  const { SCHOOL_DB, PROGRESS_STORE } =
+    proxy.env as unknown as CloudflareBindings;
+  await seedSchoolDatabase(SCHOOL_DB);
+  await seedProgressStore(SCHOOL_DB, PROGRESS_STORE);
+  const store = await PROGRESS_STORE.get<ProgressStore>("TestUser", {
+    type: "json",
+  });
+  console.log("PROGRESS_STORE seeded with:", store);
+  process.exit(0);
+}
+
+async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
   const db = drizzle(SCHOOL_DB, { casing: "snake_case" });
-  const schema = {
-    SchoolEntity,
-    CourseEntity,
-    ChapterEntity,
-    LectureEntity,
-    VideoEntity,
-    AttachmentEntity,
-  };
   await reset(db, schema);
   await seed(db, schema, { count: 1, seed: 0 }).refine(
     ({
@@ -130,9 +126,61 @@ async function main() {
       },
     }),
   );
-  process.exit(0);
 }
+
+async function seedProgressStore(
+  SCHOOL_DB: D1Database,
+  PROGRESS_STORE: KVNamespace,
+) {
+  const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema });
+  const schools = await db.query.SchoolEntity.findMany({
+    with: {
+      courses: {
+        with: {
+          chapters: {
+            with: {
+              lectures: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  await PROGRESS_STORE.put(
+    "TestUser",
+    JSON.stringify({
+      schools: [
+        ...schools.map((school) => ({
+          schoolSlug: school.slug,
+          courses: school.courses.map((course) => ({
+            courseSlug: course.slug,
+            lectures: course.chapters.flatMap((chapter) =>
+              chapter.lectures.map((lecture) => ({
+                lectureSlug: lecture.slug,
+                completed: false,
+              })),
+            ),
+          })),
+        })),
+      ],
+    } as ProgressStore),
+  );
+}
+
 main();
+
+export interface ProgressStore {
+  schools: {
+    schoolSlug: string;
+    courses: {
+      courseSlug: string;
+      lectures: {
+        lectureSlug: string;
+        completed: boolean;
+      }[];
+    }[];
+  }[];
+}
 
 // async function main() {
 //   try {

@@ -22,6 +22,10 @@
     {
       "binding": "USER_STORE",
       "id": "bf8b4371cf0940eab452701cc716d011"
+    },
+    {
+      "binding": "PROGRESS_STORE",
+      "id": "86ede139b7104443b7b7040a120724ee"
     }
   ],
   "d1_databases": [
