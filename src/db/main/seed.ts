@@ -110,7 +110,7 @@ async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
           updatedAt: timestamp(),
           videoId: valuesFromArray({
             values: [
-              "1659d835-79fc-466a-9088-f9ae05a735a9",
+              "90c4d864-aa2c-4ead-8526-65368d37fc3d",
               "c8d11043-24ea-4dc8-854a-78d6c3e7f832",
               "ef8bf91d-e221-4d6b-b43b-2986778f612c",
               "fdf7f71f-00ab-4ccb-9808-7dd22ea24427",
