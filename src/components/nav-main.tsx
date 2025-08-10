@@ -18,8 +18,9 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import type { ProgressStore } from "@/db/main/seed";
+import { TEST_USER } from "@/utils/constants";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
+import type { ProgressStore } from "@/utils/progressStore";
 import { courseQueryOptions } from "@/utils/schools";
 
 export function NavMain() {
@@ -85,14 +86,14 @@ export function NavMain() {
                     <SidebarMenuSubItem key={lecture.title}>
                       <SidebarMenuSubButton
                         asChild
-                        className={
-                          progressLectures.find(
-                            (progressLecture) =>
-                              progressLecture.lectureSlug === lecture.slug,
-                          )!.completed
-                            ? "text-green-300"
-                            : ""
-                        }
+                        // className={
+                        //   progressLectures.find(
+                        //     (progressLecture) =>
+                        //       progressLecture.lectureSlug === lecture.slug,
+                        //   )!.completed
+                        //     ? "text-green-300"
+                        //     : ""
+                        // }
                       >
                         <Link
                           activeProps={{
@@ -125,13 +126,13 @@ const getProgressLectures = createServerFn()
   .validator((data: { schoolSlug: string; courseSlug: string }) => data)
   .handler(async ({ data: { schoolSlug, courseSlug } }) => {
     const { PROGRESS_STORE } = getCloudflareBindings();
-    const store = await PROGRESS_STORE.get<ProgressStore>("TestUser", {
+    const store = await PROGRESS_STORE.get<ProgressStore>(TEST_USER.email, {
       type: "json",
     });
     if (!store) return [];
     const course = store.schools
-      .find((school) => school.schoolSlug === schoolSlug)
-      ?.courses.find((course) => course.courseSlug === courseSlug);
+      .find((school) => school.slug === schoolSlug)
+      ?.courses.find((course) => course.slug === courseSlug);
     if (!course) return [];
     const { lectures } = course;
     return lectures;

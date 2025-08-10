@@ -1,6 +1,8 @@
 import { drizzle } from "drizzle-orm/d1";
 import { reset, seed } from "drizzle-seed";
 import * as schema from "src/db/main/schema";
+import { TEST_USER } from "@/utils/constants";
+import type { ProgressStore } from "@/utils/progressStore";
 
 async function main() {
   const { getPlatformProxy } = await import("wrangler");
@@ -9,10 +11,9 @@ async function main() {
     proxy.env as unknown as CloudflareBindings;
   await seedSchoolDatabase(SCHOOL_DB);
   await seedProgressStore(SCHOOL_DB, PROGRESS_STORE);
-  const store = await PROGRESS_STORE.get<ProgressStore>("TestUser", {
+  const store = await PROGRESS_STORE.get<ProgressStore>(TEST_USER.email, {
     type: "json",
   });
-  console.log("PROGRESS_STORE seeded with:", store);
   process.exit(0);
 }
 
@@ -132,6 +133,7 @@ async function seedProgressStore(
   SCHOOL_DB: D1Database,
   PROGRESS_STORE: KVNamespace,
 ) {
+  PROGRESS_STORE.delete(TEST_USER.email);
   const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema });
   const schools = await db.query.SchoolEntity.findMany({
     with: {
@@ -147,40 +149,27 @@ async function seedProgressStore(
     },
   });
   await PROGRESS_STORE.put(
-    "TestUser",
+    TEST_USER.email,
     JSON.stringify({
       schools: [
         ...schools.map((school) => ({
-          schoolSlug: school.slug,
+          slug: school.slug,
           courses: school.courses.map((course) => ({
-            courseSlug: course.slug,
+            slug: course.slug,
             lectures: course.chapters.flatMap((chapter) =>
               chapter.lectures.map((lecture) => ({
-                lectureSlug: lecture.slug,
+                slug: lecture.slug,
                 completed: false,
               })),
             ),
           })),
         })),
       ],
-    } as ProgressStore),
+    } satisfies ProgressStore),
   );
 }
 
 main();
-
-export interface ProgressStore {
-  schools: {
-    schoolSlug: string;
-    courses: {
-      courseSlug: string;
-      lectures: {
-        lectureSlug: string;
-        completed: boolean;
-      }[];
-    }[];
-  }[];
-}
 
 // async function main() {
 //   try {

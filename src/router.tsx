@@ -75,7 +75,9 @@ export function createRouter() {
               queryClient.invalidateQueries({
                 queryKey: youtubeAuthorizationDataQueryOptions.queryKey,
               });
-            });
+            })
+            .with("SERVICE_UNAVAILABLE", () => {})
+            .exhaustive();
         },
       )
       .otherwise(() => {

@@ -110,7 +110,7 @@ const GoogleConsentUrlSearchParamsSchema = z
   }));
 export const youtubeScopes = [
   "https://www.googleapis.com/auth/youtubepartner",
-] as z.input<typeof GoogleConsentUrlSearchParamsSchema>["scopes"];
+] satisfies z.input<typeof GoogleConsentUrlSearchParamsSchema>["scopes"];
 
 export const googleOauthQueryOptions = queryOptions({
   queryKey: ["googleOauth"],

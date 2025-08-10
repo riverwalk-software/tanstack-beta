@@ -217,7 +217,7 @@ const SignUpFormTransformedSchema = SignUpFormSchema.transform(
       ...rest,
       name: `${firstName} ${lastName}`,
       callbackURL: AUTH_CALLBACK_ROUTE,
-    }) as Parameters<typeof authClient.signUp.email>[0],
+    }) satisfies Parameters<typeof authClient.signUp.email>[0],
 );
 
 type SignUpForm = z.infer<typeof SignUpFormSchema>;

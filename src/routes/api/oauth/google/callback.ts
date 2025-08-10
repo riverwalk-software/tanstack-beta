@@ -224,7 +224,7 @@ const storeTokens = ({
             youtubeChannelIds: channelIds,
             tokens,
           },
-        } as UserValueSchema),
+        } satisfies UserValueSchema),
       ),
     );
   });
@@ -319,7 +319,7 @@ export const YoutubeChannelsListRequestSchema = z
   .transform((schema) => ({
     ...schema,
     mine: "true",
-    part: ["id", "snippet", "contentDetails"] as z.infer<
+    part: ["id", "snippet", "contentDetails"] satisfies z.infer<
       typeof YoutubeChannelsListPartSchema
     >[],
   }))

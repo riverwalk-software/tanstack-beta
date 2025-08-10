@@ -126,7 +126,7 @@ const buildUrl = ({
 //   // const headers = {
 //   //   "Content-Type": "application/json",
 //   //   ...(retryAfter ? { "Retry-After": retryAfter } : {}),
-//   // } as z.input<typeof ResponseHeadersSchema>;
+//   // } satisfies z.input<typeof ResponseHeadersSchema>;
 //   return new Response(data !== null ? JSON.stringify(data) : null, {
 //     status: code,
 //     statusText: message,

@@ -17,9 +17,7 @@ export const resendVerificationEmailDurationMs = ttlSToMs(
 export const Route = createFileRoute("/_unauthenticated/signup/success")({
   beforeLoad: async ({ context: { queryClient } }) => {
     const unknown = queryClient.getQueryData(verifyEmailQueryKey);
-    console.log(`$VALUE: ${unknown}`);
     const { data: email, success } = VerifyEmailSchema.safeParse(unknown);
-    console.log(`DATA: ${email}`);
     if (!success) throw redirect({ to: "/signup" });
     return { email };
   },

@@ -3,13 +3,21 @@ import { Data } from "effect";
 export const redirectDescription = "Redirecting to sign in page...";
 
 interface ClientError {
-  _tag: string;
+  _tag: ClientErrorTag;
   message: string;
   description: string;
 }
 
+const clientErrorTag = {
+  UNAUTHENTICATED: "UNAUTHENTICATED",
+  YOUTUBE_UNAUTHORIZED: "YOUTUBE_UNAUTHORIZED",
+  SERVICE_UNAVAILABLE: "SERVICE_UNAVAILABLE",
+} as const;
+
+type ClientErrorTag = (typeof clientErrorTag)[keyof typeof clientErrorTag];
+
 export class UNAUTHENTICATED extends Data.TaggedError(
-  "UNAUTHENTICATED",
+  clientErrorTag.UNAUTHENTICATED,
 )<ClientError> {
   constructor({
     message,
@@ -22,7 +30,7 @@ export class UNAUTHENTICATED extends Data.TaggedError(
   }
 }
 export class YOUTUBE_UNAUTHORIZED extends Data.TaggedError(
-  "YOUTUBE_UNAUTHORIZED",
+  clientErrorTag.YOUTUBE_UNAUTHORIZED,
 )<ClientError> {
   constructor({
     message,
@@ -35,7 +43,7 @@ export class YOUTUBE_UNAUTHORIZED extends Data.TaggedError(
   }
 }
 export class SERVICE_UNAVAILABLE extends Data.TaggedError(
-  "SERVICE_UNAVAILABLE",
+  clientErrorTag.SERVICE_UNAVAILABLE,
 )<ClientError> {
   constructor({
     message,
@@ -50,8 +58,9 @@ export class SERVICE_UNAVAILABLE extends Data.TaggedError(
 
 export const isClientError = (error: unknown): error is ClientError => {
   return (
-    error instanceof UNAUTHENTICATED ||
-    error instanceof YOUTUBE_UNAUTHORIZED ||
-    error instanceof SERVICE_UNAVAILABLE
+    typeof error === "object" &&
+    error !== null &&
+    "_tag" in error &&
+    Object.values(clientErrorTag).includes((error as any)._tag)
   );
 };

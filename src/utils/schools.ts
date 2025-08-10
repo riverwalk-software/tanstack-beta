@@ -3,6 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "src/db/main/schema";
+
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 const getSchoolsFn = createServerFn().handler(async () => {

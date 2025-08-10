@@ -2,7 +2,6 @@ import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { Context } from "effect";
 import { z } from "zod";
-import { getCloudflareBindings } from "./getCloudflareBindings";
 
 const VariablesEnvironmentSchema = z.object({
   BETTER_AUTH_URL: z.string().url(),
@@ -110,12 +109,10 @@ export const environmentValidationQueryOptions = queryOptions({
 
 export const getEnvironmentMw = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
-    const cloudflareBindings = getCloudflareBindings();
     return next<{
       environment: Environment;
-      cloudflareBindings: CloudflareBindings;
     }>({
-      context: { environment, cloudflareBindings },
+      context: { environment },
     });
   },
 );

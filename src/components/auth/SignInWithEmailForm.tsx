@@ -173,7 +173,7 @@ const SignInFormSchema = z.object({
 });
 
 const SignInFormTransformedSchema = SignInFormSchema.transform(
-  (schema) => ({ ...schema }) as Parameters<typeof authClient.signIn.email>[0],
+  (schema) => schema satisfies Parameters<typeof authClient.signIn.email>[0],
 );
 
 type SignInForm = z.infer<typeof SignInFormSchema>;

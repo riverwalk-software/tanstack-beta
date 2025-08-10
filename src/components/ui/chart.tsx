@@ -333,7 +333,7 @@ function getPayloadConfigFromPayload(
   ) {
     configLabelKey = payloadPayload[
       key as keyof typeof payloadPayload
-    ] as string;
+    ] satisfies string;
   }
 
   return configLabelKey in config
