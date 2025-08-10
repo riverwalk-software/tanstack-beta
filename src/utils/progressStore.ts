@@ -63,41 +63,41 @@ export interface ProgressStore {
 
 export const completeLectureFn = (params: ProgressStoreParams) =>
   setProgressStoreFn({
-    data: { ...params, _tag: "SET_LECTURE", completed: true },
+    data: { ...params, _tag: "LECTURE", completed: true },
   });
 export const resetLectureFn = (params: ProgressStoreParams) =>
   setProgressStoreFn({
-    data: { ...params, _tag: "SET_LECTURE", completed: false },
+    data: { ...params, _tag: "LECTURE", completed: false },
   });
 export const resetCourseFn = (
   params: Omit<ProgressStoreParams, "lectureSlug">,
 ) =>
   setProgressStoreFn({
-    data: { ...params, _tag: "SET_COURSE", completed: false },
+    data: { ...params, _tag: "COURSE", completed: false },
   });
 
-type SetProgressStoreParams =
+type SetProgressStoreParams = (
+  | ProgressStoreOptions
   | {
-      _tag: "SET_ALL";
-      completed: boolean;
-    }
-  | {
-      _tag: "SET_SCHOOL";
-      completed: boolean;
-      schoolSlug: string;
-    }
-  | {
-      _tag: "SET_COURSE";
-      completed: boolean;
-      schoolSlug: string;
-      courseSlug: string;
-    }
-  | {
-      _tag: "SET_LECTURE";
-      completed: boolean;
+      _tag: "LECTURE";
       schoolSlug: string;
       courseSlug: string;
       lectureSlug: string;
+    }
+) & { completed: boolean };
+
+export type ProgressStoreOptions =
+  | {
+      _tag: "ALL";
+    }
+  | {
+      _tag: "SCHOOL";
+      schoolSlug: string;
+    }
+  | {
+      _tag: "COURSE";
+      schoolSlug: string;
+      courseSlug: string;
     };
 
 export const setProgressStoreFn = createServerFn({ method: "POST" })
@@ -125,11 +125,11 @@ export const setProgressStoreFn = createServerFn({ method: "POST" })
                   ...course,
                   lectures: course.lectures.map((lecture) =>
                     match(params)
-                      .with({ _tag: "SET_ALL" }, () => ({
+                      .with({ _tag: "ALL" }, () => ({
                         ...lecture,
                         completed,
                       }))
-                      .with({ _tag: "SET_SCHOOL" }, ({ schoolSlug }) => ({
+                      .with({ _tag: "SCHOOL" }, ({ schoolSlug }) => ({
                         ...lecture,
                         completed:
                           school.slug === schoolSlug
@@ -137,7 +137,7 @@ export const setProgressStoreFn = createServerFn({ method: "POST" })
                             : lecture.completed,
                       }))
                       .with(
-                        { _tag: "SET_COURSE" },
+                        { _tag: "COURSE" },
                         ({ schoolSlug, courseSlug }) => ({
                           ...lecture,
                           completed:
@@ -148,7 +148,7 @@ export const setProgressStoreFn = createServerFn({ method: "POST" })
                         }),
                       )
                       .with(
-                        { _tag: "SET_LECTURE" },
+                        { _tag: "LECTURE" },
                         ({ schoolSlug, courseSlug, lectureSlug }) => ({
                           ...lecture,
                           completed:

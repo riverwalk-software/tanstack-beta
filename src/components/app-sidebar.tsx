@@ -28,11 +28,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const prevLecture = currentIndex > 0 ? lectures[currentIndex - 1] : null;
   const nextLecture =
     currentIndex < lectures.length - 1 ? lectures[currentIndex + 1] : null;
-  const { progressStore, completeLectureMt, resetLectureMt, resetCourseMt } =
+  const { getProgress, completeLectureMt, resetLectureMt, resetCourseMt } =
     useProgressStore();
-  const { progress } = progressStore.schools
-    .find((school) => school.slug === schoolSlug)!
-    .courses.find((course) => course.slug === courseSlug)!;
+  const progress = getProgress({
+    _tag: "COURSE",
+    schoolSlug,
+    courseSlug,
+  });
   const router = useRouter();
   return (
     <>

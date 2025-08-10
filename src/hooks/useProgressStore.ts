@@ -5,17 +5,19 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
+import { match } from "ts-pattern";
 import {
   completeLectureFn,
   getProgressStoreFn,
   type ProgressStore,
+  type ProgressStoreOptions,
   type ProgressStoreParams,
   resetCourseFn,
   resetLectureFn,
 } from "@/utils/progressStore";
 
-export const useProgressStore = () => {
-  const { data: progressStore } = useSuspenseQuery(progressStoreQueryOptions);
+export const useProgressStore = (): Return => {
+  const { data: getProgress } = useSuspenseQuery(progressStoreQueryOptions);
   const queryClient = useQueryClient();
   const completeLectureMt = useMutation({
     mutationKey: [...queryKey, "complete"],
@@ -45,12 +47,17 @@ export const useProgressStore = () => {
       });
     },
   });
-  return { progressStore, completeLectureMt, resetLectureMt, resetCourseMt };
+  return {
+    getProgress,
+    completeLectureMt,
+    resetLectureMt,
+    resetCourseMt,
+  };
 };
 
-// interface State {
-//   progressStore: DerivedProgressStore;
-// }
+interface State {
+  getProgress: (params: ProgressStoreOptions) => number;
+}
 interface Actions {
   completeLectureMt: UseMutationResult<
     void,
@@ -66,21 +73,35 @@ interface Actions {
     unknown
   >;
 }
-// interface Return extends State, Actions {}
+interface Return extends State, Actions {}
 const queryKey = ["progressStore"];
 export const progressStoreQueryOptions = queryOptions({
   queryKey: queryKey,
   queryFn: () => getProgressStoreFn(),
-  select: (data) => ({
-    ...data,
-    schools: data.schools.map((school) => ({
-      ...school,
-      courses: school.courses.map((course) => ({
-        ...course,
-        progress: getProgress(course.lectures),
-      })),
-    })),
-  }),
+  select: (data) => (params: ProgressStoreOptions) =>
+    match(params)
+      .with({ _tag: "ALL" }, () =>
+        getProgress(
+          data.schools.flatMap((school) =>
+            school.courses.flatMap((course) => course.lectures),
+          ),
+        ),
+      )
+      .with({ _tag: "SCHOOL" }, ({ schoolSlug }) =>
+        getProgress(
+          data.schools
+            .find((school) => school.slug === schoolSlug)!
+            .courses.flatMap((course) => course.lectures),
+        ),
+      )
+      .with({ _tag: "COURSE" }, ({ schoolSlug, courseSlug }) =>
+        getProgress(
+          data.schools
+            .find((school) => school.slug === schoolSlug)!
+            .courses.find((course) => course.slug === courseSlug)!.lectures,
+        ),
+      )
+      .exhaustive(),
 });
 
 const getProgress = (
