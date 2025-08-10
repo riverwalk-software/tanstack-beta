@@ -61,22 +61,7 @@ export interface ProgressStore {
   }[];
 }
 
-export const completeLectureFn = (params: ProgressStoreParams) =>
-  setProgressStoreFn({
-    data: { ...params, _tag: "LECTURE", completed: true },
-  });
-export const resetLectureFn = (params: ProgressStoreParams) =>
-  setProgressStoreFn({
-    data: { ...params, _tag: "LECTURE", completed: false },
-  });
-export const resetCourseFn = (
-  params: Omit<ProgressStoreParams, "lectureSlug">,
-) =>
-  setProgressStoreFn({
-    data: { ...params, _tag: "COURSE", completed: false },
-  });
-
-type SetProgressStoreParams = (
+export type SetProgressStoreParams = (
   | ProgressStoreOptions
   | {
       _tag: "LECTURE";

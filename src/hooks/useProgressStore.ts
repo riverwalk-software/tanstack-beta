@@ -7,45 +7,44 @@ import {
 } from "@tanstack/react-query";
 import { match } from "ts-pattern";
 import {
-  completeLectureFn,
   getProgressStoreFn,
   type ProgressStore,
   type ProgressStoreOptions,
   type ProgressStoreParams,
-  resetCourseFn,
-  resetLectureFn,
+  setProgressStoreFn,
 } from "@/utils/progressStore";
 
 export const useProgressStore = (): Return => {
   const { data: getProgress } = useSuspenseQuery(progressStoreQueryOptions);
   const queryClient = useQueryClient();
+  const onSuccess = async () => {
+    await queryClient.invalidateQueries({
+      queryKey,
+    });
+  };
   const completeLectureMt = useMutation({
-    mutationKey: [...queryKey, "complete"],
-    mutationFn: (params: ProgressStoreParams) => completeLectureFn(params),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey,
-      });
-    },
+    mutationKey: [...queryKey, "lecture", "complete"],
+    mutationFn: (params: ProgressStoreParams) =>
+      setProgressStoreFn({
+        data: { ...params, _tag: "LECTURE", completed: true },
+      }),
+    onSuccess,
   });
   const resetLectureMt = useMutation({
-    mutationKey: [...queryKey, "reset"],
-    mutationFn: (params: ProgressStoreParams) => resetLectureFn(params),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey,
-      });
-    },
+    mutationKey: [...queryKey, "lecture", "reset"],
+    mutationFn: (params: ProgressStoreParams) =>
+      setProgressStoreFn({
+        data: { ...params, _tag: "LECTURE", completed: false },
+      }),
+    onSuccess,
   });
   const resetCourseMt = useMutation({
-    mutationKey: [...queryKey, "resetAll"],
+    mutationKey: [...queryKey, "course", "reset"],
     mutationFn: (params: Omit<ProgressStoreParams, "lectureSlug">) =>
-      resetCourseFn(params),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey,
-      });
-    },
+      setProgressStoreFn({
+        data: { ...params, _tag: "COURSE", completed: false },
+      }),
+    onSuccess,
   });
   return {
     getProgress,
@@ -73,6 +72,7 @@ interface Actions {
     unknown
   >;
 }
+
 interface Return extends State, Actions {}
 const queryKey = ["progressStore"];
 export const progressStoreQueryOptions = queryOptions({
@@ -113,6 +113,5 @@ const getProgress = (
     (acc, lecture) => acc + (lecture.completed ? 1 : 0),
     0,
   );
-  const progress = (completedLectures / totalLectures) * 100;
-  return progress;
+  return (completedLectures / totalLectures) * 100;
 };
