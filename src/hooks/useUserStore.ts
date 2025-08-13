@@ -7,15 +7,15 @@ import {
 } from "@tanstack/react-query";
 import { match } from "ts-pattern";
 import {
-  type GetProgressStoreParams,
-  getProgressStoreFn,
-  type ProgressStore,
-  type ProgressStoreParams,
-  setProgressStoreFn,
-} from "@/utils/progressStore";
+  type GetUserStoreParams,
+  getUserStoreFn,
+  setUserStoreFn,
+  type UserStore,
+  type UserStoreParams,
+} from "@/utils/userStore";
 
-export const useProgressStore = (): Return => {
-  const { data: getProgress } = useSuspenseQuery(progressStoreQueryOptions);
+export const useUserStore = (): Return => {
+  const { data: getProgress } = useSuspenseQuery(userStoreQueryOptions);
   const queryClient = useQueryClient();
   const onSuccess = async () => {
     await queryClient.invalidateQueries({
@@ -24,24 +24,24 @@ export const useProgressStore = (): Return => {
   };
   const completeLectureMt = useMutation({
     mutationKey: [...queryKey, "lecture", "complete"],
-    mutationFn: (params: ProgressStoreParams) =>
-      setProgressStoreFn({
+    mutationFn: (params: UserStoreParams) =>
+      setUserStoreFn({
         data: { ...params, _tag: "LECTURE", completed: true },
       }),
     onSuccess,
   });
   const resetLectureMt = useMutation({
     mutationKey: [...queryKey, "lecture", "reset"],
-    mutationFn: (params: ProgressStoreParams) =>
-      setProgressStoreFn({
+    mutationFn: (params: UserStoreParams) =>
+      setUserStoreFn({
         data: { ...params, _tag: "LECTURE", completed: false },
       }),
     onSuccess,
   });
   const resetCourseMt = useMutation({
     mutationKey: [...queryKey, "course", "reset"],
-    mutationFn: (params: Omit<ProgressStoreParams, "lectureSlug">) =>
-      setProgressStoreFn({
+    mutationFn: (params: Omit<UserStoreParams, "lectureSlug">) =>
+      setUserStoreFn({
         data: { ...params, _tag: "COURSE", completed: false },
       }),
     onSuccess,
@@ -55,29 +55,24 @@ export const useProgressStore = (): Return => {
 };
 
 interface State {
-  getProgress: (params: GetProgressStoreParams) => number;
+  getProgress: (params: GetUserStoreParams) => number;
 }
 interface Actions {
-  completeLectureMt: UseMutationResult<
-    void,
-    Error,
-    ProgressStoreParams,
-    unknown
-  >;
-  resetLectureMt: UseMutationResult<void, Error, ProgressStoreParams, unknown>;
+  completeLectureMt: UseMutationResult<void, Error, UserStoreParams, unknown>;
+  resetLectureMt: UseMutationResult<void, Error, UserStoreParams, unknown>;
   resetCourseMt: UseMutationResult<
     void,
     Error,
-    Omit<ProgressStoreParams, "lectureSlug">,
+    Omit<UserStoreParams, "lectureSlug">,
     unknown
   >;
 }
 interface Return extends State, Actions {}
-const queryKey = ["progressStore"];
-export const progressStoreQueryOptions = queryOptions({
+const queryKey = ["userStore"];
+export const userStoreQueryOptions = queryOptions({
   queryKey: queryKey,
-  queryFn: () => getProgressStoreFn(),
-  select: (data) => (params: GetProgressStoreParams) =>
+  queryFn: () => getUserStoreFn(),
+  select: (data) => (params: GetUserStoreParams) =>
     match(params)
       .with({ _tag: "ALL" }, () =>
         getProgress(
@@ -104,7 +99,7 @@ export const progressStoreQueryOptions = queryOptions({
 });
 
 const getProgress = (
-  lectures: ProgressStore["schools"][number]["courses"][number]["lectures"],
+  lectures: UserStore["schools"][number]["courses"][number]["lectures"],
 ) => {
   const totalLectures = lectures.length;
   if (totalLectures <= 0) return 0;

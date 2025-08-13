@@ -9,24 +9,22 @@ import {
   getCloudflareBindings,
 } from "./getCloudflareBindings";
 
-export const getProgressStoreFn = createServerFn()
+export const getUserStoreFn = createServerFn()
   .middleware([getEnvironmentMw, getSessionDataMw])
   .handler(
-    async ({
-      context: { environment, sessionData },
-    }): Promise<ProgressStore> => {
+    async ({ context: { environment, sessionData } }): Promise<UserStore> => {
       const cloudflareBindings = getCloudflareBindings();
       const program = Effect.gen(function* () {
-        const { PROGRESS_STORE } = yield* CloudflareBindingsService;
+        const { USER_STORE } = yield* CloudflareBindingsService;
         const { user } = yield* SessionDataService;
-        const maybeProgressStore = yield* Effect.promise(() =>
-          PROGRESS_STORE.get<ProgressStore>(user.email, { type: "json" }),
+        const maybeUserStore = yield* Effect.promise(() =>
+          USER_STORE.get<UserStore>(user.email, { type: "json" }),
         );
-        const progressStore = yield* Either.fromNullable(
-          maybeProgressStore,
+        const userStore = yield* Either.fromNullable(
+          maybeUserStore,
           () => new SERVICE_UNAVAILABLE(),
         );
-        return progressStore;
+        return userStore;
       });
       const context = Context.empty().pipe(
         Context.add(CloudflareBindingsService, cloudflareBindings),
@@ -38,17 +36,17 @@ export const getProgressStoreFn = createServerFn()
         console.error(defect);
         return Effect.fail(new SERVICE_UNAVAILABLE());
       });
-      const progressStore = await Effect.runPromise(runnable);
-      return progressStore;
+      const userStore = await Effect.runPromise(runnable);
+      return userStore;
     },
   );
-export interface ProgressStoreParams {
+export interface UserStoreParams {
   schoolSlug: string;
   courseSlug: string;
   lectureSlug: string;
 }
 
-export interface ProgressStore {
+export interface UserStore {
   schools: {
     slug: string;
     courses: {
@@ -61,41 +59,38 @@ export interface ProgressStore {
   }[];
 }
 
-interface ProgressStoreAllTag {
+interface UserStoreAllTag {
   _tag: "ALL";
 }
-interface ProgressStoreSchoolTag {
+interface UserStoreSchoolTag {
   _tag: "SCHOOL";
   schoolSlug: string;
 }
-interface ProgressStoreCourseTag {
+interface UserStoreCourseTag {
   _tag: "COURSE";
   schoolSlug: string;
   courseSlug: string;
 }
-interface ProgressStoreLectureTag {
+interface UserStoreLectureTag {
   _tag: "LECTURE";
   schoolSlug: string;
   courseSlug: string;
   lectureSlug: string;
 }
-interface ProgressStoreOptions {
+interface UserStoreOptions {
   completed: boolean;
 }
 
-export type GetProgressStoreParams =
-  | ProgressStoreAllTag
-  | ProgressStoreSchoolTag
-  | ProgressStoreCourseTag;
+export type GetUserStoreParams =
+  | UserStoreAllTag
+  | UserStoreSchoolTag
+  | UserStoreCourseTag;
 
-export type SetProgressStoreParams = (
-  | GetProgressStoreParams
-  | ProgressStoreLectureTag
-) &
-  ProgressStoreOptions;
+export type SetUserStoreParams = (GetUserStoreParams | UserStoreLectureTag) &
+  UserStoreOptions;
 
-export const setProgressStoreFn = createServerFn({ method: "POST" })
-  .validator((data: SetProgressStoreParams) => data)
+export const setUserStoreFn = createServerFn({ method: "POST" })
+  .validator((data: SetUserStoreParams) => data)
   .middleware([getEnvironmentMw, getSessionDataMw])
   .handler(
     async ({
@@ -105,15 +100,15 @@ export const setProgressStoreFn = createServerFn({ method: "POST" })
       const { completed } = params;
       const cloudflareBindings = getCloudflareBindings();
       const program = Effect.gen(function* () {
-        const { PROGRESS_STORE } = yield* CloudflareBindingsService;
+        const { USER_STORE } = yield* CloudflareBindingsService;
         const { user } = yield* SessionDataService;
-        const progressStore = yield* Effect.promise(() => getProgressStoreFn());
+        const userStore = yield* Effect.promise(() => getUserStoreFn());
         yield* Effect.promise(() =>
-          PROGRESS_STORE.put(
+          USER_STORE.put(
             user.email,
             JSON.stringify({
-              ...progressStore,
-              schools: progressStore.schools.map((school) => ({
+              ...userStore,
+              schools: userStore.schools.map((school) => ({
                 ...school,
                 courses: school.courses.map((course) => ({
                   ...course,
@@ -157,7 +152,7 @@ export const setProgressStoreFn = createServerFn({ method: "POST" })
                   ),
                 })),
               })),
-            } satisfies ProgressStore),
+            } satisfies UserStore),
           ),
         );
       });

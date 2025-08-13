@@ -20,8 +20,8 @@ import {
 } from "@/components/ui/sidebar";
 import { TEST_USER } from "@/utils/constants";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
-import type { ProgressStore } from "@/utils/progressStore";
 import { courseQueryOptions } from "@/utils/schools";
+import type { UserStore } from "@/utils/userStore";
 
 export function NavMain() {
   const { schoolSlug, courseSlug, lectureSlug } = useParams({
@@ -125,8 +125,8 @@ export function NavMain() {
 const getProgressLectures = createServerFn()
   .validator((data: { schoolSlug: string; courseSlug: string }) => data)
   .handler(async ({ data: { schoolSlug, courseSlug } }) => {
-    const { PROGRESS_STORE } = getCloudflareBindings();
-    const store = await PROGRESS_STORE.get<ProgressStore>(TEST_USER.email, {
+    const { USER_STORE } = getCloudflareBindings();
+    const store = await USER_STORE.get<UserStore>(TEST_USER.email, {
       type: "json",
     });
     if (!store) return [];

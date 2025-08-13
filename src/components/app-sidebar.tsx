@@ -7,7 +7,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useProgressStore } from "@/hooks/useProgressStore";
+import { useUserStore } from "@/hooks/useUserStore";
 import { courseQueryOptions } from "@/utils/schools";
 import { CourseSwitcher } from "./CourseSwitcher";
 import { NavMain } from "./nav-main";
@@ -29,7 +29,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const nextLecture =
     currentIndex < lectures.length - 1 ? lectures[currentIndex + 1] : null;
   const { getProgress, completeLectureMt, resetLectureMt, resetCourseMt } =
-    useProgressStore();
+    useUserStore();
   const progress = getProgress({
     _tag: "COURSE",
     schoolSlug,

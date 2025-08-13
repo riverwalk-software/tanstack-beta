@@ -2,18 +2,14 @@ import { drizzle } from "drizzle-orm/d1";
 import { reset, seed } from "drizzle-seed";
 import * as schema from "src/db/main/schema";
 import { TEST_USER } from "@/utils/constants";
-import type { ProgressStore } from "@/utils/progressStore";
+import type { UserStore } from "@/utils/userStore";
 
 async function main() {
   const { getPlatformProxy } = await import("wrangler");
   const proxy = await getPlatformProxy();
-  const { SCHOOL_DB, PROGRESS_STORE } =
-    proxy.env as unknown as CloudflareBindings;
+  const { SCHOOL_DB, USER_STORE } = proxy.env as unknown as CloudflareBindings;
   await seedSchoolDatabase(SCHOOL_DB);
-  await seedProgressStore(SCHOOL_DB, PROGRESS_STORE);
-  const store = await PROGRESS_STORE.get<ProgressStore>(TEST_USER.email, {
-    type: "json",
-  });
+  await seedUserStore(SCHOOL_DB, USER_STORE);
   process.exit(0);
 }
 
@@ -21,15 +17,7 @@ async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
   const db = drizzle(SCHOOL_DB, { casing: "snake_case" });
   await reset(db, schema);
   await seed(db, schema, { count: 1, seed: 0 }).refine(
-    ({
-      intPrimaryKey,
-      companyName,
-      timestamp,
-      uuid,
-      city,
-      loremIpsum,
-      valuesFromArray,
-    }) => ({
+    ({ intPrimaryKey, timestamp, uuid, loremIpsum, valuesFromArray }) => ({
       SchoolEntity: {
         count: 1,
         columns: {
@@ -129,11 +117,8 @@ async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
   );
 }
 
-async function seedProgressStore(
-  SCHOOL_DB: D1Database,
-  PROGRESS_STORE: KVNamespace,
-) {
-  PROGRESS_STORE.delete(TEST_USER.email);
+async function seedUserStore(SCHOOL_DB: D1Database, USER_STORE: KVNamespace) {
+  USER_STORE.delete(TEST_USER.email);
   const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema });
   const schools = await db.query.SchoolEntity.findMany({
     with: {
@@ -148,7 +133,7 @@ async function seedProgressStore(
       },
     },
   });
-  await PROGRESS_STORE.put(
+  await USER_STORE.put(
     TEST_USER.email,
     JSON.stringify({
       schools: [
@@ -165,7 +150,7 @@ async function seedProgressStore(
           })),
         })),
       ],
-    } satisfies ProgressStore),
+    } satisfies UserStore),
   );
 }
 

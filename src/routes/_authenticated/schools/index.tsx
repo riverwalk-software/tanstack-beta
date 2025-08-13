@@ -1,16 +1,18 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { SchoolCard } from "@/components/SchoolCard";
-import { progressStoreQueryOptions } from "@/hooks/useProgressStore";
+import { userStoreQueryOptions, useUserStore } from "@/hooks/useUserStore";
 import { schoolsQueryOptions } from "@/utils/schools";
 
 export const Route = createFileRoute("/_authenticated/schools/")({
   component: RouteComponent,
   loader: ({ context: { queryClient } }): Promise<void> =>
-    queryClient.prefetchQuery(progressStoreQueryOptions),
+    queryClient.prefetchQuery(userStoreQueryOptions),
 });
 
 function RouteComponent() {
+  const { getProgress } = useUserStore();
+  const x = getProgress({ _tag: "ALL" });
   const { data: schools } = useSuspenseQuery(schoolsQueryOptions);
   return (
     <div>
