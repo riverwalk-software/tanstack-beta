@@ -21,11 +21,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useUserStore } from "@/hooks/useUserStore";
 import { schoolsQueryOptions } from "@/utils/schools";
 
 export function TeamSwitcher() {
   const { isMobile } = useSidebar();
-  const { data: schools } = useSuspenseQuery(schoolsQueryOptions);
+  const { schoolSlugs } = useUserStore();
+  const { data: schools } = useSuspenseQuery(schoolsQueryOptions(schoolSlugs));
   const [activeSchool, setActiveSchool] = React.useState(schools[0]);
 
   if (!activeSchool) {

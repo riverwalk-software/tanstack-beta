@@ -11,9 +11,8 @@ export const Route = createFileRoute("/_authenticated/schools/")({
 });
 
 function RouteComponent() {
-  const { getProgress } = useUserStore();
-  const x = getProgress({ _tag: "ALL" });
-  const { data: schools } = useSuspenseQuery(schoolsQueryOptions);
+  const { schoolSlugs } = useUserStore();
+  const { data: schools } = useSuspenseQuery(schoolsQueryOptions(schoolSlugs));
   return (
     <div>
       <h1>Schools</h1>

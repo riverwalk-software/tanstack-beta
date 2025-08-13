@@ -15,7 +15,32 @@ import {
 } from "@/utils/userStore";
 
 export const useUserStore = (): Return => {
-  const { data: getProgress } = useSuspenseQuery(userStoreQueryOptions);
+  const { data: userStore } = useSuspenseQuery(userStoreQueryOptions);
+    const schoolSlugs = userStore.schools.map((school) => school.slug);
+  const getProgress = (params: GetUserStoreParams) =>
+    match(params)
+      .with({ _tag: "ALL" }, () =>
+        calculateProgress(
+          userStore.schools.flatMap((school) =>
+            school.courses.flatMap((course) => course.lectures),
+          ),
+        ),
+      )
+      .with({ _tag: "SCHOOL" }, ({ schoolSlug }) =>
+        calculateProgress(
+          userStore.schools
+            .find((school) => school.slug === schoolSlug)!
+            .courses.flatMap((course) => course.lectures),
+        ),
+      )
+      .with({ _tag: "COURSE" }, ({ schoolSlug, courseSlug }) =>
+        calculateProgress(
+          userStore.schools
+            .find((school) => school.slug === schoolSlug)!
+            .courses.find((course) => course.slug === courseSlug)!.lectures,
+        ),
+      )
+      .exhaustive();
   const queryClient = useQueryClient();
   const onSuccess = async () => {
     await queryClient.invalidateQueries({
@@ -47,6 +72,8 @@ export const useUserStore = (): Return => {
     onSuccess,
   });
   return {
+    userStore,
+    schoolSlugs,
     getProgress,
     completeLectureMt,
     resetLectureMt,
@@ -55,6 +82,8 @@ export const useUserStore = (): Return => {
 };
 
 interface State {
+  userStore: UserStore;
+  schoolSlugs: string[];
   getProgress: (params: GetUserStoreParams) => number;
 }
 interface Actions {
@@ -72,33 +101,9 @@ const queryKey = ["userStore"];
 export const userStoreQueryOptions = queryOptions({
   queryKey: queryKey,
   queryFn: () => getUserStoreFn(),
-  select: (data) => (params: GetUserStoreParams) =>
-    match(params)
-      .with({ _tag: "ALL" }, () =>
-        getProgress(
-          data.schools.flatMap((school) =>
-            school.courses.flatMap((course) => course.lectures),
-          ),
-        ),
-      )
-      .with({ _tag: "SCHOOL" }, ({ schoolSlug }) =>
-        getProgress(
-          data.schools
-            .find((school) => school.slug === schoolSlug)!
-            .courses.flatMap((course) => course.lectures),
-        ),
-      )
-      .with({ _tag: "COURSE" }, ({ schoolSlug, courseSlug }) =>
-        getProgress(
-          data.schools
-            .find((school) => school.slug === schoolSlug)!
-            .courses.find((course) => course.slug === courseSlug)!.lectures,
-        ),
-      )
-      .exhaustive(),
 });
 
-const getProgress = (
+const calculateProgress = (
   lectures: UserStore["schools"][number]["courses"][number]["lectures"],
 ) => {
   const totalLectures = lectures.length;

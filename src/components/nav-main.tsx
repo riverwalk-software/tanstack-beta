@@ -1,6 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { ChevronRight, SquareTerminal } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
@@ -18,10 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { TEST_USER } from "@/utils/constants";
-import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 import { courseQueryOptions } from "@/utils/schools";
-import type { UserStore } from "@/utils/userStore";
 
 export function NavMain() {
   const { schoolSlug, courseSlug, lectureSlug } = useParams({
@@ -37,29 +33,8 @@ export function NavMain() {
     new Set([activeChapter.title]),
   );
   useEffect(() => {
-    const newActiveChapter = chapters.find((chapter) =>
-      chapter.lectures.some((lecture) => lecture.slug === lectureSlug),
-    )!;
-    setOpenChapters(new Set([newActiveChapter.title]));
-  }, [lectureSlug, chapters]);
-  const handleChapterToggle = (chapterTitle: string, isOpen: boolean) => {
-    setOpenChapters((prev) => {
-      const newSet = new Set(prev);
-      if (isOpen) {
-        newSet.add(chapterTitle);
-      } else {
-        newSet.delete(chapterTitle);
-      }
-      return newSet;
-    });
-  };
-  const { data: progressLectures } = useSuspenseQuery({
-    queryKey: ["progressLectures", schoolSlug, courseSlug],
-    queryFn: async () =>
-      getProgressLectures({
-        data: { schoolSlug, courseSlug },
-      }),
-  });
+    setOpenChapters(new Set([activeChapter.title]));
+  }, [activeChapter.title]);
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Chapters</SidebarGroupLabel>
@@ -69,13 +44,19 @@ export function NavMain() {
             key={title}
             asChild
             open={openChapters.has(title)}
-            onOpenChange={(isOpen) => handleChapterToggle(title, isOpen)}
+            onOpenChange={(isOpen) =>
+              setOpenChapters((prev) =>
+                isOpen
+                  ? new Set([...prev, title])
+                  : new Set([...prev].filter((t) => t !== title)),
+              )
+            }
             className="group/collapsible text-sky-100"
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={title}>
-                  {<SquareTerminal />}
+                  <SquareTerminal />
                   <span>{title}</span>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
@@ -84,17 +65,7 @@ export function NavMain() {
                 <SidebarMenuSub>
                   {lectures.map((lecture) => (
                     <SidebarMenuSubItem key={lecture.title}>
-                      <SidebarMenuSubButton
-                        asChild
-                        // className={
-                        //   progressLectures.find(
-                        //     (progressLecture) =>
-                        //       progressLecture.lectureSlug === lecture.slug,
-                        //   )!.completed
-                        //     ? "text-green-300"
-                        //     : ""
-                        // }
-                      >
+                      <SidebarMenuSubButton asChild>
                         <Link
                           activeProps={{
                             className: "font-bold underline",
@@ -121,19 +92,3 @@ export function NavMain() {
     </SidebarGroup>
   );
 }
-
-const getProgressLectures = createServerFn()
-  .validator((data: { schoolSlug: string; courseSlug: string }) => data)
-  .handler(async ({ data: { schoolSlug, courseSlug } }) => {
-    const { USER_STORE } = getCloudflareBindings();
-    const store = await USER_STORE.get<UserStore>(TEST_USER.email, {
-      type: "json",
-    });
-    if (!store) return [];
-    const course = store.schools
-      .find((school) => school.slug === schoolSlug)
-      ?.courses.find((course) => course.slug === courseSlug);
-    if (!course) return [];
-    const { lectures } = course;
-    return lectures;
-  });
