@@ -7,9 +7,9 @@ import {
 } from "@tanstack/react-query";
 import { match } from "ts-pattern";
 import {
+  type GetProgressStoreParams,
   getProgressStoreFn,
   type ProgressStore,
-  type ProgressStoreOptions,
   type ProgressStoreParams,
   setProgressStoreFn,
 } from "@/utils/progressStore";
@@ -55,7 +55,7 @@ export const useProgressStore = (): Return => {
 };
 
 interface State {
-  getProgress: (params: ProgressStoreOptions) => number;
+  getProgress: (params: GetProgressStoreParams) => number;
 }
 interface Actions {
   completeLectureMt: UseMutationResult<
@@ -72,13 +72,12 @@ interface Actions {
     unknown
   >;
 }
-
 interface Return extends State, Actions {}
 const queryKey = ["progressStore"];
 export const progressStoreQueryOptions = queryOptions({
   queryKey: queryKey,
   queryFn: () => getProgressStoreFn(),
-  select: (data) => (params: ProgressStoreOptions) =>
+  select: (data) => (params: GetProgressStoreParams) =>
     match(params)
       .with({ _tag: "ALL" }, () =>
         getProgress(
@@ -108,10 +107,9 @@ const getProgress = (
   lectures: ProgressStore["schools"][number]["courses"][number]["lectures"],
 ) => {
   const totalLectures = lectures.length;
-  if (totalLectures === 0) return 0;
-  const completedLectures = lectures.reduce(
-    (acc, lecture) => acc + (lecture.completed ? 1 : 0),
-    0,
-  );
+  if (totalLectures <= 0) return 0;
+  const completedLectures = lectures
+    .map(({ completed }) => (completed ? 1 : 0))
+    .reduce((acc, completed) => acc + completed, 0 as number);
   return (completedLectures / totalLectures) * 100;
 };
