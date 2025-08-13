@@ -61,29 +61,38 @@ export interface ProgressStore {
   }[];
 }
 
-export type SetProgressStoreParams = (
-  | ProgressStoreOptions
-  | {
-      _tag: "LECTURE";
-      schoolSlug: string;
-      courseSlug: string;
-      lectureSlug: string;
-    }
-) & { completed: boolean };
+interface ProgressStoreAllTag {
+  _tag: "ALL";
+}
+interface ProgressStoreSchoolTag {
+  _tag: "SCHOOL";
+  schoolSlug: string;
+}
+interface ProgressStoreCourseTag {
+  _tag: "COURSE";
+  schoolSlug: string;
+  courseSlug: string;
+}
+interface ProgressStoreLectureTag {
+  _tag: "LECTURE";
+  schoolSlug: string;
+  courseSlug: string;
+  lectureSlug: string;
+}
+interface ProgressStoreOptions {
+  completed: boolean;
+}
 
-export type ProgressStoreOptions =
-  | {
-      _tag: "ALL";
-    }
-  | {
-      _tag: "SCHOOL";
-      schoolSlug: string;
-    }
-  | {
-      _tag: "COURSE";
-      schoolSlug: string;
-      courseSlug: string;
-    };
+export type GetProgressStoreParams =
+  | ProgressStoreAllTag
+  | ProgressStoreSchoolTag
+  | ProgressStoreCourseTag;
+
+export type SetProgressStoreParams = (
+  | GetProgressStoreParams
+  | ProgressStoreLectureTag
+) &
+  ProgressStoreOptions;
 
 export const setProgressStoreFn = createServerFn({ method: "POST" })
   .validator((data: SetProgressStoreParams) => data)

@@ -54,12 +54,12 @@ export const afterSignOut = async (
 };
 
 type BetterAuthErrorCode = keyof typeof $ERROR_CODES;
-type BetterAuthErrorContext = {
+interface BetterAuthErrorContext {
   error: (BetterFetchError & Record<string, any>) & {
     code: BetterAuthErrorCode;
   };
   response: Response;
-};
+}
 export const isBetterAuthErrorContext = (
   errorContext: unknown,
 ): errorContext is BetterAuthErrorContext => {

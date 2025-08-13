@@ -276,17 +276,17 @@ export const fetchApi = <T extends ZodTypeAny>({
 const is4xx = (code: number) => code >= 400 && code < 500;
 const is5xx = (code: number) => code >= 500 && code < 600;
 
-export type SuccessResponse<T> = {
+export interface SuccessResponse<T> {
   code: number;
   message: string;
   data: T;
-};
+}
 
-export type ErrorResponse = {
+export interface ErrorResponse {
   code: number;
   message: string;
   retryAfter?: number;
-};
+}
 
 export type HttpResponse<T> = SuccessResponse<T> | ErrorResponse;
 
