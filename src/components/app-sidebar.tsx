@@ -88,14 +88,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   lectureSlug: lecture.slug,
                 });
                 if (nextLecture === null) return;
-                // await router.navigate({
-                //   to: "/schools/$schoolSlug/$courseSlug/$lectureSlug",
-                //   params: {
-                //     schoolSlug,
-                //     courseSlug,
-                //     lectureSlug: nextLecture.slug,
-                //   },
-                // });
+                await router.navigate({
+                  to: "/schools/$schoolSlug/$courseSlug/$lectureSlug",
+                  params: {
+                    schoolSlug,
+                    courseSlug,
+                    lectureSlug: nextLecture.slug,
+                  },
+                });
               }}
             >
               {nextLecture ? "Complete and Continue" : "Complete"}
