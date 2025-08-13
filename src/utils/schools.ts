@@ -1,26 +1,31 @@
 import { queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "src/db/main/schema";
 
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
-const getSchoolsFn = createServerFn().handler(async () => {
-  const { SCHOOL_DB } = getCloudflareBindings();
-  const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema });
-  const schools = await db.query.SchoolEntity.findMany();
-  return schools;
-});
+const getSchoolsFn = createServerFn()
+  .validator((data: { schoolSlugs: string[] }) => data)
+  .handler(async ({ data: { schoolSlugs } }) => {
+    const { SCHOOL_DB } = getCloudflareBindings();
+    const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema });
+    const schools = await db.query.SchoolEntity.findMany({
+      where: (school) => inArray(school.slug, schoolSlugs),
+    });
+    return schools;
+  });
 
-export const schoolsQueryOptions = queryOptions({
-  queryKey: ["schools"],
-  queryFn: () => getSchoolsFn(),
-});
+export const schoolsQueryOptions = (schoolSlugs: string[]) =>
+  queryOptions({
+    queryKey: ["schools"],
+    queryFn: () => getSchoolsFn({ data: { schoolSlugs } }),
+  });
 
 const getCoursesFn = createServerFn()
-  .validator((data: string) => data)
-  .handler(async ({ data: schoolSlug }) => {
+  .validator((data: { schoolSlug: string }) => data)
+  .handler(async ({ data: { schoolSlug } }) => {
     const { SCHOOL_DB } = getCloudflareBindings();
     const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema });
     const school = await db.query.SchoolEntity.findFirst({
@@ -42,15 +47,14 @@ const getCoursesFn = createServerFn()
         },
       },
     });
-    if (school === undefined) return [];
-    const { courses } = school;
+    const { courses } = school!;
     return courses;
   });
 
 export const coursesQueryOptions = (schoolSlug: string) =>
   queryOptions({
     queryKey: ["schools", schoolSlug, "courses"],
-    queryFn: () => getCoursesFn({ data: schoolSlug }),
+    queryFn: () => getCoursesFn({ data: { schoolSlug } }),
   });
 
 const getCourseFn = createServerFn()
