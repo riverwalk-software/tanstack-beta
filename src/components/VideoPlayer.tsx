@@ -26,9 +26,9 @@ export function VideoPlayer({ videoId }: Params) {
   );
 }
 
-type Params = {
+interface Params {
   videoId: string;
-};
+}
 
 const getTokenFn = createServerFn()
   .validator((data: { videoId: string; ttl: number }) => data)
