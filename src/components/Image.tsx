@@ -1,10 +1,11 @@
 import type React from "react";
 import { cn } from "@/lib/utils";
 
-type ImageProps = React.ComponentProps<"img"> & {
+type ImageProps = React.ComponentProps<"img"> & Image;
+interface Image {
   src: string;
   alt: string;
-};
+}
 
 export function Image({
   src,
