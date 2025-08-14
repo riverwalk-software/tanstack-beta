@@ -16,13 +16,15 @@ import {
 
 export const useUserStore = (): Return => {
   const { data: userStore } = useSuspenseQuery(userStoreQueryOptions);
-    const schoolSlugs = userStore.schools.map((school) => school.slug);
+  const schoolSlugs = userStore.schools.map((school) => school.slug);
   const getProgress = (params: GetUserStoreParams) =>
     match(params)
       .with({ _tag: "ALL" }, () =>
         calculateProgress(
           userStore.schools.flatMap((school) =>
-            school.courses.flatMap((course) => course.lectures),
+            school.courses.flatMap((course) =>
+              course.chapters.flatMap(({ lectures }) => lectures),
+            ),
           ),
         ),
       )
@@ -30,14 +32,17 @@ export const useUserStore = (): Return => {
         calculateProgress(
           userStore.schools
             .find((school) => school.slug === schoolSlug)!
-            .courses.flatMap((course) => course.lectures),
+            .courses.flatMap((course) =>
+              course.chapters.flatMap(({ lectures }) => lectures),
+            ),
         ),
       )
       .with({ _tag: "COURSE" }, ({ schoolSlug, courseSlug }) =>
         calculateProgress(
           userStore.schools
             .find((school) => school.slug === schoolSlug)!
-            .courses.find((course) => course.slug === courseSlug)!.lectures,
+            .courses.find((course) => course.slug === courseSlug)!
+            .chapters.flatMap(({ lectures }) => lectures),
         ),
       )
       .exhaustive();
@@ -65,9 +70,24 @@ export const useUserStore = (): Return => {
   });
   const resetCourseMt = useMutation({
     mutationKey: [...queryKey, "course", "reset"],
-    mutationFn: (params: Omit<UserStoreParams, "lectureSlug">) =>
+    mutationFn: (
+      params: Omit<UserStoreParams, "chapterSlug" | "lectureSlug">,
+    ) =>
       setUserStoreFn({
         data: { ...params, _tag: "COURSE", completed: false },
+      }),
+    onSuccess,
+  });
+  const resetSchoolMt = useMutation({
+    mutationKey: [...queryKey, "school", "reset"],
+    mutationFn: (
+      params: Omit<
+        UserStoreParams,
+        "courseSlug" | "chapterSlug" | "lectureSlug"
+      >,
+    ) =>
+      setUserStoreFn({
+        data: { ...params, _tag: "SCHOOL", completed: false },
       }),
     onSuccess,
   });
@@ -78,6 +98,7 @@ export const useUserStore = (): Return => {
     completeLectureMt,
     resetLectureMt,
     resetCourseMt,
+    resetSchoolMt,
   };
 };
 
@@ -92,7 +113,13 @@ interface Actions {
   resetCourseMt: UseMutationResult<
     void,
     Error,
-    Omit<UserStoreParams, "lectureSlug">,
+    Omit<UserStoreParams, "chapterSlug" | "lectureSlug">,
+    unknown
+  >;
+  resetSchoolMt: UseMutationResult<
+    void,
+    Error,
+    Omit<UserStoreParams, "courseSlug" | "chapterSlug" | "lectureSlug">,
     unknown
   >;
 }
@@ -104,7 +131,7 @@ export const userStoreQueryOptions = queryOptions({
 });
 
 const calculateProgress = (
-  lectures: UserStore["schools"][number]["courses"][number]["lectures"],
+  lectures: UserStore["schools"][number]["courses"][number]["chapters"][number]["lectures"],
 ) => {
   const totalLectures = lectures.length;
   if (totalLectures <= 0) return 0;

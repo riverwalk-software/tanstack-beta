@@ -14,17 +14,22 @@ function RouteComponent() {
     <div>
       <h1>Courses</h1>
       <ul>
-        {courses.map(({ slug: courseSlug, title, description, chapters }) => (
-          <li key={courseSlug}>
-            <CourseCard
-              title={title}
-              description={description}
-              schoolSlug={schoolSlug}
-              courseSlug={courseSlug}
-              lectureSlug={chapters[0].lectures[0].slug}
-            />
-          </li>
-        ))}
+        {courses.map(({ slug: courseSlug, title, description, chapters }) => {
+          const firstChapter = chapters[0];
+          const firstLecture = firstChapter.lectures[0];
+          return (
+            <li key={courseSlug}>
+              <CourseCard
+                title={title}
+                description={description}
+                schoolSlug={schoolSlug}
+                courseSlug={courseSlug}
+                chapterSlug={firstChapter.slug}
+                lectureSlug={firstLecture.slug}
+              />
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

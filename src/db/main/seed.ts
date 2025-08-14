@@ -1,5 +1,8 @@
+import { promises as fs } from "node:fs";
+import path from "node:path";
 import { drizzle } from "drizzle-orm/d1";
 import { reset, seed } from "drizzle-seed";
+import mime from "mime-types";
 import * as schema from "src/db/main/schema";
 import { TEST_USER } from "@/utils/constants";
 import type { UserStore } from "@/utils/userStore";
@@ -7,13 +10,15 @@ import type { UserStore } from "@/utils/userStore";
 async function main() {
   const { getPlatformProxy } = await import("wrangler");
   const proxy = await getPlatformProxy();
-  const { SCHOOL_DB, USER_STORE } = proxy.env as unknown as CloudflareBindings;
+  const { ATTACHMENTS_BUCKET, SCHOOL_DB, USER_STORE } =
+    proxy.env as unknown as CloudflareBindings;
   await seedSchoolDatabase(SCHOOL_DB);
   await seedUserStore(SCHOOL_DB, USER_STORE);
+  await seedAttachmentsBucket(ATTACHMENTS_BUCKET);
   process.exit(0);
 }
 
-async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
+const seedSchoolDatabase = async (SCHOOL_DB: D1Database) => {
   const db = drizzle(SCHOOL_DB, { casing: "snake_case" });
   await reset(db, schema);
   await seed(db, schema, { count: 1, seed: 0 }).refine(
@@ -21,7 +26,7 @@ async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
       SchoolEntity: {
         count: 1,
         columns: {
-          // id: intPrimaryKey(),
+          id: intPrimaryKey(),
           createdAt: timestamp(),
           updatedAt: timestamp(),
           slug: uuid(),
@@ -32,7 +37,7 @@ async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
       CourseEntity: {
         count: 2,
         columns: {
-          // id: intPrimaryKey(),
+          id: intPrimaryKey(),
           createdAt: timestamp(),
           updatedAt: timestamp(),
           slug: uuid(),
@@ -51,7 +56,7 @@ async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
       ChapterEntity: {
         count: 5,
         columns: {
-          // id: intPrimaryKey(),
+          id: intPrimaryKey(),
           createdAt: timestamp(),
           updatedAt: timestamp(),
           ordinal: intPrimaryKey(),
@@ -71,7 +76,7 @@ async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
       LectureEntity: {
         count: 8,
         columns: {
-          // id: intPrimaryKey(),
+          id: intPrimaryKey(),
           createdAt: timestamp(),
           updatedAt: timestamp(),
           ordinal: intPrimaryKey(),
@@ -95,9 +100,10 @@ async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
       VideoEntity: {
         count: 8,
         columns: {
+          id: intPrimaryKey(),
           createdAt: timestamp(),
           updatedAt: timestamp(),
-          videoId: valuesFromArray({
+          storageId: valuesFromArray({
             values: [
               "90c4d864-aa2c-4ead-8526-65368d37fc3d",
               "c8d11043-24ea-4dc8-854a-78d6c3e7f832",
@@ -113,12 +119,34 @@ async function seedSchoolDatabase(SCHOOL_DB: D1Database) {
           lectureId: intPrimaryKey(),
         },
       },
+      AttachmentEntity: {
+        count: 5,
+        columns: {
+          id: intPrimaryKey(),
+          createdAt: timestamp(),
+          updatedAt: timestamp(),
+          storageId: valuesFromArray({
+            values: [
+              "attachments/fronalpstock.jpg",
+              "attachments/fsm.png",
+              "attachments/backus.pdf",
+              "attachments/rockthejvm-site-main.zip",
+              "attachments/subtitles.txt",
+            ],
+            isUnique: true,
+          }),
+          lectureId: intPrimaryKey(),
+        },
+      },
     }),
   );
-}
+};
 
-async function seedUserStore(SCHOOL_DB: D1Database, USER_STORE: KVNamespace) {
-  USER_STORE.delete(TEST_USER.email);
+const seedUserStore = async (
+  SCHOOL_DB: D1Database,
+  USER_STORE: KVNamespace,
+) => {
+  await resetUserStore(USER_STORE);
   const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema });
   const schools = await db.query.SchoolEntity.findMany({
     with: {
@@ -141,53 +169,53 @@ async function seedUserStore(SCHOOL_DB: D1Database, USER_STORE: KVNamespace) {
           slug: school.slug,
           courses: school.courses.map((course) => ({
             slug: course.slug,
-            lectures: course.chapters.flatMap((chapter) =>
-              chapter.lectures.map((lecture) => ({
+            chapters: course.chapters.map((chapter) => ({
+              slug: chapter.slug,
+              lectures: chapter.lectures.map((lecture) => ({
                 slug: lecture.slug,
                 completed: false,
               })),
-            ),
+            })),
           })),
         })),
       ],
     } satisfies UserStore),
   );
-}
+};
+
+const resetUserStore = async (USER_STORE: KVNamespace) =>
+  USER_STORE.delete(TEST_USER.email);
+
+const seedAttachmentsBucket = async (ATTACHMENTS_BUCKET: R2Bucket) => {
+  await resetAttachmentsBucket(ATTACHMENTS_BUCKET);
+  const attachmentsDir = "src/db/main/attachments";
+  const files = await fs.readdir(attachmentsDir);
+  for (const filename of files) {
+    const filePath = path.join(attachmentsDir, filename);
+    const stat = await fs.stat(filePath);
+    if (!stat.isFile()) continue;
+    const fileBuffer = await fs.readFile(filePath);
+    const uint8FileBuffer = new Uint8Array(
+      fileBuffer.buffer,
+      fileBuffer.byteOffset,
+      fileBuffer.byteLength,
+    );
+    const contentType = mime.lookup(filename) || "application/octet-stream";
+    await ATTACHMENTS_BUCKET.put(`attachments/${filename}`, uint8FileBuffer, {
+      onlyIf: { etagDoesNotMatch: "*" },
+      httpMetadata: {
+        contentType,
+      },
+    });
+
+    console.log(`Uploaded: ${filename} (${contentType})`);
+  }
+};
+
+const resetAttachmentsBucket = async (ATTACHMENTS_BUCKET: R2Bucket) => {
+  const keysResult = await ATTACHMENTS_BUCKET.list();
+  const keys = keysResult.objects.map(({ key }) => key);
+  if (keys.length > 0) await ATTACHMENTS_BUCKET.delete(keys);
+};
 
 main();
-
-// async function main() {
-//   try {
-//     const { getPlatformProxy } = await import("wrangler");
-//     const proxy = await getPlatformProxy();
-//     const { SCHOOL_DB } = proxy.env as unknown as CloudflareBindings;
-//     const db = drizzle(SCHOOL_DB);
-
-//     const seedData = {
-//       title: "Sample Post Title",
-//       content: "This is a sample post content",
-//     };
-
-//     const existingPost = await db
-//       .select()
-//       .from(postsTable2)
-//       .where(eq(postsTable2.title, seedData.title))
-//       .get();
-
-//     if (existingPost) {
-//       console.log("Post already exists, skipping creation");
-//     } else {
-//       await db.insert(postsTable2).values(seedData);
-//       console.log("New post created!");
-//     }
-
-//     const posts = await db.select().from(postsTable2);
-//     console.log("Getting all posts from the database:", posts);
-//     process.exit(0);
-//   } catch (error) {
-//     console.error("Error seeding database:", error);
-//     process.exit(1);
-//   }
-// }
-
-// main();

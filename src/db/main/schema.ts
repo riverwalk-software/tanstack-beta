@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import * as d from "drizzle-orm/sqlite-core";
 import { sqliteTable as table, unique } from "drizzle-orm/sqlite-core";
 
+const id = { id: d.integer().primaryKey({ autoIncrement: true }) };
 const timestamps = {
   createdAt: d
     .integer({ mode: "timestamp_ms" })
@@ -14,7 +15,7 @@ const timestamps = {
 };
 
 export const SchoolEntity = table("schools", {
-  id: d.integer().primaryKey({ autoIncrement: true }),
+  ...id,
   ...timestamps,
   slug: d.text({ length: 100 }).notNull().unique(),
   name: d.text({ length: 100 }).notNull().unique(),
@@ -36,7 +37,7 @@ export const SchoolRelationships = relations(SchoolEntity, ({ many }) => ({
 export const CourseEntity = table(
   "courses",
   {
-    id: d.integer().primaryKey({ autoIncrement: true }),
+    ...id,
     ...timestamps,
     slug: d.text({ length: 100 }).notNull(),
     title: d
@@ -77,7 +78,7 @@ export const CourseRelationships = relations(CourseEntity, ({ many, one }) => ({
 export const ChapterEntity = table(
   "chapters",
   {
-    id: d.integer().primaryKey({ autoIncrement: true }),
+    ...id,
     ...timestamps,
     ordinal: d.integer().notNull(),
     slug: d
@@ -118,7 +119,7 @@ export const ChapterRelationships = relations(
 export const LectureEntity = table(
   "lectures",
   {
-    id: d.integer().primaryKey({ autoIncrement: true }),
+    ...id,
     ...timestamps,
     ordinal: d.integer().notNull(),
     slug: d
@@ -163,9 +164,9 @@ export const LectureRelationships = relations(
 );
 
 export const VideoEntity = table("videos", {
-  id: d.integer().primaryKey({ autoIncrement: true }),
+  ...id,
   ...timestamps,
-  videoId: d.text({ length: 200 }).notNull(),
+  storageId: d.text({ length: 200 }).notNull().unique(),
   lectureId: d
     .integer()
     .notNull()
@@ -182,39 +183,22 @@ export const VideoRelationships = relations(VideoEntity, ({ one }) => ({
   }),
 }));
 
-export const AttachmentEntity = table(
-  "attachments",
-  {
-    id: d.integer().primaryKey({ autoIncrement: true }),
-    ...timestamps,
-    url: d
-      .text({
-        length: 200,
-      })
-      .notNull(),
-    name: d
-      .text({
-        length: 200,
-      })
-      .notNull(),
-    mimeType: d
-      .text({
-        length: 100,
-      })
-      .notNull(),
-    size: d.integer().notNull(),
-    lectureId: d
-      .integer()
-      .notNull()
-      .references(() => LectureEntity.id, {
-        onDelete: "cascade",
-      }),
-  },
-  (table) => [
-    unique("unique_url_per_lecture").on(table.url, table.lectureId),
-    unique("unique_name_per_lecture").on(table.name, table.lectureId),
-  ],
-);
+export const AttachmentEntity = table("attachments", {
+  ...id,
+  ...timestamps,
+  storageId: d
+    .text({
+      length: 200,
+    })
+    .notNull()
+    .unique(),
+  lectureId: d
+    .integer()
+    .notNull()
+    .references(() => LectureEntity.id, {
+      onDelete: "cascade",
+    }),
+});
 
 export const AttachmentRelationships = relations(
   AttachmentEntity,

@@ -12,6 +12,7 @@ export function CourseCard({
   description,
   schoolSlug,
   courseSlug,
+  chapterSlug,
   lectureSlug,
 }: Props) {
   return (
@@ -21,8 +22,8 @@ export function CourseCard({
         <CardDescription>{description}</CardDescription>
         <CardAction>
           <Link
-            to="/schools/$schoolSlug/$courseSlug/$lectureSlug"
-            params={{ schoolSlug, courseSlug, lectureSlug }}
+            to="/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug"
+            params={{ schoolSlug, courseSlug, chapterSlug, lectureSlug }}
           >
             View Course
           </Link>
@@ -43,5 +44,6 @@ interface Props {
   description: string;
   schoolSlug: string;
   courseSlug: string;
+  chapterSlug: string;
   lectureSlug: string;
 }

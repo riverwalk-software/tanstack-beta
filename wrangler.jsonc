@@ -33,6 +33,12 @@
       "database_id": "dec12f0e-fc46-4428-915d-7b49c31d4c63",
       "migrations_dir": "./src/db/main/migrations/"
     }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ATTACHMENTS_BUCKET",
+      "bucket_name": "tanstack-beta"
+    }
   ]
 }
 /**

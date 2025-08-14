@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "@tanstack/react-router";
-import { ChevronsUpDown, GalleryVerticalEnd, Plus, Square } from "lucide-react";
+import { ChevronsUpDown, GalleryVerticalEnd, Square } from "lucide-react";
 import * as React from "react";
 import { useEffect } from "react";
 import {
@@ -8,7 +8,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -24,7 +23,7 @@ export function CourseSwitcher() {
   const { isMobile } = useSidebar();
   const router = useRouter();
   const { schoolSlug, courseSlug } = useParams({
-    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$lectureSlug/",
+    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
   });
   const { data: courses } = useSuspenseQuery(coursesQueryOptions(schoolSlug));
   const currentCourse =
@@ -71,31 +70,36 @@ export function CourseSwitcher() {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Courses
             </DropdownMenuLabel>
-            {courses.map((course, index) => (
-              <DropdownMenuItem
-                key={course.title}
-                // onClick={() => setActiveCourse(course)}
-                onClick={() => {
-                  setActiveCourse(course);
-                  router.navigate({
-                    to: "/schools/$schoolSlug/$courseSlug/$lectureSlug",
-                    params: {
-                      schoolSlug,
-                      courseSlug: course.slug,
-                      lectureSlug: course.chapters[0].lectures[0].slug,
-                    },
-                  });
-                }}
-                className="gap-2 p-2"
-              >
-                <div className="flex size-6 items-center justify-center rounded-md border">
-                  <GalleryVerticalEnd className="size-3.5 shrink-0" />
-                </div>
-                {course.title}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
+            {courses.map((course, index) => {
+              const firstChapter = course.chapters[0];
+              const firstLecture = firstChapter.lectures[0];
+              return (
+                <DropdownMenuItem
+                  key={course.title}
+                  // onClick={() => setActiveCourse(course)}
+                  onClick={() => {
+                    setActiveCourse(course);
+                    router.navigate({
+                      to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
+                      params: {
+                        schoolSlug,
+                        courseSlug: course.slug,
+                        chapterSlug: firstChapter.slug,
+                        lectureSlug: firstLecture.slug,
+                      },
+                    });
+                  }}
+                  className="gap-2 p-2"
+                >
+                  <div className="flex size-6 items-center justify-center rounded-md border">
+                    <GalleryVerticalEnd className="size-3.5 shrink-0" />
+                  </div>
+                  {course.title}
+                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              );
+            })}
+            {/* <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
@@ -103,7 +107,7 @@ export function CourseSwitcher() {
               <div className="font-medium text-muted-foreground">
                 Add course
               </div>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
