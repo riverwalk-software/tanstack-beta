@@ -3,8 +3,8 @@ import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { routerWithQueryClient } from "@tanstack/react-router-with-query";
 import { toast } from "sonner";
 import { match } from "ts-pattern";
-import { DefaultCatchBoundary } from "./components/DefaultCatchBoundary";
-import { NotFound } from "./components/NotFound";
+import { DefaultCatchBoundary } from "./components/boundaries/DefaultCatchBoundary";
+import { NotFound } from "./components/fallbacks/NotFound";
 import {
   afterSignOut,
   authClient,
