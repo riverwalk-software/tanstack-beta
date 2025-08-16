@@ -56,6 +56,18 @@ export const getSessionDataMw = createMiddleware({ type: "function" })
     },
   );
 
+export const getSessionDataServerMw = createMiddleware({
+  type: "request",
+}).server(async ({ next, request: { headers } }) => {
+  const sessionData = await auth.api.getSession({ headers });
+  if (!sessionData) throw new UNAUTHENTICATED();
+  return next<{ sessionData: SessionData }>({
+    context: {
+      sessionData,
+    },
+  });
+});
+
 const getAuthenticationDataFn = createServerFn()
   .middleware([getAuthenticationDataMw])
   .handler(
