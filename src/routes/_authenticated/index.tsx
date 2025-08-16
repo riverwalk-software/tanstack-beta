@@ -5,5 +5,5 @@ export const Route = createFileRoute("/_authenticated/")({
 });
 
 function Home() {
-  return <p>Home</p>;
+  return <></>;
 }
