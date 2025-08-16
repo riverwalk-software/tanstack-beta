@@ -43,6 +43,7 @@ export const getUserStoreFn = createServerFn()
 export interface UserStoreParams {
   schoolSlug: string;
   courseSlug: string;
+  chapterSlug: string;
   lectureSlug: string;
 }
 
@@ -51,9 +52,12 @@ export interface UserStore {
     slug: string;
     courses: {
       slug: string;
-      lectures: {
+      chapters: {
         slug: string;
-        completed: boolean;
+        lectures: {
+          slug: string;
+          completed: boolean;
+        }[];
       }[];
     }[];
   }[];
@@ -75,6 +79,7 @@ interface UserStoreLectureTag {
   _tag: "LECTURE";
   schoolSlug: string;
   courseSlug: string;
+  chapterSlug: string;
   lectureSlug: string;
 }
 interface UserStoreOptions {
@@ -112,44 +117,53 @@ export const setUserStoreFn = createServerFn({ method: "POST" })
                 ...school,
                 courses: school.courses.map((course) => ({
                   ...course,
-                  lectures: course.lectures.map((lecture) =>
-                    match(params)
-                      .with({ _tag: "ALL" }, () => ({
-                        ...lecture,
-                        completed,
-                      }))
-                      .with({ _tag: "SCHOOL" }, ({ schoolSlug }) => ({
-                        ...lecture,
-                        completed:
-                          school.slug === schoolSlug
-                            ? completed
-                            : lecture.completed,
-                      }))
-                      .with(
-                        { _tag: "COURSE" },
-                        ({ schoolSlug, courseSlug }) => ({
+                  chapters: course.chapters.map((chapter) => ({
+                    ...chapter,
+                    lectures: chapter.lectures.map((lecture) =>
+                      match(params)
+                        .with({ _tag: "ALL" }, () => ({
+                          ...lecture,
+                          completed,
+                        }))
+                        .with({ _tag: "SCHOOL" }, ({ schoolSlug }) => ({
                           ...lecture,
                           completed:
-                            school.slug === schoolSlug &&
-                            course.slug === courseSlug
+                            school.slug === schoolSlug
                               ? completed
                               : lecture.completed,
-                        }),
-                      )
-                      .with(
-                        { _tag: "LECTURE" },
-                        ({ schoolSlug, courseSlug, lectureSlug }) => ({
-                          ...lecture,
-                          completed:
-                            school.slug === schoolSlug &&
-                            course.slug === courseSlug &&
-                            lecture.slug === lectureSlug
-                              ? completed
-                              : lecture.completed,
-                        }),
-                      )
-                      .exhaustive(),
-                  ),
+                        }))
+                        .with(
+                          { _tag: "COURSE" },
+                          ({ schoolSlug, courseSlug }) => ({
+                            ...lecture,
+                            completed:
+                              school.slug === schoolSlug &&
+                              course.slug === courseSlug
+                                ? completed
+                                : lecture.completed,
+                          }),
+                        )
+                        .with(
+                          { _tag: "LECTURE" },
+                          ({
+                            schoolSlug,
+                            courseSlug,
+                            chapterSlug,
+                            lectureSlug,
+                          }) => ({
+                            ...lecture,
+                            completed:
+                              school.slug === schoolSlug &&
+                              course.slug === courseSlug &&
+                              chapter.slug === chapterSlug &&
+                              lecture.slug === lectureSlug
+                                ? completed
+                                : lecture.completed,
+                          }),
+                        )
+                        .exhaustive(),
+                    ),
+                  })),
                 })),
               })),
             } satisfies UserStore),
