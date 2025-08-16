@@ -21,7 +21,7 @@ import {
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
 } from "@/utils/constants";
-import { FormButton } from "../FormButton";
+import { FormButton } from "../primitives/FormButton";
 
 export function SignUpWithEmailForm() {
   const form = useForm<SignUpForm>({

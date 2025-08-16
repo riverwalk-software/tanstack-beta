@@ -24,7 +24,7 @@ import {
   SITE_NAME,
   TEST_USER,
 } from "@/utils/constants";
-import { FormButton } from "../FormButton";
+import { FormButton } from "../primitives/FormButton";
 
 export function SignInWithEmailForm() {
   const form = useForm<SignInForm>({

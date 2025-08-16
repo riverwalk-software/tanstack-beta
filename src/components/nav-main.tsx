@@ -57,7 +57,7 @@ export function NavMain() {
                   : new Set([...prev].filter((id) => id !== chapter.id)),
               )
             }
-            className="group/collapsible text-sky-100"
+            className="group/collapsible text-sky-700 dark:text-sky-100"
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
@@ -79,7 +79,11 @@ export function NavMain() {
                       <SidebarMenuSubItem key={lecture.id}>
                         <SidebarMenuSubButton
                           asChild
-                          className={isCompleted ? "text-emerald-100" : ""}
+                          className={
+                            isCompleted
+                              ? "text-emerald-700 dark:text-emerald-100"
+                              : ""
+                          }
                         >
                           <Link
                             activeProps={{

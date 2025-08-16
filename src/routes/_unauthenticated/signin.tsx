@@ -4,8 +4,8 @@ import { toast } from "sonner";
 import { match } from "ts-pattern";
 import { z } from "zod";
 import { SignInWithEmailForm } from "@/components/auth/SignInWithEmailForm";
+import { CenteredContainer } from "@/components/containers/CenteredContainer";
 import { Button } from "@/components/ui/button";
-import { CenteredContainer } from "@/containers/CenteredContainer";
 import { PRIVACY_POLICY_LINK, TERMS_OF_USE_LINK } from "@/utils/constants";
 import { resendVerificationEmailDurationMs } from "./signup/success";
 

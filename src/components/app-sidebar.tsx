@@ -1,5 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "@tanstack/react-router";
+import Confetti from "react-confetti";
+import ExampleMdx from "@/components/prose/ExampleMdx.mdx";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
@@ -49,6 +51,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     courseSlug,
   });
   const router = useRouter();
+  const isFinished = progress === 100;
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
@@ -73,6 +76,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <span className="whitespace-nowrap text-sm">
             {Math.round(progress)}% Complete
           </span>
+          {isFinished && (
+            <Confetti
+            // width={width}
+            // height={height}
+            />
+          )}
           <Button
             className="bg-gray-400 text-gray-800"
             disabled={resetLectureMt.isPending}
@@ -99,7 +108,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             disabled={resetSchoolMt.isPending}
             onClick={() => resetSchoolMt.mutate({ schoolSlug })}
           >
-            Reset All
+            Reset School
           </Button>
         </div>
         <div className="flex gap-4">
@@ -154,7 +163,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <VideoPlayer videoId={currentLecture.video.storageId}></VideoPlayer>
           )}
         </div>
-        {/* <Example /> */}
         {currentLecture.attachments.map((attachment) => (
           <a
             key={attachment.id}
@@ -167,6 +175,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </span>
           </a>
         ))}
+        <ExampleMdx />
         {/* <ClientPdf file="/docs/backus.pdf" width={800} /> */}
       </div>
     </>
