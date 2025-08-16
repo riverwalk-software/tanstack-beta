@@ -6,6 +6,7 @@
     "christian-kohler.npm-intellisense",
     "christian-kohler.path-intellisense",
     "EditorConfig.EditorConfig",
+    "formulahendry.auto-close-tag",
     "GitHub.codespaces",
     "GitHub.copilot",
     "GitHub.github-vscode-theme",
@@ -13,7 +14,8 @@
     "GitHub.vscode-pull-request-github",
     "ms-vsliveshare.vsliveshare",
     "PKief.material-icon-theme",
-    "redhat.vscode-yaml"
+    "redhat.vscode-yaml",
+    "unifiedjs.vscode-mdx"
     // "WallabyJs.console-ninja"
   ]
 }

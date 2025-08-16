@@ -21,11 +21,13 @@
         "christian-kohler.npm-intellisense",
         "christian-kohler.path-intellisense",
         "EditorConfig.EditorConfig",
+        "formulahendry.auto-close-tag",
         "GitHub.copilot", // Needs more configuration
         "github.vscode-github-actions",
         "GitHub.vscode-pull-request-github", // Needs more configuration
         "ms-vsliveshare.vsliveshare",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "unifiedjs.vscode-mdx"
         // "WallabyJs.console-ninja"
       ]
     }

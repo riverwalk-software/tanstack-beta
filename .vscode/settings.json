@@ -110,6 +110,8 @@
   // EditorConfig.EditorConfig
   "editorconfig.generateAuto": false,
   "editorconfig.showMenuEntry": false,
+  // formulahendry.auto-close-tag
+  "auto-close-tag.activationOnLanguage": ["mdx"],
   // ms-vsliveshare.vsliveshare
   "liveshare.allowGuestDebugControl": true,
   "liveshare.allowGuestTaskControl": true,
