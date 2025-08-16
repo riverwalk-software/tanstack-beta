@@ -17,6 +17,8 @@ import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DefaultCatchBoundary } from "@/components/DefaultCatchBoundary";
 import { NotFound } from "@/components/NotFound";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { useEnvironmentValidation } from "@/hooks/useEnvironment";
+import { useTheme } from "@/hooks/useTheme";
 import globalsCss from "@/styles/globals.css?url";
 import {
   type AuthenticationData,
@@ -25,10 +27,9 @@ import {
 import {
   EnvironmentError,
   environmentValidationQueryOptions,
-  useEnvironmentValidation,
 } from "@/utils/environment";
 import { seo } from "@/utils/seo";
-import { themeQueryOptions, useTheme } from "@/utils/theme";
+import { themeQueryOptions } from "@/utils/theme";
 
 interface RouterContext {
   queryClient: QueryClient;
@@ -127,6 +128,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       lang="en"
       className={theme}
       suppressHydrationWarning // Suppress hydration because theme may differ between server and client
+      data-theme={theme}
     >
       <head>
         <HeadContent />

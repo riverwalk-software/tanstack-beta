@@ -1,4 +1,4 @@
-import { queryOptions, useQueryClient } from "@tanstack/react-query";
+import { queryOptions } from "@tanstack/react-query";
 import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { Context } from "effect";
 import { z } from "zod";
@@ -131,11 +131,3 @@ export class EnvironmentService extends Context.Tag("EnvironmentService")<
   EnvironmentService,
   Environment
 >() {}
-
-export const useEnvironmentValidation = () => {
-  const queryClient = useQueryClient();
-  const environmentValidation = queryClient.getQueryData(
-    environmentValidationQueryOptions.queryKey,
-  );
-  return { environmentValidation };
-};
