@@ -111,7 +111,8 @@ function RootComponent() {
       }}
     >
       <RootDocument>
-        {environmentValidation?.isError ? (
+        {environmentValidation?.isError !== undefined &&
+        environmentValidation.isError ? (
           <EnvironmentError {...environmentValidation} />
         ) : (
           <Outlet />
