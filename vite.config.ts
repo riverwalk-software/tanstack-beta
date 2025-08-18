@@ -8,7 +8,6 @@ import rehypeExpressiveCode, {
   type RehypeExpressiveCodeOptions,
 } from "rehype-expressive-code";
 import rehypeKatex from "rehype-katex";
-import rehypeMermaid from "rehype-mermaid";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import { defineConfig } from "vite";
@@ -50,7 +49,7 @@ export default defineConfig({
       ...mdx({
         remarkPlugins: [remarkGfm, remarkMath],
         rehypePlugins: [
-          rehypeMermaid, // Must come before rehypeExpressiveCode
+          // rehypeMermaid, // Must come before rehypeExpressiveCode
           rehypeKatex, // Must come before rehypeExpressiveCode
           [rehypeExpressiveCode, rehypeExpressiveCodeOptions],
         ],
