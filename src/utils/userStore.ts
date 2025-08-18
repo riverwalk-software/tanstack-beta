@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { Context, Effect, Either } from "effect";
+import { produce } from "immer";
 import { match } from "ts-pattern";
 import { getSessionDataMw, SessionDataService } from "./authentication";
 import { EnvironmentService, getEnvironmentMw } from "./environment";
@@ -107,67 +108,59 @@ export const setUserStoreFn = createServerFn({ method: "POST" })
       const program = Effect.gen(function* () {
         const { USER_STORE } = yield* CloudflareBindingsService;
         const { user } = yield* SessionDataService;
-        const userStore = yield* Effect.promise(() => getUserStoreFn());
+        const userStore: UserStore = yield* Effect.promise(() =>
+          getUserStoreFn(),
+        );
+        const updatedUserStore = yield* Effect.sync(() =>
+          produce(userStore, ({ schools }) => {
+            schools.forEach((school) => {
+              school.courses.forEach((course) =>
+                course.chapters.forEach((chapter) =>
+                  chapter.lectures.forEach((lecture) => {
+                    const getCompleted = (predicate: boolean) =>
+                      predicate ? completed : lecture.completed;
+                    lecture.completed = match(params)
+                      .with({ _tag: "ALL" }, () => completed)
+                      .with({ _tag: "SCHOOL" }, ({ schoolSlug }) =>
+                        getCompleted(schoolSlug === school.slug),
+                      )
+                      .with(
+                        {
+                          _tag: "COURSE",
+                        },
+                        ({ schoolSlug, courseSlug }) =>
+                          getCompleted(
+                            schoolSlug === school.slug &&
+                              courseSlug === course.slug,
+                          ),
+                      )
+                      .with(
+                        {
+                          _tag: "LECTURE",
+                        },
+                        ({
+                          schoolSlug,
+                          courseSlug,
+                          chapterSlug,
+                          lectureSlug,
+                        }) =>
+                          getCompleted(
+                            schoolSlug === school.slug &&
+                              courseSlug === course.slug &&
+                              chapterSlug === chapter.slug &&
+                              lectureSlug === lecture.slug,
+                          ),
+                      )
+                      .exhaustive();
+                  }),
+                ),
+              );
+              return schools;
+            });
+          }),
+        );
         yield* Effect.promise(() =>
-          USER_STORE.put(
-            user.email,
-            JSON.stringify({
-              ...userStore,
-              schools: userStore.schools.map((school) => ({
-                ...school,
-                courses: school.courses.map((course) => ({
-                  ...course,
-                  chapters: course.chapters.map((chapter) => ({
-                    ...chapter,
-                    lectures: chapter.lectures.map((lecture) =>
-                      match(params)
-                        .with({ _tag: "ALL" }, () => ({
-                          ...lecture,
-                          completed,
-                        }))
-                        .with({ _tag: "SCHOOL" }, ({ schoolSlug }) => ({
-                          ...lecture,
-                          completed:
-                            school.slug === schoolSlug
-                              ? completed
-                              : lecture.completed,
-                        }))
-                        .with(
-                          { _tag: "COURSE" },
-                          ({ schoolSlug, courseSlug }) => ({
-                            ...lecture,
-                            completed:
-                              school.slug === schoolSlug &&
-                              course.slug === courseSlug
-                                ? completed
-                                : lecture.completed,
-                          }),
-                        )
-                        .with(
-                          { _tag: "LECTURE" },
-                          ({
-                            schoolSlug,
-                            courseSlug,
-                            chapterSlug,
-                            lectureSlug,
-                          }) => ({
-                            ...lecture,
-                            completed:
-                              school.slug === schoolSlug &&
-                              course.slug === courseSlug &&
-                              chapter.slug === chapterSlug &&
-                              lecture.slug === lectureSlug
-                                ? completed
-                                : lecture.completed,
-                          }),
-                        )
-                        .exhaustive(),
-                    ),
-                  })),
-                })),
-              })),
-            } satisfies UserStore),
-          ),
+          USER_STORE.put(user.email, JSON.stringify(updatedUserStore)),
         );
       });
       const context = Context.empty().pipe(
