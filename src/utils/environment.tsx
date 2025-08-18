@@ -1,10 +1,12 @@
 import { queryOptions } from "@tanstack/react-query";
 import { createMiddleware, createServerFn } from "@tanstack/react-start";
+import { NODE_ENV_Schema } from "drizzle.config";
 import { Context } from "effect";
 import { z } from "zod";
 
 const VariablesEnvironmentSchema = z.object({
   BETTER_AUTH_URL: z.string().url(),
+  NODE_ENV: NODE_ENV_Schema,
 });
 
 type VariablesEnvironment = z.infer<typeof VariablesEnvironmentSchema>;
