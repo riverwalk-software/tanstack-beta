@@ -3,6 +3,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { useCookies } from "react-cookie";
 import {
   THEME_COOKIE_NAME,
@@ -11,29 +12,37 @@ import {
 } from "@/utils/theme";
 
 export const useTheme = (): Return => {
-  const queryClient = useQueryClient();
   const { data: theme } = useSuspenseQuery(themeQueryOptions);
+  const state = {
+    theme,
+  } satisfies State;
+
+  const queryClient = useQueryClient();
   const [, setTheme] = useCookies<"theme", CookiesValue>([], {
     doNotUpdate: true,
   });
   const { mutate: toggleTheme } = useMutation({
     mutationKey: ["toggleTheme"],
     mutationFn: async () => {
-      const newTheme = theme === "dark" ? "light" : "dark";
+      const newTheme: Theme = theme === "dark" ? "light" : "dark";
       setTheme(THEME_COOKIE_NAME, newTheme);
       queryClient.setQueryData<Theme>(themeQueryOptions.queryKey, newTheme);
     },
   });
-  return { theme, toggleTheme };
+  const mutations = {
+    toggleTheme,
+  } satisfies Mutations;
+
+  return useMemo(() => ({ ...state, ...mutations }), [state, mutations]);
 };
 
 interface State {
   theme: Theme;
 }
-interface Actions {
+interface Mutations {
   toggleTheme: () => void;
 }
-interface Return extends State, Actions {}
+interface Return extends State, Mutations {}
 
 interface CookiesValue {
   theme: Theme;
