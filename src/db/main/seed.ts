@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { drizzle } from "drizzle-orm/d1";
 import { reset, seed } from "drizzle-seed";
+import { produce } from "immer";
 import mime from "mime-types";
 import * as schema from "src/db/main/schema";
 import { TEST_USER } from "@/utils/constants";
@@ -161,26 +162,23 @@ const seedUserStore = async (
       },
     },
   });
-  await USER_STORE.put(
-    TEST_USER.email,
-    JSON.stringify({
-      schools: [
-        ...schools.map((school) => ({
-          slug: school.slug,
-          courses: school.courses.map((course) => ({
-            slug: course.slug,
-            chapters: course.chapters.map((chapter) => ({
-              slug: chapter.slug,
-              lectures: chapter.lectures.map((lecture) => ({
-                slug: lecture.slug,
-                completed: false,
-              })),
-            })),
-          })),
-        })),
-      ],
-    } satisfies UserStore),
+
+  const userStore: UserStore = produce(
+    { schools } as UserStore,
+    ({ schools }) => {
+      schools.forEach((school) => {
+        school.courses.forEach((course) => {
+          course.chapters.forEach((chapter) => {
+            chapter.lectures.forEach((lecture) => {
+              lecture.completed = false;
+            });
+          });
+        });
+      });
+    },
   );
+
+  await USER_STORE.put(TEST_USER.email, JSON.stringify(userStore));
 };
 
 const resetUserStore = async (USER_STORE: KVNamespace) =>
