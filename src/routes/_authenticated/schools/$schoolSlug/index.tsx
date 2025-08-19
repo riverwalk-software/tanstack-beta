@@ -9,7 +9,9 @@ export const Route = createFileRoute("/_authenticated/schools/$schoolSlug/")({
 
 function RouteComponent() {
   const { schoolSlug } = Route.useParams();
-  const { data: courses } = useSuspenseQuery(coursesQueryOptions(schoolSlug));
+  const { data: courses } = useSuspenseQuery(
+    coursesQueryOptions({ schoolSlug }),
+  );
   return (
     <div>
       <h1>Courses</h1>
