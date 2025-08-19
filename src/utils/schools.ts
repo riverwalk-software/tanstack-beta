@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
@@ -16,11 +16,16 @@ const getSchoolsFn = createServerFn()
     return schools;
   });
 
-export const schoolsQueryOptions = (schoolSlugs: string[]) =>
+const schoolsQueryOptions = (schoolSlugs: string[]) =>
   queryOptions({
     queryKey: ["schools"],
     queryFn: () => getSchoolsFn({ data: { schoolSlugs } }),
   });
+
+export const useSchools = (schoolSlugs: string[]) => {
+  const { data: schools } = useSuspenseQuery(schoolsQueryOptions(schoolSlugs));
+  return { schools };
+};
 
 const getCoursesFn = createServerFn()
   .validator((data: { schoolSlug: string }) => data)
@@ -50,11 +55,16 @@ const getCoursesFn = createServerFn()
     return courses;
   });
 
-export const coursesQueryOptions = ({ schoolSlug }: { schoolSlug: string }) =>
+const coursesQueryOptions = ({ schoolSlug }: { schoolSlug: string }) =>
   queryOptions({
     queryKey: ["schools", schoolSlug, "courses"],
     queryFn: () => getCoursesFn({ data: { schoolSlug } }),
   });
+
+export const useCourses = (params: { schoolSlug: string }) => {
+  const { data: courses } = useSuspenseQuery(coursesQueryOptions(params));
+  return { courses };
+};
 
 const getCourseFn = createServerFn()
   .validator((data: { schoolSlug: string; courseSlug: string }) => data)
@@ -90,7 +100,7 @@ const getCourseFn = createServerFn()
 
 export type Course = Awaited<ReturnType<typeof getCourseFn>>;
 
-export const courseQueryOptions = ({
+const courseQueryOptions = ({
   schoolSlug,
   courseSlug,
 }: {
@@ -107,3 +117,11 @@ export const courseQueryOptions = ({
     ],
     queryFn: () => getCourseFn({ data: { schoolSlug, courseSlug } }),
   });
+
+export const useCourse = (params: {
+  schoolSlug: string;
+  courseSlug: string;
+}) => {
+  const { data: course } = useSuspenseQuery(courseQueryOptions(params));
+  return { course };
+};

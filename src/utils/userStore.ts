@@ -64,52 +64,41 @@ export interface UserStore {
   }[];
 }
 
-interface UserStoreAllTag {
-  _tag: "ALL";
-}
-interface UserStoreSchoolTag {
-  _tag: "SCHOOL";
-  schoolSlug: string;
-}
-interface UserStoreCourseTag {
-  _tag: "COURSE";
-  schoolSlug: string;
-  courseSlug: string;
-}
-interface UserStoreLectureTag {
-  _tag: "LECTURE";
-  schoolSlug: string;
-  courseSlug: string;
-  chapterSlug: string;
-  lectureSlug: string;
-}
-
-interface UserStoreOptions {
-  completed: boolean;
-}
-
 export type GetUserStoreParams =
-  | UserStoreAllTag
-  | UserStoreSchoolTag
-  | UserStoreCourseTag;
+  | {
+      _tag: "ALL";
+    }
+  | {
+      _tag: "SCHOOL";
+      schoolSlug: string;
+    }
+  | {
+      _tag: "COURSE";
+      schoolSlug: string;
+      courseSlug: string;
+    };
 
-export type SetUserStoreParams = GetUserStoreParams | UserStoreLectureTag;
+export type SetUserStoreParams =
+  | GetUserStoreParams
+  | {
+      _tag: "LECTURE";
+      schoolSlug: string;
+      courseSlug: string;
+      chapterSlug: string;
+      lectureSlug: string;
+    };
 
-export type SetProgressData = {
-  params: SetUserStoreParams;
-  options: UserStoreOptions;
+export type SetProgressParams = SetUserStoreParams & {
+  completed: boolean;
 };
 
 export const setProgressFn = createServerFn({ method: "POST" })
-  .validator((data: SetProgressData) => data)
+  .validator((data: SetProgressParams) => data)
   .middleware([getEnvironmentMw, getSessionDataMw])
   .handler(
     async ({
       context: { environment, sessionData },
-      data: {
-        params,
-        options: { completed },
-      },
+      data: params,
     }): Promise<void> => {
       const cloudflareBindings = getCloudflareBindings();
       const program = Effect.gen(function* () {
@@ -150,7 +139,7 @@ export const setProgressFn = createServerFn({ method: "POST" })
                           lectureSlug === lecture.slug,
                       )
                       .exhaustive();
-                    if (isUpdatable) lecture.completed = completed;
+                    if (isUpdatable) lecture.completed = params.completed;
                   }),
                 ),
               );
