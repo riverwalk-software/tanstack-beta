@@ -41,7 +41,7 @@ export const getUserStoreFn = createServerFn()
       return userStore;
     },
   );
-export interface UserStoreParams {
+export interface UserStoreSlugs {
   schoolSlug: string;
   courseSlug: string;
   chapterSlug: string;
@@ -83,6 +83,7 @@ interface UserStoreLectureTag {
   chapterSlug: string;
   lectureSlug: string;
 }
+
 interface UserStoreOptions {
   completed: boolean;
 }
@@ -92,18 +93,24 @@ export type GetUserStoreParams =
   | UserStoreSchoolTag
   | UserStoreCourseTag;
 
-export type SetUserStoreParams = (GetUserStoreParams | UserStoreLectureTag) &
-  UserStoreOptions;
+export type SetUserStoreParams = GetUserStoreParams | UserStoreLectureTag;
 
-export const setUserStoreFn = createServerFn({ method: "POST" })
-  .validator((data: SetUserStoreParams) => data)
+export type SetProgressData = {
+  params: SetUserStoreParams;
+  options: UserStoreOptions;
+};
+
+export const setProgressFn = createServerFn({ method: "POST" })
+  .validator((data: SetProgressData) => data)
   .middleware([getEnvironmentMw, getSessionDataMw])
   .handler(
     async ({
       context: { environment, sessionData },
-      data: params,
+      data: {
+        params,
+        options: { completed },
+      },
     }): Promise<void> => {
-      const { completed } = params;
       const cloudflareBindings = getCloudflareBindings();
       const program = Effect.gen(function* () {
         const { USER_STORE } = yield* CloudflareBindingsService;
@@ -117,45 +124,36 @@ export const setUserStoreFn = createServerFn({ method: "POST" })
               school.courses.forEach((course) =>
                 course.chapters.forEach((chapter) =>
                   chapter.lectures.forEach((lecture) => {
-                    const getCompleted = (predicate: boolean) =>
-                      predicate ? completed : lecture.completed;
-                    lecture.completed = match(params)
-                      .with({ _tag: "ALL" }, () => completed)
-                      .with({ _tag: "SCHOOL" }, ({ schoolSlug }) =>
-                        getCompleted(schoolSlug === school.slug),
+                    const isUpdatable = match(params)
+                      .with({ _tag: "ALL" }, () => true)
+                      .with(
+                        { _tag: "SCHOOL" },
+                        ({ schoolSlug }) => schoolSlug === school.slug,
                       )
                       .with(
-                        {
-                          _tag: "COURSE",
-                        },
+                        { _tag: "COURSE" },
                         ({ schoolSlug, courseSlug }) =>
-                          getCompleted(
-                            schoolSlug === school.slug &&
-                              courseSlug === course.slug,
-                          ),
+                          schoolSlug === school.slug &&
+                          courseSlug === course.slug,
                       )
                       .with(
-                        {
-                          _tag: "LECTURE",
-                        },
+                        { _tag: "LECTURE" },
                         ({
                           schoolSlug,
                           courseSlug,
                           chapterSlug,
                           lectureSlug,
                         }) =>
-                          getCompleted(
-                            schoolSlug === school.slug &&
-                              courseSlug === course.slug &&
-                              chapterSlug === chapter.slug &&
-                              lectureSlug === lecture.slug,
-                          ),
+                          schoolSlug === school.slug &&
+                          courseSlug === course.slug &&
+                          chapterSlug === chapter.slug &&
+                          lectureSlug === lecture.slug,
                       )
                       .exhaustive();
+                    if (isUpdatable) lecture.completed = completed;
                   }),
                 ),
               );
-              return schools;
             });
           }),
         );

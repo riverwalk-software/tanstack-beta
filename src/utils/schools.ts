@@ -3,7 +3,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "src/db/main/schema";
-
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 const getSchoolsFn = createServerFn()
@@ -51,7 +50,7 @@ const getCoursesFn = createServerFn()
     return courses;
   });
 
-export const coursesQueryOptions = (schoolSlug: string) =>
+export const coursesQueryOptions = ({ schoolSlug }: { schoolSlug: string }) =>
   queryOptions({
     queryKey: ["schools", schoolSlug, "courses"],
     queryFn: () => getCoursesFn({ data: { schoolSlug } }),
@@ -89,7 +88,15 @@ const getCourseFn = createServerFn()
     return course;
   });
 
-export const courseQueryOptions = (schoolSlug: string, courseSlug: string) =>
+export type Course = Awaited<ReturnType<typeof getCourseFn>>;
+
+export const courseQueryOptions = ({
+  schoolSlug,
+  courseSlug,
+}: {
+  schoolSlug: string;
+  courseSlug: string;
+}) =>
   queryOptions({
     queryKey: [
       "schools",
