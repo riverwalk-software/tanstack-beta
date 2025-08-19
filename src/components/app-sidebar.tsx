@@ -1,4 +1,3 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "@tanstack/react-router";
 import Confetti from "react-confetti";
 import ExampleMdx from "@/components/prose/ExampleMdx.mdx";
@@ -9,49 +8,28 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useCourseZipper } from "@/hooks/useSchools";
 import { useUserStore } from "@/hooks/useUserStore";
-import { courseQueryOptions } from "@/utils/schools";
+import type { UserStoreSlugs } from "@/utils/userStore";
 import { CourseSwitcher } from "./CourseSwitcher";
 import { NavMain } from "./nav-main";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
+import { ResetProgressButton } from "./userStore/ResetProgressButton";
 import { VideoPlayer } from "./VideoPlayer";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { schoolSlug, courseSlug, chapterSlug, lectureSlug } = useParams({
+  const slugs = useParams({
     from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
   });
-  const {
-    data: { chapters },
-  } = useSuspenseQuery(courseQueryOptions(schoolSlug, courseSlug));
-  const lectures = chapters.flatMap((chapter) => chapter.lectures);
-  const currentLecture = lectures.find(
-    (lecture) => lecture.slug === lectureSlug,
-  )!;
-  const currentIndex = lectures.indexOf(currentLecture);
-  const prevLecture = currentIndex > 0 ? lectures[currentIndex - 1] : null;
-  const prevChapter = chapters.find(
-    (chapter) => chapter.id === prevLecture?.chapterId,
-  );
-  const nextLecture =
-    currentIndex < lectures.length - 1 ? lectures[currentIndex + 1] : null;
-  const nextChapter = chapters.find(
-    (chapter) => chapter.id === nextLecture?.chapterId,
-  );
-  const {
-    getProgress,
-    completeLectureMt,
-    resetLectureMt,
-    resetCourseMt,
-    resetSchoolMt,
-  } = useUserStore();
-  const progress = getProgress({
-    _tag: "COURSE",
-    schoolSlug,
-    courseSlug,
-  });
+  const { previous, current } = useCourseZipper(slugs);
+  const { getProgress } = useUserStore();
+  const { progress: courseProgress, isComplete: isCourseComplete } =
+    getProgress({
+      ...slugs,
+      _tag: "COURSE",
+    });
   const router = useRouter();
-  const isFinished = progress === 100;
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
@@ -71,48 +49,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <div className="m-auto ml-25 flex w-full max-w-3xl flex-col items-center justify-center gap-4">
         <div className="flex w-full items-center gap-4">
           <div className="w-[60%]">
-            <Progress value={progress} className="h-4 w-full" />
+            <Progress value={courseProgress} className="h-4 w-full" />
           </div>
           <span className="whitespace-nowrap text-sm">
-            {Math.round(progress)}% Complete
+            {Math.round(courseProgress)}% Complete
           </span>
-          {isFinished && (
+          {isCourseComplete && (
             <Confetti
             // width={width}
             // height={height}
             />
           )}
-          <Button
-            className="bg-gray-400 text-gray-800"
-            disabled={resetLectureMt.isPending}
-            onClick={() =>
-              resetLectureMt.mutate({
-                schoolSlug,
-                courseSlug,
-                chapterSlug,
-                lectureSlug,
-              })
-            }
-          >
-            Reset Lecture
-          </Button>
-          <Button
-            className="bg-gray-400 text-gray-800"
-            disabled={resetCourseMt.isPending}
-            onClick={() => resetCourseMt.mutate({ schoolSlug, courseSlug })}
-          >
-            Reset Course
-          </Button>
-          <Button
-            className="bg-gray-400 text-gray-800"
-            disabled={resetSchoolMt.isPending}
-            onClick={() => resetSchoolMt.mutate({ schoolSlug })}
-          >
-            Reset School
-          </Button>
+          <ResetButtons {...slugs} />
         </div>
         <div className="flex gap-4">
-          {prevLecture && prevChapter && (
+          {previous && (
             <Button
               className="bg-gray-400"
               disabled={false}
@@ -120,10 +71,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 router.navigate({
                   to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
                   params: {
-                    schoolSlug,
-                    courseSlug,
-                    chapterSlug: prevChapter.slug,
-                    lectureSlug: prevLecture.slug,
+                    ...slugs,
+                    chapterSlug: previous.chapter.slug,
+                    lectureSlug: previous.lecture.slug,
                   },
                 });
               }}
@@ -131,39 +81,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               Previous Lecture
             </Button>
           )}
-          {
-            <Button
-              className="bg-blue-400"
-              disabled={completeLectureMt.isPending}
-              onClick={async () => {
-                completeLectureMt.mutate({
-                  schoolSlug,
-                  courseSlug,
-                  chapterSlug,
-                  lectureSlug,
-                });
-                if (nextLecture === null || nextChapter === undefined) return;
-                await router.navigate({
-                  to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
-                  params: {
-                    schoolSlug,
-                    courseSlug,
-                    chapterSlug: nextChapter.slug,
-                    lectureSlug: nextLecture.slug,
-                  },
-                });
-              }}
-            >
-              {nextLecture ? "Complete and Continue" : "Complete"}
-            </Button>
-          }
         </div>
         <div className="relative aspect-video w-full">
-          {currentLecture.video && (
-            <VideoPlayer videoId={currentLecture.video.storageId}></VideoPlayer>
+          {current.lecture.video && (
+            <VideoPlayer
+              videoId={current.lecture.video.storageId}
+            ></VideoPlayer>
           )}
         </div>
-        {currentLecture.attachments.map((attachment) => (
+        {current.lecture.attachments.map((attachment) => (
           <a
             key={attachment.id}
             href={`/api/attachments/${encodeURIComponent(attachment.storageId)}`}
@@ -176,8 +102,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </a>
         ))}
         <ExampleMdx />
-        {/* <ClientPdf file="/docs/backus.pdf" width={800} /> */}
       </div>
+    </>
+  );
+}
+
+function ResetButtons(slugs: UserStoreSlugs) {
+  return (
+    <>
+      <ResetProgressButton _tag="LECTURE" {...slugs} />
     </>
   );
 }
