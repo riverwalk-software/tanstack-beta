@@ -1,8 +1,7 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { SchoolCard } from "@/components/SchoolCard";
 import { userStoreQueryOptions, useUserStore } from "@/hooks/useUserStore";
-import { schoolsQueryOptions } from "@/utils/schools";
+import { useSchools } from "@/utils/schools";
 
 export const Route = createFileRoute("/_authenticated/schools/")({
   component: RouteComponent,
@@ -12,7 +11,7 @@ export const Route = createFileRoute("/_authenticated/schools/")({
 
 function RouteComponent() {
   const { schoolSlugs } = useUserStore();
-  const { data: schools } = useSuspenseQuery(schoolsQueryOptions(schoolSlugs));
+  const { schools } = useSchools(schoolSlugs);
   return (
     <div>
       <h1>Schools</h1>

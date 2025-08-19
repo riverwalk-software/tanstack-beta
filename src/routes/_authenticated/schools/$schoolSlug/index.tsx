@@ -1,7 +1,6 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { CourseCard } from "@/components/CourseCard";
-import { coursesQueryOptions } from "@/utils/schools";
+import { useCourses } from "@/utils/schools";
 
 export const Route = createFileRoute("/_authenticated/schools/$schoolSlug/")({
   component: RouteComponent,
@@ -9,9 +8,7 @@ export const Route = createFileRoute("/_authenticated/schools/$schoolSlug/")({
 
 function RouteComponent() {
   const { schoolSlug } = Route.useParams();
-  const { data: courses } = useSuspenseQuery(
-    coursesQueryOptions({ schoolSlug }),
-  );
+  const { courses } = useCourses({ schoolSlug });
   return (
     <div>
       <h1>Courses</h1>
