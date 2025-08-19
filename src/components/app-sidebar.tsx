@@ -1,4 +1,3 @@
-import { useParams, useRouter } from "@tanstack/react-router";
 import Confetti from "react-confetti";
 import ExampleMdx from "@/components/prose/ExampleMdx.mdx";
 import { TeamSwitcher } from "@/components/team-switcher";
@@ -8,7 +7,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useCourseCursor } from "@/hooks/useSchools";
+import { useCourseCursor } from "@/hooks/useCourseCursor";
+import { useNavigation } from "@/hooks/useNavigation";
 import { useUserStore } from "@/hooks/useUserStore";
 import type { UserStoreSlugs } from "@/utils/userStore";
 import { CourseSwitcher } from "./CourseSwitcher";
@@ -19,17 +19,13 @@ import { ResetProgressButton } from "./userStore/ResetProgressButton";
 import { VideoPlayer } from "./VideoPlayer";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const slugs = useParams({
-    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
-  });
-  const { previous, current } = useCourseCursor(slugs);
+  const { current } = useCourseCursor();
   const { getProgress } = useUserStore();
   const { progress: courseProgress, isComplete: isCourseComplete } =
     getProgress({
-      ...slugs,
+      ...current.slugs,
       _tag: "COURSE",
     });
-  const router = useRouter();
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
@@ -60,28 +56,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             // height={height}
             />
           )}
-          <ResetButtons {...slugs} />
+          <ResetButtons {...current.slugs} />
         </div>
-        <div className="flex gap-4">
-          {previous && (
-            <Button
-              className="bg-gray-400"
-              disabled={false}
-              onClick={() => {
-                router.navigate({
-                  to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
-                  params: {
-                    ...slugs,
-                    chapterSlug: previous.chapter.slug,
-                    lectureSlug: previous.lecture.slug,
-                  },
-                });
-              }}
-            >
-              Previous Lecture
-            </Button>
-          )}
-        </div>
+        <LectureNavigationButtons />
         <div className="relative aspect-video w-full">
           {current.lecture.video && (
             <VideoPlayer
@@ -109,8 +86,71 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
 function ResetButtons(slugs: UserStoreSlugs) {
   return (
-    <>
+    <div className="flex gap-4">
       <ResetProgressButton _tag="LECTURE" {...slugs} />
-    </>
+    </div>
+  );
+}
+
+function LectureNavigationButtons() {
+  return (
+    <div className="flex gap-4">
+      <PreviousLectureButton />
+      <NextLectureButton />
+    </div>
+  );
+}
+
+function PreviousLectureButton() {
+  const { previous } = useCourseCursor();
+  const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
+  return (
+    previous && (
+      <Button
+        className="bg-gray-400"
+        disabled={isNavigating}
+        onClick={async () => {
+          toggleIsNavigating();
+          try {
+            await navigate({
+              to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
+              params: previous.slugs,
+            });
+          } finally {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            toggleIsNavigating();
+          }
+        }}
+      >
+        {isNavigating ? "Loading..." : "Previous Lecture"}
+      </Button>
+    )
+  );
+}
+
+function NextLectureButton() {
+  const { next } = useCourseCursor();
+  const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
+  return (
+    next && (
+      <Button
+        className="bg-sky-500"
+        disabled={isNavigating}
+        onClick={async () => {
+          toggleIsNavigating();
+          try {
+            await navigate({
+              to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
+              params: next.slugs,
+            });
+          } finally {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            toggleIsNavigating();
+          }
+        }}
+      >
+        {isNavigating ? "Loading..." : "Next Lecture"}
+      </Button>
+    )
   );
 }
