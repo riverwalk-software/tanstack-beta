@@ -27,6 +27,7 @@
     "@radix-ui/react-switch": "^1.2.5",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@react-email/components": "^0.1.1",
+    "@rimbu/core": "^2.0.4",
     "@tanstack/query-core": "^5.85.3",
     "@tanstack/react-query": "^5.85.3",
     "@tanstack/react-router": "^1.131.16",
@@ -37,6 +38,8 @@
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.44.3",
     "effect": "^3.17.1",
+    "immer": "^10.1.1",
+    "immutable": "^5.1.3",
     "jotai": "^2.12.5",
     "ky": "^1.8.2",
     "kysely-d1": "^0.4.0",
@@ -53,6 +56,7 @@
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
     "ts-pattern": "^5.7.1",
+    "xstate": "^5.20.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {
