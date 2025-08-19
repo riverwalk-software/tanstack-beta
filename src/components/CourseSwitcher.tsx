@@ -22,20 +22,22 @@ import { coursesQueryOptions } from "@/utils/schools";
 export function CourseSwitcher() {
   const { isMobile } = useSidebar();
   const router = useRouter();
-  const { schoolSlug, courseSlug } = useParams({
+  const slugs = useParams({
     from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
   });
-  const { data: courses } = useSuspenseQuery(coursesQueryOptions(schoolSlug));
+  const { data: courses } = useSuspenseQuery(coursesQueryOptions(slugs));
   const currentCourse =
-    courses.find((course) => course.slug === courseSlug) || courses[0];
+    courses.find((course) => course.slug === slugs.courseSlug) || courses[0];
   const [activeCourse, setActiveCourse] = React.useState(currentCourse);
 
   useEffect(() => {
-    const urlCourse = courses.find((course) => course.slug === courseSlug);
+    const urlCourse = courses.find(
+      (course) => course.slug === slugs.courseSlug,
+    );
     if (urlCourse) {
       setActiveCourse(urlCourse);
     }
-  }, [courses, courseSlug]);
+  }, [courses, slugs.courseSlug]);
 
   if (!activeCourse) {
     return null;
@@ -82,7 +84,7 @@ export function CourseSwitcher() {
                     router.navigate({
                       to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
                       params: {
-                        schoolSlug,
+                        ...slugs,
                         courseSlug: course.slug,
                         chapterSlug: firstChapter.slug,
                         lectureSlug: firstLecture.slug,
