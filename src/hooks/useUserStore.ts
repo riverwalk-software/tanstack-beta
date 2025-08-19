@@ -10,7 +10,7 @@ import { match } from "ts-pattern";
 import {
   type GetUserStoreParams,
   getUserStoreFn,
-  type SetProgressData,
+  type SetProgressParams,
   setProgressFn,
   type UserStore,
 } from "@/utils/userStore";
@@ -76,7 +76,7 @@ export const useUserStore = (): Return => {
   const mutations = {
     setProgressMt: useMutation({
       mutationKey: ["setProgress"],
-      mutationFn: (data: SetProgressData) =>
+      mutationFn: (data: SetProgressParams) =>
         setProgressFn({
           data,
         }),
@@ -84,7 +84,7 @@ export const useUserStore = (): Return => {
     }),
   } satisfies Mutations;
 
-  return useMemo(() => ({ ...state, ...mutations }), [state, mutations]);
+  return { ...state, ...mutations };
 };
 
 interface State {
@@ -95,7 +95,7 @@ interface State {
   };
 }
 interface Mutations {
-  setProgressMt: UseMutationResult<void, Error, SetProgressData, unknown>;
+  setProgressMt: UseMutationResult<void, Error, SetProgressParams, unknown>;
 }
 interface Return extends State, Mutations {}
 export const userStoreQueryOptions = queryOptions({

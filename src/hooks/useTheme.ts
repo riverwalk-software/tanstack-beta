@@ -3,7 +3,6 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { useMemo } from "react";
 import { useCookies } from "react-cookie";
 import {
   THEME_COOKIE_NAME,
@@ -33,7 +32,7 @@ export const useTheme = (): Return => {
     toggleTheme,
   } satisfies Mutations;
 
-  return useMemo(() => ({ ...state, ...mutations }), [state, mutations]);
+  return { ...state, ...mutations };
 };
 
 interface State {

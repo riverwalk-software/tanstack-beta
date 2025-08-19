@@ -1,5 +1,4 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
 import {
   type EnvironmentValidation,
   environmentValidationQueryOptions,
@@ -14,7 +13,7 @@ export const useEnvironmentValidation = (): Return => {
   } satisfies State;
 
   const mutations = {} satisfies Mutations;
-  return useMemo(() => ({ ...state, ...mutations }), [state, mutations]);
+  return { ...state, ...mutations };
 };
 
 interface State {
