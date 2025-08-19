@@ -1,6 +1,4 @@
 import { ChevronsUpDown, GalleryVerticalEnd, Square } from "lucide-react";
-import * as React from "react";
-import { useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,32 +13,13 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useCourseCursor } from "@/hooks/useCourseCursor";
 import { useNavigation } from "@/hooks/useNavigation";
-import { useCourses } from "@/utils/schools";
+import { useSchoolCursor } from "@/hooks/useSchoolCursor";
 
 export function CourseSwitcher() {
   const { isMobile } = useSidebar();
-  const { current } = useCourseCursor();
+  const { current, courses } = useSchoolCursor();
   const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
-  const { courses } = useCourses(current.slugs);
-  const currentCourse =
-    courses.find((course) => course.slug === current.slugs.courseSlug) ||
-    courses[0];
-  const [activeCourse, setActiveCourse] = React.useState(currentCourse);
-
-  useEffect(() => {
-    const urlCourse = courses.find(
-      (course) => course.slug === current.slugs.courseSlug,
-    );
-    if (urlCourse) {
-      setActiveCourse(urlCourse);
-    }
-  }, [courses, current.slugs.courseSlug]);
-
-  if (!activeCourse) {
-    return null;
-  }
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -55,7 +34,7 @@ export function CourseSwitcher() {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">
-                  {activeCourse.title}
+                  {current.course.title}
                 </span>
                 {/* <span className="truncate text-xs">{activeSchool.plan}</span> */}
               </div>
@@ -80,7 +59,6 @@ export function CourseSwitcher() {
                   disabled={isNavigating}
                   onClick={async () => {
                     toggleIsNavigating();
-                    setActiveCourse(course);
                     try {
                       await navigate({
                         to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",

@@ -1,7 +1,6 @@
 import { useParams } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { match, P } from "ts-pattern";
-import { SERVICE_UNAVAILABLE } from "@/utils/errors";
 import * as ListZipper from "@/utils/listZipper";
 import { type Course, useCourse } from "@/utils/schools";
 import type { UserStoreSlugs } from "@/utils/userStore";
@@ -18,18 +17,16 @@ export const useCourseCursor = (): Return => {
     (chapter) => chapter.slug === chapterSlug,
   );
   const chapterListZipper = useMemo(
-    () => ListZipper.fromArrayAt(chapters, currentChapterIndex),
+    () => ListZipper.fromArrayAt(chapters, currentChapterIndex)!,
     [chapters, currentChapterIndex],
   );
-  if (chapterListZipper === undefined) throw new SERVICE_UNAVAILABLE();
   const currentLectureIndex = chapterListZipper.focus.lectures.findIndex(
     (lecture) => lecture.slug === lectureSlug,
   );
   const lectureListZipper = ListZipper.fromArrayAt(
     chapterListZipper.focus.lectures,
     currentLectureIndex,
-  );
-  if (lectureListZipper === undefined) throw new SERVICE_UNAVAILABLE();
+  )!;
   const previousChapterAndLecture = match({
     previousLecture: lectureListZipper.left.peek(),
     previousChapter: chapterListZipper.left.peek(),
