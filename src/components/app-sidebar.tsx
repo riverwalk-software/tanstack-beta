@@ -8,7 +8,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useCourseZipper } from "@/hooks/useSchools";
+import { useCourseCursor } from "@/hooks/useSchools";
 import { useUserStore } from "@/hooks/useUserStore";
 import type { UserStoreSlugs } from "@/utils/userStore";
 import { CourseSwitcher } from "./CourseSwitcher";
@@ -22,7 +22,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const slugs = useParams({
     from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
   });
-  const { previous, current } = useCourseZipper(slugs);
+  const { previous, current } = useCourseCursor(slugs);
   const { getProgress } = useUserStore();
   const { progress: courseProgress, isComplete: isCourseComplete } =
     getProgress({
