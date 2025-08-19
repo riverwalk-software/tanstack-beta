@@ -4,7 +4,7 @@ import { match } from "ts-pattern";
 import z from "zod";
 
 const { NODE_ENV, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_D1_TOKEN } = process.env;
-export const NODE_ENV_Schema = z.enum(["development", "production"]);
+const NODE_ENV_Schema = z.enum(["development", "production"]); // Repeat of `environment.tsx`. Do not export; causes unknown issues
 const nodeEnv = NODE_ENV_Schema.parse(NODE_ENV);
 const d1Helper = D1Helper.get("SCHOOL_DB");
 const getCredentials = () =>
