@@ -1,7 +1,5 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, useParams } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { ChevronRight, SquareTerminal } from "lucide-react";
-import { useEffect, useState } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -17,30 +15,11 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { useUserStore } from "@/hooks/useUserStore";
-import { courseQueryOptions } from "@/utils/schools";
+import { useChapterCursor } from "@/hooks/useChapterCursor";
 
 export function NavMain() {
-  const { schoolSlug, courseSlug, chapterSlug, lectureSlug } = useParams({
-    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
-  });
-  const {
-    data: { chapters },
-  } = useSuspenseQuery(courseQueryOptions(schoolSlug, courseSlug));
-  // const activeChapter = chapters.find((chapter) =>
-  //   chapter.lectures.some((lecture) => lecture.slug === lectureSlug),
-  // )!;
-  const activeChapter = chapters.find(
-    (chapter) => chapter.slug === chapterSlug,
-  )!;
-  const [openChapters, setOpenChapters] = useState<Set<number>>(
-    new Set([activeChapter.id]),
-  );
-  useEffect(
-    () => setOpenChapters(new Set([activeChapter.id])),
-    [activeChapter.id],
-  );
-  const { userStore } = useUserStore();
+  const { current, chapters, openChapter, closeChapter, contains } =
+    useChapterCursor();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Chapters</SidebarGroupLabel>
@@ -49,13 +28,15 @@ export function NavMain() {
           <Collapsible
             key={chapter.id}
             asChild
-            open={openChapters.has(chapter.id)}
+            open={contains({ chapterSlug: chapter.slug })}
             onOpenChange={(isOpen) =>
-              setOpenChapters((prev) =>
-                isOpen
-                  ? new Set([...prev, chapter.id])
-                  : new Set([...prev].filter((id) => id !== chapter.id)),
-              )
+              isOpen
+                ? openChapter({
+                    chapterSlug: chapter.slug,
+                  })
+                : closeChapter({
+                    chapterSlug: chapter.slug,
+                  })
             }
             className="group/collapsible text-sky-700 dark:text-sky-100"
           >
@@ -70,20 +51,20 @@ export function NavMain() {
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {chapter.lectures.map((lecture) => {
-                    const isCompleted = userStore.schools
-                      .find((school) => school.slug === schoolSlug)!
-                      .courses.find((course) => course.slug === courseSlug)!
-                      .chapters.find((c) => c.slug === chapter.slug)!
-                      .lectures.find((l) => l.slug === lecture.slug)!.completed;
+                    // const isCompleted = userStore.schools
+                    //   .find((school) => school.slug === schoolSlug)!
+                    //   .courses.find((course) => course.slug === courseSlug)!
+                    //   .chapters.find((c) => c.slug === chapter.slug)!
+                    //   .lectures.find((l) => l.slug === lecture.slug)!.completed;
                     return (
                       <SidebarMenuSubItem key={lecture.id}>
                         <SidebarMenuSubButton
                           asChild
-                          className={
-                            isCompleted
-                              ? "text-emerald-700 dark:text-emerald-100"
-                              : ""
-                          }
+                          // className={
+                          //   isCompleted
+                          //     ? "text-emerald-700 dark:text-emerald-100"
+                          //     : ""
+                          // }
                         >
                           <Link
                             activeProps={{
@@ -94,15 +75,14 @@ export function NavMain() {
                               "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug"
                             }
                             params={{
-                              schoolSlug,
-                              courseSlug,
+                              ...current.slugs,
                               chapterSlug: chapter.slug,
                               lectureSlug: lecture.slug,
                             }}
                           >
                             <span>
                               {lecture.title}
-                              {isCompleted ? "☆" : ""}
+                              {/* {isCompleted ? "☆" : ""} */}
                             </span>
                           </Link>
                         </SidebarMenuSubButton>

@@ -13,12 +13,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useCourseCursor } from "@/hooks/useCourseCursor";
 import { useNavigation } from "@/hooks/useNavigation";
-import { useSchoolCursor } from "@/hooks/useSchoolCursor";
 
 export function CourseSwitcher() {
   const { isMobile } = useSidebar();
-  const { current, courses } = useSchoolCursor();
+  const { current, courses } = useCourseCursor();
   const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
   return (
     <SidebarMenu>

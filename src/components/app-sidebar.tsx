@@ -7,7 +7,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useCourseCursor } from "@/hooks/useCourseCursor";
+import { useLectureCursor } from "@/hooks/useLectureCursor";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useUserStore } from "@/hooks/useUserStore";
 import type { UserStoreSlugs } from "@/utils/userStore";
@@ -19,7 +19,7 @@ import { ResetProgressButton } from "./userStore/ResetProgressButton";
 import { VideoPlayer } from "./VideoPlayer";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { current } = useCourseCursor();
+  const { current } = useLectureCursor();
   const { getProgress } = useUserStore();
   const { progress: courseProgress, isComplete: isCourseComplete } =
     getProgress({
@@ -102,7 +102,7 @@ function LectureNavigationButtons() {
 }
 
 function PreviousLectureButton() {
-  const { previous } = useCourseCursor();
+  const { previous } = useLectureCursor();
   const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
   return (
     previous && (
@@ -129,7 +129,7 @@ function PreviousLectureButton() {
 }
 
 function NextLectureButton() {
-  const { next } = useCourseCursor();
+  const { next } = useLectureCursor();
   const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
   return (
     next && (

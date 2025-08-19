@@ -98,8 +98,6 @@ const getCourseFn = createServerFn()
     return course;
   });
 
-export type Course = Awaited<ReturnType<typeof getCourseFn>>;
-
 const courseQueryOptions = ({
   schoolSlug,
   courseSlug,
@@ -125,3 +123,7 @@ export const useCourse = (params: {
   const { data: course } = useSuspenseQuery(courseQueryOptions(params));
   return { course };
 };
+
+export type Course = Awaited<ReturnType<typeof getCourseFn>>;
+export type Chapter = Course["chapters"][number];
+export type Lecture = Chapter["lectures"][number];
