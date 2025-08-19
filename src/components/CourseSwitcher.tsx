@@ -1,5 +1,3 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "@tanstack/react-router";
 import { ChevronsUpDown, GalleryVerticalEnd, Square } from "lucide-react";
 import * as React from "react";
 import { useEffect } from "react";
@@ -17,27 +15,28 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { coursesQueryOptions } from "@/utils/schools";
+import { useCourseCursor } from "@/hooks/useCourseCursor";
+import { useNavigation } from "@/hooks/useNavigation";
+import { useCourses } from "@/utils/schools";
 
 export function CourseSwitcher() {
   const { isMobile } = useSidebar();
-  const router = useRouter();
-  const slugs = useParams({
-    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
-  });
-  const { data: courses } = useSuspenseQuery(coursesQueryOptions(slugs));
+  const { current } = useCourseCursor();
+  const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
+  const { courses } = useCourses(current.slugs);
   const currentCourse =
-    courses.find((course) => course.slug === slugs.courseSlug) || courses[0];
+    courses.find((course) => course.slug === current.slugs.courseSlug) ||
+    courses[0];
   const [activeCourse, setActiveCourse] = React.useState(currentCourse);
 
   useEffect(() => {
     const urlCourse = courses.find(
-      (course) => course.slug === slugs.courseSlug,
+      (course) => course.slug === current.slugs.courseSlug,
     );
     if (urlCourse) {
       setActiveCourse(urlCourse);
     }
-  }, [courses, slugs.courseSlug]);
+  }, [courses, current.slugs.courseSlug]);
 
   if (!activeCourse) {
     return null;
@@ -78,18 +77,23 @@ export function CourseSwitcher() {
               return (
                 <DropdownMenuItem
                   key={course.title}
-                  // onClick={() => setActiveCourse(course)}
-                  onClick={() => {
+                  disabled={isNavigating}
+                  onClick={async () => {
+                    toggleIsNavigating();
                     setActiveCourse(course);
-                    router.navigate({
-                      to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
-                      params: {
-                        ...slugs,
-                        courseSlug: course.slug,
-                        chapterSlug: firstChapter.slug,
-                        lectureSlug: firstLecture.slug,
-                      },
-                    });
+                    try {
+                      await navigate({
+                        to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
+                        params: {
+                          ...current.slugs,
+                          courseSlug: course.slug,
+                          chapterSlug: firstChapter.slug,
+                          lectureSlug: firstLecture.slug,
+                        },
+                      });
+                    } finally {
+                      toggleIsNavigating();
+                    }
                   }}
                   className="gap-2 p-2"
                 >
