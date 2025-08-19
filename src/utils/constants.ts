@@ -25,3 +25,4 @@ export const TEST_USER = {
 export const HOME_ROUTE: RouteType = "/" as const;
 export const AUTH_CALLBACK_ROUTE: RouteType = "/signin" as const;
 type RouteType = FileRouteTypes["fullPaths"];
+export const VIDEO_LIBRARY_ID = 478043 as const;
