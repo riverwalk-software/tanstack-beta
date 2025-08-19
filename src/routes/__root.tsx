@@ -15,6 +15,7 @@ import { CookiesProvider } from "react-cookie";
 import { Toaster } from "sonner";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DefaultCatchBoundary } from "@/components/boundaries/DefaultCatchBoundary";
+import { EnvironmentError } from "@/components/environment/EnvironmentError";
 import { NotFound } from "@/components/fallbacks/NotFound";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useEnvironmentValidation } from "@/hooks/useEnvironment";
@@ -24,10 +25,7 @@ import {
   type AuthenticationData,
   authenticationDataQueryOptions,
 } from "@/utils/authentication";
-import {
-  EnvironmentError,
-  environmentValidationQueryOptions,
-} from "@/utils/environment";
+import { environmentValidationQueryOptions } from "@/utils/environment";
 import { seo } from "@/utils/seo";
 import { themeQueryOptions } from "@/utils/theme";
 
