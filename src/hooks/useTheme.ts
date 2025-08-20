@@ -8,10 +8,6 @@ import { THEME_COOKIE_NAME, type Theme, themeQueryOptions } from "@/lib/theme";
 
 export const useTheme = (): Return => {
   const { data: theme } = useSuspenseQuery(themeQueryOptions);
-  const state = {
-    theme,
-  } satisfies State;
-
   const queryClient = useQueryClient();
   const [, setTheme] = useCookies<"theme", CookiesValue>([], {
     doNotUpdate: true,
@@ -24,20 +20,11 @@ export const useTheme = (): Return => {
       queryClient.setQueryData<Theme>(themeQueryOptions.queryKey, newTheme);
     },
   });
-  const mutations = {
-    toggleTheme,
-  } satisfies Mutations;
 
-  return { ...state, ...mutations };
+  return { theme, toggleTheme };
 };
 
-interface State {
-  theme: Theme;
-}
-interface Mutations {
-  toggleTheme: () => void;
-}
-interface Return extends State, Mutations {}
+interface Return {}
 
 interface CookiesValue {
   theme: Theme;

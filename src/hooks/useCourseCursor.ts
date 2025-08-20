@@ -1,34 +1,68 @@
 import { useParams } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { type Course, useCourses } from "@/lib/schools";
 import type { UserStoreSlugs } from "@/lib/userStore";
+import * as ListZipper from "@/utils/listZipper";
 
 export const useCourseCursor = (): Return => {
   const slugs = useParams({
     from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
   });
-  const { courseSlug } = slugs;
+  const { schoolSlug } = slugs;
   const { courses } = useCourses(slugs);
-  const currentCourse = courses.find((course) => course.slug === courseSlug)!;
+  const currentCourseIndex = useMemo(
+    () => courses.findIndex((course) => course.slug === slugs.courseSlug),
+    [courses, slugs.courseSlug],
+  );
+  const courseListZipper = useMemo(
+    () => ListZipper.fromArrayAt(courses, currentCourseIndex)!,
+    [courses, currentCourseIndex],
+  );
 
-  const state = {
+  const previousCourse = courseListZipper.left.peek();
+  const currentCourse = courseListZipper.focus;
+  const nextCourse = courseListZipper.right.peek();
+
+  return {
+    previous:
+      previousCourse === undefined
+        ? undefined
+        : {
+            course: previousCourse,
+            slugs: {
+              schoolSlug,
+              courseSlug: previousCourse.slug,
+            },
+          },
     current: {
       course: currentCourse,
-      slugs,
+      slugs: {
+        schoolSlug,
+        courseSlug: currentCourse.slug,
+      },
     },
+    next:
+      nextCourse === undefined
+        ? undefined
+        : {
+            course: nextCourse,
+            slugs: {
+              schoolSlug,
+              courseSlug: nextCourse.slug,
+            },
+          },
     courses,
-  } satisfies State;
-  const mutations = {} satisfies Mutations;
-  return { ...state, ...mutations };
+  };
 };
 
-interface State {
-  current: SchoolCursor;
+interface Return {
+  previous: CourseAndSlugs | undefined;
+  current: CourseAndSlugs;
+  next: CourseAndSlugs | undefined;
   courses: Course[];
 }
-interface Mutations {}
-interface Return extends State, Mutations {}
 
-interface SchoolCursor {
+interface CourseAndSlugs {
   course: Course;
-  slugs: UserStoreSlugs;
+  slugs: Omit<UserStoreSlugs, "chapterSlug" | "lectureSlug">;
 }

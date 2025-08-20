@@ -13,20 +13,29 @@ export const useChapterAndLectureCursor = (): Return => {
     course: { chapters },
   } = useCourse(slugs);
   const { chapterSlug, lectureSlug } = slugs;
-  const currentChapterIndex = chapters.findIndex(
-    (chapter) => chapter.slug === chapterSlug,
+  const currentChapterIndex = useMemo(
+    () => chapters.findIndex((chapter) => chapter.slug === chapterSlug),
+    [chapterSlug, chapters],
   );
   const chapterListZipper = useMemo(
     () => ListZipper.fromArrayAt(chapters, currentChapterIndex)!,
     [chapters, currentChapterIndex],
   );
-  const currentLectureIndex = chapterListZipper.focus.lectures.findIndex(
-    (lecture) => lecture.slug === lectureSlug,
+  const currentLectureIndex = useMemo(
+    () =>
+      chapterListZipper.focus.lectures.findIndex(
+        (lecture) => lecture.slug === lectureSlug,
+      ),
+    [lectureSlug, chapterListZipper.focus.lectures],
   );
-  const lectureListZipper = ListZipper.fromArrayAt(
-    chapterListZipper.focus.lectures,
-    currentLectureIndex,
-  )!;
+  const lectureListZipper = useMemo(
+    () =>
+      ListZipper.fromArrayAt(
+        chapterListZipper.focus.lectures,
+        currentLectureIndex,
+      )!,
+    [chapterListZipper.focus.lectures, currentLectureIndex],
+  );
   const previousChapterAndLecture = match({
     previousLecture: lectureListZipper.left.peek(),
     previousChapter: chapterListZipper.left.peek(),
@@ -82,8 +91,8 @@ export const useChapterAndLectureCursor = (): Return => {
     )
     .otherwise(() => undefined);
 
-  const state = {
-    previous:
+  const previous = useMemo(
+    () =>
       previousChapterAndLecture === undefined
         ? undefined
         : {
@@ -94,12 +103,18 @@ export const useChapterAndLectureCursor = (): Return => {
               lectureSlug: previousChapterAndLecture.lecture.slug,
             },
           },
-    current: {
+    [previousChapterAndLecture, slugs],
+  );
+  const current = useMemo(
+    () => ({
       chapter: chapterListZipper.focus,
       lecture: lectureListZipper.focus,
       slugs,
-    },
-    next:
+    }),
+    [chapterListZipper.focus, lectureListZipper.focus, slugs],
+  );
+  const next = useMemo(
+    () =>
       nextChapterAndLecture === undefined
         ? undefined
         : {
@@ -110,20 +125,10 @@ export const useChapterAndLectureCursor = (): Return => {
               lectureSlug: nextChapterAndLecture.lecture.slug,
             },
           },
-    chapters,
-  } satisfies State;
-  const mutations = {} satisfies Mutations;
-  return { ...state, ...mutations };
+    [nextChapterAndLecture, slugs],
+  );
+  return { previous, current, next, chapters };
 };
-
-interface State {
-  previous: ExtendedChapterAndLecture | undefined;
-  current: ExtendedChapterAndLecture;
-  next: ExtendedChapterAndLecture | undefined;
-  chapters: Chapter[];
-}
-interface Mutations {}
-interface Return extends State, Mutations {}
 
 interface ChapterAndLecture {
   chapter: Chapter;
@@ -132,4 +137,11 @@ interface ChapterAndLecture {
 
 interface ExtendedChapterAndLecture extends ChapterAndLecture {
   slugs: UserStoreSlugs;
+}
+
+interface Return {
+  previous: ExtendedChapterAndLecture | undefined;
+  current: ExtendedChapterAndLecture;
+  next: ExtendedChapterAndLecture | undefined;
+  chapters: Chapter[];
 }
