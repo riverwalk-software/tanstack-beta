@@ -17,13 +17,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { authClient } from "@/lib/auth-client";
-import { authenticationDataQueryOptions } from "@/utils/authentication";
+import { authenticationDataQueryOptions } from "@/lib/authentication";
 import {
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
   SITE_NAME,
   TEST_USER,
-} from "@/utils/constants";
+} from "@/lib/constants";
 import { FormButton } from "../primitives/FormButton";
 
 export function SignInWithEmailForm() {

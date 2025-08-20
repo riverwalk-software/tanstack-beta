@@ -1,6 +1,6 @@
 import { useParams } from "@tanstack/react-router";
-import { type Course, useCourses } from "@/utils/schools";
-import type { UserStoreSlugs } from "@/utils/userStore";
+import { type Course, useCourses } from "@/lib/schools";
+import type { UserStoreSlugs } from "@/lib/userStore";
 
 export const useCourseCursor = (): Return => {
   const slugs = useParams({

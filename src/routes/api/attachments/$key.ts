@@ -1,5 +1,5 @@
 import { createServerFileRoute } from "@tanstack/react-start/server";
-import { getSessionDataServerMw } from "@/utils/authentication";
+import { getSessionDataServerMw } from "@/lib/authentication";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 export const ServerRoute = createServerFileRoute("/api/attachments/$key")

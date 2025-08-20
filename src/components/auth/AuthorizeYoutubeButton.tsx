@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
-import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
+import { AUTH_CALLBACK_ROUTE } from "@/lib/constants";
 import { youtubeScopes } from "@/utils/oauth/google";
 import { youtubeAuthorizationDataQueryOptions } from "@/utils/oauth/youtube";
 import { Button } from "../ui/button";

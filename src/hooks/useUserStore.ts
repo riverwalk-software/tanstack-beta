@@ -13,7 +13,7 @@ import {
   type SetProgressParams,
   setProgressFn,
   type UserStore,
-} from "@/utils/userStore";
+} from "@/lib/userStore";
 
 const queryKey = ["userStore"] as const;
 

@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import type { SessionData } from "@/utils/authentication";
-import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
+import type { SessionData } from "@/lib/authentication";
+import { AUTH_CALLBACK_ROUTE } from "@/lib/constants";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({

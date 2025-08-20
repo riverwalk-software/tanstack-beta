@@ -4,11 +4,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
-import {
-  THEME_COOKIE_NAME,
-  type Theme,
-  themeQueryOptions,
-} from "@/utils/theme";
+import { THEME_COOKIE_NAME, type Theme, themeQueryOptions } from "@/lib/theme";
 
 export const useTheme = (): Return => {
   const { data: theme } = useSuspenseQuery(themeQueryOptions);

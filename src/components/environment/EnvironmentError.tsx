@@ -1,4 +1,4 @@
-import type { FailedEnvironmentValidation } from "@/utils/environment";
+import type { FailedEnvironmentValidation } from "@/lib/environment";
 
 export function EnvironmentError({
   errors: { variables, secrets },

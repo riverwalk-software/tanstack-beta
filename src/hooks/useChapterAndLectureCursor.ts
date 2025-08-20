@@ -1,14 +1,11 @@
 import { useParams } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { match, P } from "ts-pattern";
+import { type Chapter, type Lecture, useCourse } from "@/lib/schools";
+import type { UserStoreSlugs } from "@/lib/userStore";
 import * as ListZipper from "@/utils/listZipper";
-import {
-  type Chapter, type Lecture,
-  useCourse
-} from "@/utils/schools";
-import type { UserStoreSlugs } from "@/utils/userStore";
 
-export const useLectureCursor = (): Return => {
+export const useChapterAndLectureCursor = (): Return => {
   const slugs = useParams({
     from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
   });
@@ -113,15 +110,17 @@ export const useLectureCursor = (): Return => {
               lectureSlug: nextChapterAndLecture.lecture.slug,
             },
           },
+    chapters,
   } satisfies State;
   const mutations = {} satisfies Mutations;
   return { ...state, ...mutations };
 };
 
 interface State {
-  previous: CourseCursor | undefined;
-  current: CourseCursor;
-  next: CourseCursor | undefined;
+  previous: ExtendedChapterAndLecture | undefined;
+  current: ExtendedChapterAndLecture;
+  next: ExtendedChapterAndLecture | undefined;
+  chapters: Chapter[];
 }
 interface Mutations {}
 interface Return extends State, Mutations {}
@@ -131,6 +130,6 @@ interface ChapterAndLecture {
   lecture: Lecture;
 }
 
-interface CourseCursor extends ChapterAndLecture {
+interface ExtendedChapterAndLecture extends ChapterAndLecture {
   slugs: UserStoreSlugs;
 }

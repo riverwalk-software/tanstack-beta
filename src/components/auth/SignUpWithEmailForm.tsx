@@ -15,12 +15,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
-import { resendVerificationEmailDurationMs } from "@/routes/_unauthenticated/signup/success";
 import {
   AUTH_CALLBACK_ROUTE,
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
-} from "@/utils/constants";
+} from "@/lib/constants";
+import { resendVerificationEmailDurationMs } from "@/routes/_unauthenticated/signup/success";
 import { FormButton } from "../primitives/FormButton";
 
 export function SignUpWithEmailForm() {

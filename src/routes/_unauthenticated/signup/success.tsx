@@ -5,7 +5,7 @@ import z from "zod";
 import { verifyEmailQueryKey } from "@/components/auth/SignUpWithEmailForm";
 // import { useCountdown } from "@/hooks/useCountdown";
 import { authClient } from "@/lib/auth-client";
-import { AUTH_CALLBACK_ROUTE } from "@/utils/constants";
+import { AUTH_CALLBACK_ROUTE } from "@/lib/constants";
 import { s, ttlSToMs } from "@/utils/time";
 
 const VerifyEmailSchema = z.string().email();

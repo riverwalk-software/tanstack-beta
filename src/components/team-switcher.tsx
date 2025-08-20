@@ -19,7 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useUserStore } from "@/hooks/useUserStore";
-import { useSchools } from "@/utils/schools";
+import { useSchools } from "@/lib/schools";
 
 export function TeamSwitcher() {
   const { isMobile } = useSidebar();

@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getVideoTokenQueryOptions } from "@/utils/video";
+import { getVideoTokenQueryOptions } from "@/lib/video";
 
 export const useVideoToken = (params: { videoId: string }) => {
   const {

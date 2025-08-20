@@ -15,11 +15,12 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { useChapterCursor } from "@/hooks/useChapterCursor";
+import { useChapterAndLectureCursor } from "@/hooks/useChapterAndLectureCursor";
+import { useOpenChapters } from "@/hooks/useOpenChapters";
 
 export function NavMain() {
-  const { current, chapters, openChapter, closeChapter, contains } =
-    useChapterCursor();
+  const { current, chapters } = useChapterAndLectureCursor();
+  const openChapters = useOpenChapters();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Chapters</SidebarGroupLabel>
@@ -28,15 +29,11 @@ export function NavMain() {
           <Collapsible
             key={chapter.id}
             asChild
-            open={contains({ chapterSlug: chapter.slug })}
+            open={openChapters.contains(chapter.slug)}
             onOpenChange={(isOpen) =>
               isOpen
-                ? openChapter({
-                    chapterSlug: chapter.slug,
-                  })
-                : closeChapter({
-                    chapterSlug: chapter.slug,
-                  })
+                ? openChapters.open(chapter.slug)
+                : openChapters.close(chapter.slug)
             }
             className="group/collapsible text-sky-700 dark:text-sky-100"
           >

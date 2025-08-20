@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { z } from "zod";
-import { HOME_ROUTE } from "@/utils/constants";
+import { HOME_ROUTE } from "@/lib/constants";
 
 const SearchParamsSchema = z
   .object({

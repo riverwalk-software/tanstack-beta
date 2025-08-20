@@ -10,8 +10,8 @@ import {
   authClient,
   isBetterAuthErrorContext,
 } from "./lib/auth-client";
+import { isClientError, redirectDescription } from "./lib/errors";
 import { routeTree } from "./routeTree.gen";
-import { isClientError, redirectDescription } from "./utils/errors";
 import { youtubeAuthorizationDataQueryOptions } from "./utils/oauth/youtube";
 
 export function createRouter() {

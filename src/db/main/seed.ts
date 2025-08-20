@@ -5,8 +5,8 @@ import { reset, seed } from "drizzle-seed";
 import { produce } from "immer";
 import mime from "mime-types";
 import * as schema from "src/db/main/schema";
-import { TEST_USER } from "@/utils/constants";
-import type { UserStore } from "@/utils/userStore";
+import { TEST_USER } from "@/lib/constants";
+import type { UserStore } from "@/lib/userStore";
 
 async function main() {
   const { getPlatformProxy } = await import("wrangler");

@@ -20,14 +20,14 @@ import { NotFound } from "@/components/fallbacks/NotFound";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useEnvironmentValidation } from "@/hooks/useEnvironment";
 import { useTheme } from "@/hooks/useTheme";
-import globalsCss from "@/styles/globals.css?url";
 import {
   type AuthenticationData,
   authenticationDataQueryOptions,
-} from "@/utils/authentication";
-import { environmentValidationQueryOptions } from "@/utils/environment";
+} from "@/lib/authentication";
+import { environmentValidationQueryOptions } from "@/lib/environment";
+import { themeQueryOptions } from "@/lib/theme";
+import globalsCss from "@/styles/globals.css?url";
 import { seo } from "@/utils/seo";
-import { themeQueryOptions } from "@/utils/theme";
 
 interface RouterContext {
   queryClient: QueryClient;

@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   type EnvironmentValidation,
   environmentValidationQueryOptions,
-} from "@/utils/environment";
+} from "@/lib/environment";
 
 export const useEnvironmentValidation = (): Return => {
   const queryClient = useQueryClient();

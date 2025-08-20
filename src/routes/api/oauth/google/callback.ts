@@ -1,12 +1,8 @@
 import { createServerFileRoute } from "@tanstack/react-start/server";
 import { Context, Effect, Either } from "effect";
 import { z } from "zod";
-import { getSessionDataFn, SessionDataService } from "@/utils/authentication";
-import { EnvironmentService, getEnvironmentFn } from "@/utils/environment";
-import {
-  CloudflareBindingsService,
-  getCloudflareBindings,
-} from "@/utils/getCloudflareBindings";
+import { getSessionDataFn, SessionDataService } from "@/lib/authentication";
+import { EnvironmentService, getEnvironmentFn } from "@/lib/environment";
 import {
   BAD_REQUEST,
   buildUrl,
@@ -17,7 +13,11 @@ import {
   UNAUTHENTICATED,
   UNAUTHORIZED,
   upstream,
-} from "@/utils/httpResponses";
+} from "@/lib/httpResponses";
+import {
+  CloudflareBindingsService,
+  getCloudflareBindings,
+} from "@/utils/getCloudflareBindings";
 import {
   scopeDelimiter,
   YoutubeDataScopeSchema,
