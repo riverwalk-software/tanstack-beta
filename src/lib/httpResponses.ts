@@ -4,7 +4,7 @@ import ms from "ms";
 import type { KyHeadersInit } from "node_modules/ky/distribution/types/options";
 import { type ZodTypeAny, z } from "zod";
 import { httpClient } from "@/lib/httpClient";
-import { s } from "./time";
+import { s } from "../utils/time";
 
 export function strictParse<T extends ZodTypeAny>(
   schema: T,

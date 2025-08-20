@@ -1,3 +1,5 @@
+import { checkout, polar } from "@polar-sh/better-auth";
+import { Polar } from "@polar-sh/sdk";
 import { betterAuth } from "better-auth";
 import { reactStartCookies } from "better-auth/react-start";
 import { Kysely } from "kysely";
@@ -10,9 +12,13 @@ import {
   EVENTUAL_CONSISTENCY_DELAY_S,
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
-} from "@/utils/constants";
-import { environment } from "@/utils/environment";
+} from "@/lib/constants";
+import { environment } from "@/lib/environment";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
+
+const polarClient = new Polar({
+  accessToken: process.env.POLAR_ACCESS_TOKEN,
+});
 
 // https://www.better-auth.com/docs/guides/optimizing-for-performance
 // https://www.better-auth.com/docs/guides/browser-extension-guide
@@ -98,6 +104,22 @@ export const auth = betterAuth({
     cookiePrefix: AUTH_COOKIE_PREFIX,
   },
   plugins: [
+    polar({
+      client: polarClient,
+      createCustomerOnSignUp: true,
+      use: [
+        checkout({
+          products: [
+            {
+              productId: "20b622f6-22d0-44da-999b-cd4a05c514e0",
+              slug: "Test-Course", // Custom slug for easy reference in Checkout URL, e.g. /checkout/Test-Course
+            },
+          ],
+          successUrl: process.env.POLAR_SUCCESS_URL,
+          authenticatedUsersOnly: true,
+        }),
+      ],
+    }),
     reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
   ],
 });

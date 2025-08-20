@@ -11,9 +11,13 @@ import {
 import {
   AccessTokenDataService,
   getAccessTokenDataMw,
-} from "../authentication";
-import { SERVICE_UNAVAILABLE } from "../errors";
-import { fetchApi, RequestHeadersSchema, strictParse } from "../httpResponses";
+} from "../../lib/authentication";
+import { SERVICE_UNAVAILABLE } from "../../lib/errors";
+import {
+  fetchApi,
+  RequestHeadersSchema,
+  strictParse,
+} from "../../lib/httpResponses";
 import { youtubeScopes } from "./google";
 
 const YOUTUBE_API_DOMAIN = "www.googleapis.com";

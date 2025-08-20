@@ -3,7 +3,7 @@ import type { useRouter } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { deleteCookie } from "@tanstack/react-start/server";
 import { type BetterFetchError, createAuthClient } from "better-auth/react";
-import { AUTH_COOKIE_NAMES, AUTH_COOKIE_PREFIX } from "@/utils/constants";
+import { AUTH_COOKIE_NAMES, AUTH_COOKIE_PREFIX } from "@/lib/constants";
 
 const {
   $ERROR_CODES,

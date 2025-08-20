@@ -5,13 +5,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { Context, Effect } from "effect";
 import { useState } from "react";
 import { z } from "zod";
-import { getSessionDataFn, SessionDataService } from "../authentication";
-import { EnvironmentService, getEnvironmentFn } from "../environment";
+import { getSessionDataFn, SessionDataService } from "../../lib/authentication";
+import { EnvironmentService, getEnvironmentFn } from "../../lib/environment";
+import { buildUrl, concurrent, strictParse } from "../../lib/httpResponses";
 import {
   CloudflareBindingsService,
   getCloudflareBindings,
 } from "../getCloudflareBindings";
-import { buildUrl, concurrent, strictParse } from "../httpResponses";
 import { s } from "../time";
 
 const getConsentUrlFn = createServerFn().handler(async (): Promise<string> => {

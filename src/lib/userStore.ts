@@ -2,13 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { Context, Effect, Either } from "effect";
 import { produce } from "immer";
 import { match } from "ts-pattern";
-import { getSessionDataMw, SessionDataService } from "./authentication";
-import { EnvironmentService, getEnvironmentMw } from "./environment";
-import { SERVICE_UNAVAILABLE } from "./errors";
 import {
   CloudflareBindingsService,
   getCloudflareBindings,
-} from "./getCloudflareBindings";
+} from "../utils/getCloudflareBindings";
+import { getSessionDataMw, SessionDataService } from "./authentication";
+import { EnvironmentService, getEnvironmentMw } from "./environment";
+import { SERVICE_UNAVAILABLE } from "./errors";
 
 export const getUserStoreFn = createServerFn()
   .middleware([getEnvironmentMw, getSessionDataMw])
