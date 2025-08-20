@@ -16,6 +16,7 @@ async function main() {
   await seedSchoolDatabase(SCHOOL_DB);
   await seedUserStore(SCHOOL_DB, USER_STORE);
   await seedAttachmentsBucket(ATTACHMENTS_BUCKET);
+  // await seedAuthenticationDatabase(AUTH_DB);
   process.exit(0);
 }
 
@@ -215,5 +216,19 @@ const resetAttachmentsBucket = async (ATTACHMENTS_BUCKET: R2Bucket) => {
   const keys = keysResult.objects.map(({ key }) => key);
   if (keys.length > 0) await ATTACHMENTS_BUCKET.delete(keys);
 };
+
+// const seedAuthenticationDatabase = async (AUTH_DB: D1Database) => {
+//   await resetAuthenticationDatabase(AUTH_DB);
+//   // manually add user
+// };
+
+// const resetAuthenticationDatabase = async (AUTH_DB: D1Database) => {
+//   await AUTH_DB.batch([
+//     AUTH_DB.prepare("DELETE FROM verification"),
+//     AUTH_DB.prepare("DELETE FROM account"),
+//     AUTH_DB.prepare("DELETE FROM session"),
+//     AUTH_DB.prepare("DELETE FROM user"),
+//   ]);
+// };
 
 main();
