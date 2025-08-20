@@ -19,6 +19,7 @@ export const SITE_DOMAIN = "tanstack-beta.andrei-023.workers.dev" as const;
 export const SITE_URL = `https://${SITE_DOMAIN}` as const;
 // export const SNAPGEN_PATH = "/api/snapgen";
 export const TEST_USER = {
+  name: "Andrei Georgescu",
   email: "andrei@riverwalk.dev",
   password: "andrei@riverwalk.dev",
 } as const;
