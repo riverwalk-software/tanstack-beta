@@ -1,6 +1,5 @@
 import {
   queryOptions,
-  type UseMutationResult,
   useMutation,
   useQueryClient,
   useSuspenseQuery,
@@ -13,11 +12,10 @@ import {
   type SetProgressParams,
   setProgressFn,
   type UserStore,
+  type UserStoreSlugs,
 } from "@/lib/userStore";
 
-const queryKey = ["userStore"] as const;
-
-export const useUserStore = (): Return => {
+export const useUserStore = () => {
   const { data: userStore } = useSuspenseQuery(userStoreQueryOptions);
   const getLecturesWithChapters = useCallback(
     (params: GetUserStoreParams): LectureWithChapter[] => {
@@ -47,57 +45,59 @@ export const useUserStore = (): Return => {
         })),
       );
     },
-    [userStore],
+    [userStore.schools],
   );
-  const state = {
-    schoolSlugs: useMemo(
-      () => userStore.schools.map((school) => school.slug),
-      [userStore],
-    ),
-    getProgress: useCallback(
-      (params: GetUserStoreParams) => {
-        const lecturesWithChapters = getLecturesWithChapters(params);
-        const lectures = lecturesWithChapters.map(({ lecture }) => lecture);
-        const progress = calculateProgress(lectures);
-        return {
-          progress,
-          isComplete: progress === 100,
-        };
-      },
-      [getLecturesWithChapters],
-    ),
-  } satisfies State;
+  const schoolSlugs = useMemo(
+    () => userStore.schools.map((school) => school.slug),
+    [userStore.schools],
+  );
+  const getProgress = useCallback(
+    (params: GetUserStoreParams) => {
+      const lecturesWithChapters = getLecturesWithChapters(params);
+      const lectures = lecturesWithChapters.map(({ lecture }) => lecture);
+      const progress = calculateProgress(lectures);
+      return {
+        progress,
+        isComplete: progress === 100,
+      };
+    },
+    [getLecturesWithChapters],
+  );
+  const getIsComplete = useCallback(
+    ({
+      schoolSlug,
+      courseSlug,
+      chapterSlug,
+      lectureSlug,
+    }: UserStoreSlugs): boolean =>
+      userStore.schools
+        .find((school) => school.slug === schoolSlug)
+        ?.courses.find((course) => course.slug === courseSlug)
+        ?.chapters.find((chapter) => chapter.slug === chapterSlug)
+        ?.lectures.find((lecture) => lecture.slug === lectureSlug)?.completed ??
+      false,
+    [userStore.schools],
+  );
 
   const queryClient = useQueryClient();
   const onSuccess = () =>
     queryClient.invalidateQueries({
       queryKey,
     });
-  const mutations = {
-    setProgressMt: useMutation({
-      mutationKey: ["setProgress"],
-      mutationFn: (data: SetProgressParams) =>
-        setProgressFn({
-          data,
-        }),
-      onSuccess,
-    }),
-  } satisfies Mutations;
+  const setProgressMt = useMutation({
+    mutationKey: ["setProgress"],
+    mutationFn: (data: SetProgressParams) =>
+      setProgressFn({
+        data,
+      }),
+    onSuccess,
+  });
 
-  return { ...state, ...mutations };
+  return { schoolSlugs, getProgress, setProgressMt, getIsComplete };
 };
 
-interface State {
-  schoolSlugs: string[];
-  getProgress: (params: GetUserStoreParams) => {
-    progress: number;
-    isComplete: boolean;
-  };
-}
-interface Mutations {
-  setProgressMt: UseMutationResult<void, Error, SetProgressParams, unknown>;
-}
-interface Return extends State, Mutations {}
+const queryKey = ["userStore"] as const;
+
 export const userStoreQueryOptions = queryOptions({
   queryKey,
   queryFn: () => getUserStoreFn(),
@@ -116,5 +116,5 @@ const calculateProgress = (
 
 interface LectureWithChapter {
   chapter: { slug: string };
-  lecture: { slug: string; completed: boolean };
+  lecture: { slug: string; completed?: boolean };
 }

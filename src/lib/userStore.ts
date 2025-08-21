@@ -57,7 +57,7 @@ export interface UserStore {
         slug: string;
         lectures: {
           slug: string;
-          completed: boolean;
+          completed?: boolean;
         }[];
       }[];
     }[];

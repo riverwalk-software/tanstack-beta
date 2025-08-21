@@ -1,35 +1,27 @@
-import {
-  type UseNavigateResult,
-  useNavigate,
-  useRouterState,
-} from "@tanstack/react-router";
-import { createAtom } from "@xstate/store";
-import { useAtom } from "@xstate/store/react";
-
-const isNavigatingAtom = createAtom(false);
+import { useNavigate } from "@tanstack/react-router";
+import { useCallback, useState } from "react";
 
 export const useNavigation = (): Return => {
-  const _isNavigating = useAtom(isNavigatingAtom);
-  const routerPending = useRouterState({
-    select: ({ isLoading, isTransitioning, status }) =>
-      isLoading || isTransitioning || status === "pending",
-  });
+  const [isNavigating, setIsNavigating] = useState(false);
+  // const routerPending = useRouterState({
+  //   select: ({ isLoading, isTransitioning, status }) =>
+  //     isLoading || isTransitioning || status === "pending",
+  // });
+  // const isNavigating = useMemo(
+  //   () => _isNavigating || routerPending,
+  //   [_isNavigating, routerPending],
+  // );
   const navigate = useNavigate();
-  const state = {
-    isNavigating: _isNavigating || routerPending,
-  } satisfies State;
-  const mutations = {
-    navigate,
-    toggleIsNavigating: () => isNavigatingAtom.set((prev) => !prev),
-  } satisfies Mutations;
-  return { ...state, ...mutations };
+  const toggleIsNavigating = useCallback(
+    () => setIsNavigating((prev) => !prev),
+    [],
+  );
+
+  return { isNavigating, navigate, toggleIsNavigating };
 };
 
-interface State {
+interface Return {
   isNavigating: boolean;
-}
-interface Mutations {
+  navigate: ReturnType<typeof useNavigate>;
   toggleIsNavigating: () => void;
-  navigate: UseNavigateResult<string>;
 }
-interface Return extends State, Mutations {}

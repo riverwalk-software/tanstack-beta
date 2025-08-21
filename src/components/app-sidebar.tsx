@@ -1,4 +1,6 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import Confetti from "react-confetti";
+import { match, P } from "ts-pattern";
 import ExampleMdx from "@/components/prose/ExampleMdx.mdx";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -111,15 +113,11 @@ function PreviousLectureButton() {
         disabled={isNavigating}
         onClick={async () => {
           toggleIsNavigating();
-          try {
-            await navigate({
-              to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
-              params: previous.slugs,
-            });
-          } finally {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            toggleIsNavigating();
-          }
+          await navigate({
+            to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
+            params: previous.slugs,
+          });
+          toggleIsNavigating();
         }}
       >
         {isNavigating ? "Loading..." : "Previous Lecture"}
@@ -129,28 +127,44 @@ function PreviousLectureButton() {
 }
 
 function NextLectureButton() {
+  const slugs = useParams({
+    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
+  });
   const { next } = useChapterAndLectureCursor();
-  const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
+  const { setProgressMt, getIsComplete } = useUserStore();
+  const navigate = useNavigate();
+  const isComplete = getIsComplete(slugs);
+
+  if (next === undefined && isComplete) return null;
+
   return (
-    next && (
-      <Button
-        className="bg-sky-500"
-        disabled={isNavigating}
-        onClick={async () => {
-          toggleIsNavigating();
-          try {
-            await navigate({
-              to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
-              params: next.slugs,
-            });
-          } finally {
-            await new Promise((resolve) => setTimeout(resolve, 500));
-            toggleIsNavigating();
-          }
-        }}
-      >
-        {isNavigating ? "Loading..." : "Next Lecture"}
-      </Button>
-    )
+    <Button
+      className={isComplete ? "bg-gray-400" : "bg-sky-500"}
+      disabled={setProgressMt.isPending}
+      onClick={async () =>
+        setProgressMt.mutate(
+          {
+            _tag: "LECTURE",
+            ...slugs,
+            completed: true,
+          },
+          {
+            onSuccess: async () => {
+              if (next === undefined) return;
+              await navigate({
+                to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
+                params: next.slugs,
+              });
+            },
+          },
+        )
+      }
+    >
+      {match([setProgressMt.isPending, isComplete, next])
+        .with([true, P._, P._], () => "Loading")
+        .with([P._, true, P._], () => "Next Lecture")
+        .with([P._, P._, P.nullish], () => "Complete")
+        .otherwise(() => "Complete And Continue")}
+    </Button>
   );
 }

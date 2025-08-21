@@ -1,5 +1,5 @@
 import { useUserStore } from "@/hooks/useUserStore";
-import type { SetUserStoreParams } from "@/utils/userStore";
+import type { SetUserStoreParams } from "@/lib/userStore";
 import { Button } from "../ui/button";
 
 export function ResetProgressButton(params: SetUserStoreParams) {
@@ -10,7 +10,10 @@ export function ResetProgressButton(params: SetUserStoreParams) {
       disabled={setProgressMt.isPending}
       className="bg-gray-400"
       onClick={() =>
-        setProgressMt.mutate({ params, options: { completed: false } })
+        setProgressMt.mutate({
+          ...params,
+          completed: false,
+        })
       }
     >
       {`Reset ${params._tag}`}

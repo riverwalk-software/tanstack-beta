@@ -5,7 +5,7 @@ import * as Immutable from "immutable";
 import { useCallback, useEffect } from "react";
 import { combineSlugs } from "@/utils/combineSlugs";
 
-export const useOpenChapters = () => {
+export const useOpenChapters = (): Return => {
   const slugs = useParams({
     from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
   });
@@ -27,11 +27,18 @@ export const useOpenChapters = () => {
   );
   const contains = useCallback(
     (chapterSlug: string) => state.has(compoundSlug(chapterSlug, lectureSlug)),
-    [lectureSlug, state.has],
+    [lectureSlug, state],
   );
 
   return { state, open, close, contains };
 };
+
+interface Return {
+  state: Immutable.Set<string>;
+  open: (chapterSlug: string) => void;
+  close: (chapterSlug: string) => void;
+  contains: (chapterSlug: string) => boolean;
+}
 
 const store = createStore({
   context: { openChapters: Immutable.Set<string>() },

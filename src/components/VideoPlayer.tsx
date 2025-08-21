@@ -1,4 +1,4 @@
-import { useVideoToken } from "@/hooks/useVideoToken";
+import { useVideoToken } from "@/lib/video";
 
 export function VideoPlayer({ videoId }: { videoId: string }) {
   const { token, expiresAt } = useVideoToken({ videoId });

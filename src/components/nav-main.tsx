@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useParams } from "@tanstack/react-router";
 import { ChevronRight, SquareTerminal } from "lucide-react";
 import {
   Collapsible,
@@ -17,10 +17,15 @@ import {
 } from "@/components/ui/sidebar";
 import { useChapterAndLectureCursor } from "@/hooks/useChapterAndLectureCursor";
 import { useOpenChapters } from "@/hooks/useOpenChapters";
+import { useUserStore } from "@/hooks/useUserStore";
 
 export function NavMain() {
   const { current, chapters } = useChapterAndLectureCursor();
   const openChapters = useOpenChapters();
+  const { getIsComplete } = useUserStore();
+  const slugs = useParams({
+    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
+  });
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Chapters</SidebarGroupLabel>
@@ -48,20 +53,20 @@ export function NavMain() {
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {chapter.lectures.map((lecture) => {
-                    // const isCompleted = userStore.schools
-                    //   .find((school) => school.slug === schoolSlug)!
-                    //   .courses.find((course) => course.slug === courseSlug)!
-                    //   .chapters.find((c) => c.slug === chapter.slug)!
-                    //   .lectures.find((l) => l.slug === lecture.slug)!.completed;
+                    const isComplete = getIsComplete({
+                      ...slugs,
+                      chapterSlug: chapter.slug,
+                      lectureSlug: lecture.slug,
+                    });
                     return (
                       <SidebarMenuSubItem key={lecture.id}>
                         <SidebarMenuSubButton
                           asChild
-                          // className={
-                          //   isCompleted
-                          //     ? "text-emerald-700 dark:text-emerald-100"
-                          //     : ""
-                          // }
+                          className={
+                            isComplete
+                              ? "text-emerald-700 dark:text-emerald-100"
+                              : ""
+                          }
                         >
                           <Link
                             activeProps={{
@@ -79,7 +84,7 @@ export function NavMain() {
                           >
                             <span>
                               {lecture.title}
-                              {/* {isCompleted ? "☆" : ""} */}
+                              {isComplete ? "☆" : ""}
                             </span>
                           </Link>
                         </SidebarMenuSubButton>
