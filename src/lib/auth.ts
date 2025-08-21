@@ -104,22 +104,22 @@ export const auth = betterAuth({
     cookiePrefix: AUTH_COOKIE_PREFIX,
   },
   plugins: [
-    polar({
-      client: polarClient,
-      createCustomerOnSignUp: true,
-      use: [
-        checkout({
-          products: [
-            {
-              productId: "20b622f6-22d0-44da-999b-cd4a05c514e0",
-              slug: "Test-Course", // Custom slug for easy reference in Checkout URL, e.g. /checkout/Test-Course
-            },
-          ],
-          successUrl: process.env.POLAR_SUCCESS_URL,
-          authenticatedUsersOnly: true,
-        }),
-      ],
-    }),
+    // polar({
+    //   client: polarClient,
+    //   createCustomerOnSignUp: true,
+    //   use: [
+    //     checkout({
+    //       products: [
+    //         {
+    //           productId: "20b622f6-22d0-44da-999b-cd4a05c514e0",
+    //           slug: "Test-Course", // Custom slug for easy reference in Checkout URL, e.g. /checkout/Test-Course
+    //         },
+    //       ],
+    //       successUrl: process.env.POLAR_SUCCESS_URL,
+    //       authenticatedUsersOnly: true,
+    //     }),
+    //   ],
+    // }),
     reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
   ],
 });
