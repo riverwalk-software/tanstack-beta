@@ -4,9 +4,15 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { useCookies } from "react-cookie";
-import { THEME_COOKIE_NAME, type Theme, themeQueryOptions } from "@/lib/theme";
+import { THEME_COOKIE_NAME } from "../constants/THEME_COOKIE_NAME";
+import { themeQueryOptions } from "../machines/themeMachine";
+import type { CookiesValue } from "../types/CookiesValue";
+import type { Theme } from "../types/Theme";
 
-export const useTheme = (): Return => {
+export const useTheme = (): {
+  theme: Theme;
+  toggleTheme: () => void;
+} => {
   const { data: theme } = useSuspenseQuery(themeQueryOptions);
   const queryClient = useQueryClient();
   const [, setTheme] = useCookies<"theme", CookiesValue>([], {
@@ -20,12 +26,5 @@ export const useTheme = (): Return => {
       queryClient.setQueryData<Theme>(themeQueryOptions.queryKey, newTheme);
     },
   });
-
   return { theme, toggleTheme };
 };
-
-interface Return {}
-
-interface CookiesValue {
-  theme: Theme;
-}

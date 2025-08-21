@@ -10,6 +10,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { ThemeToggle, themeQueryOptions, useTheme } from "@theme";
 import type { ReactNode } from "react";
 import { CookiesProvider } from "react-cookie";
 import { Toaster } from "sonner";
@@ -17,15 +18,12 @@ import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DefaultCatchBoundary } from "@/components/boundaries/DefaultCatchBoundary";
 import { EnvironmentError } from "@/components/environment/EnvironmentError";
 import { NotFound } from "@/components/fallbacks/NotFound";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { useEnvironmentValidation } from "@/hooks/useEnvironment";
-import { useTheme } from "@/hooks/useTheme";
 import {
   type AuthenticationData,
   authenticationDataQueryOptions,
 } from "@/lib/authentication";
 import { environmentValidationQueryOptions } from "@/lib/environment";
-import { themeQueryOptions } from "@/lib/theme";
 import globalsCss from "@/styles/globals.css?url";
 import { seo } from "@/utils/seo";
 

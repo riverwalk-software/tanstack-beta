@@ -45,6 +45,7 @@
   "git.suggestSmartCommit": false,
   "html.format.enable": false,
   "javascript.format.enable": false,
+  "javascript.preferences.importModuleSpecifier": "project-relative",
   "javascript.updateImportsOnFileMove.enabled": "always",
   "javascript.validate.enable": true,
   "markdown.editor.drop.copyIntoWorkspace": "never",
@@ -74,6 +75,7 @@
   "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
   "typescript.inlayHints.variableTypes.enabled": true,
   "typescript.inlayHints.variableTypes.suppressWhenTypeMatchesName": true,
+  "typescript.preferences.importModuleSpecifier": "project-relative",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.validate.enable": true,
   //// Language-Specific

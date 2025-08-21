@@ -1,5 +1,12 @@
 {
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": [
+    "*.ts",
+    "*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "packages/**/*.ts",
+    "packages/**/*.tsx"
+  ],
   "compilerOptions": {
     "strict": true,
     "esModuleInterop": true,
@@ -11,11 +18,12 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "target": "ES2022",
-    "allowJs": true,
+    "allowJs": true, // Required for MDX: https://www.npmjs.com/package/vite-tsconfig-paths
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"],
+      "@theme": ["packages/theme/src/index.ts"]
     },
     "noEmit": true,
     "verbatimModuleSyntax": false, // https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
