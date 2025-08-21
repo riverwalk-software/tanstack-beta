@@ -11,11 +11,12 @@ import type { UserStore } from "@/lib/userStore";
 async function main() {
   const { getPlatformProxy } = await import("wrangler");
   const proxy = await getPlatformProxy();
-  const { ATTACHMENTS_BUCKET, SCHOOL_DB, USER_STORE } =
+  const { ATTACHMENTS_BUCKET, SCHOOL_DB, USER_STORE, AUTH_DB } =
     proxy.env as unknown as CloudflareBindings;
   await seedSchoolDatabase(SCHOOL_DB);
   await seedUserStore(SCHOOL_DB, USER_STORE);
   await seedAttachmentsBucket(ATTACHMENTS_BUCKET);
+  // await resetAuthenticationDatabase(AUTH_DB);
   // await seedAuthenticationDatabase(AUTH_DB);
   process.exit(0);
 }
@@ -171,7 +172,7 @@ const seedUserStore = async (
         school.courses.forEach((course) => {
           course.chapters.forEach((chapter) => {
             chapter.lectures.forEach((lecture) => {
-              lecture.completed = false;
+              // lecture.completed = false;
             });
           });
         });
@@ -222,13 +223,13 @@ const resetAttachmentsBucket = async (ATTACHMENTS_BUCKET: R2Bucket) => {
 //   // manually add user
 // };
 
-// const resetAuthenticationDatabase = async (AUTH_DB: D1Database) => {
-//   await AUTH_DB.batch([
-//     AUTH_DB.prepare("DELETE FROM verification"),
-//     AUTH_DB.prepare("DELETE FROM account"),
-//     AUTH_DB.prepare("DELETE FROM session"),
-//     AUTH_DB.prepare("DELETE FROM user"),
-//   ]);
-// };
+const resetAuthenticationDatabase = async (AUTH_DB: D1Database) => {
+  await AUTH_DB.batch([
+    AUTH_DB.prepare("DELETE FROM verification"),
+    AUTH_DB.prepare("DELETE FROM account"),
+    AUTH_DB.prepare("DELETE FROM session"),
+    AUTH_DB.prepare("DELETE FROM user"),
+  ]);
+};
 
 main();
