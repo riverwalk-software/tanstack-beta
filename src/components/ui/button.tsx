@@ -53,6 +53,7 @@ function Button({
 
   return (
     <Comp
+      aria-disabled={disabled}
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       disabled={disabled}
