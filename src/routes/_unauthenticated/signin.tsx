@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { match } from "ts-pattern";
+import { match, P } from "ts-pattern";
 import { z } from "zod";
 import { SignInWithEmailForm } from "@/components/auth/SignInWithEmailForm";
 import { CenteredContainer } from "@/components/containers/CenteredContainer";
@@ -16,6 +16,7 @@ const SearchParamsSchema = z
   .partial();
 
 export const Route = createFileRoute("/_unauthenticated/signin")({
+  validateSearch: SearchParamsSchema,
   component: SignIn,
 });
 
@@ -33,11 +34,10 @@ function SignIn() {
 }
 
 const useFailedSignIn = () => {
-  const searchParams = Route.useSearch();
+  const { error } = Route.useSearch();
   useEffect(() => {
-    const { error } = SearchParamsSchema.parse(searchParams);
     match(error)
-      .with(undefined, () => {})
+      .with(P.nullish, () => {})
       .with("invalid_token", () =>
         toast.error("Email verification link expired", {
           description: "Please try signing in to create a new link.",
@@ -49,7 +49,7 @@ const useFailedSignIn = () => {
           description: "Please try again.",
         }),
       );
-  }, [searchParams]);
+  }, [error]);
 };
 
 function AlternativeSignInButtons() {

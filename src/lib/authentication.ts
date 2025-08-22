@@ -2,6 +2,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { getWebRequest } from "@tanstack/react-start/server";
 import { Context } from "effect";
+import { match, P } from "ts-pattern";
 import { auth } from "@/lib/auth";
 import { UNAUTHENTICATED } from "./errors";
 
@@ -20,17 +21,23 @@ const getAuthenticationDataMw = createMiddleware({
   type: "function",
 }).server(async ({ next }) => {
   const { headers } = getWebRequest();
-  const sessionData = await auth.api.getSession({ headers });
-  const authenticationData =
-    sessionData === null
-      ? ({
+  const maybeSessionData = await auth.api.getSession({ headers });
+  const authenticationData = match(maybeSessionData)
+    .with(
+      P.nullish,
+      (sessionData) =>
+        ({
           isAuthenticated: false,
           sessionData,
-        } as const)
-      : ({
+        }) as const,
+    )
+    .otherwise(
+      (sessionData) =>
+        ({
           isAuthenticated: true,
           sessionData,
-        } as const);
+        }) as const,
+    );
   return next<{ authenticationData: AuthenticationData }>({
     context: {
       authenticationData,
@@ -92,7 +99,7 @@ export class AccessTokenDataService extends Context.Tag(
   "AccessTokenDataService",
 )<AccessTokenDataService, AccessTokenData>() {}
 export interface AccessTokenData {
-  accessToken: string | undefined;
+  maybeAccessToken: string | undefined;
   acceptedScopes: string[];
 }
 
@@ -115,7 +122,7 @@ export const getAccessTokenDataMw = createMiddleware({ type: "function" })
       return next<{ accessTokenData: AccessTokenData }>({
         context: {
           accessTokenData: {
-            accessToken,
+            maybeAccessToken: accessToken,
             acceptedScopes,
           },
         },

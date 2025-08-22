@@ -1,7 +1,8 @@
+import { match, P } from "ts-pattern";
 import type { FailedEnvironmentValidation } from "@/lib/environment";
 
 export function EnvironmentError({
-  errors: { variables, secrets },
+  errors: { maybeVariables, maybeSecrets },
 }: FailedEnvironmentValidation) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-red-50 dark:bg-red-950">
@@ -9,8 +10,14 @@ export function EnvironmentError({
         <h1 className="mb-4 font-bold text-red-600 text-xl dark:text-red-400">
           Environment Configuration Error
         </h1>
-        {variables && renderMissingSection("Variables", variables)}
-        {secrets && renderMissingSection("Secrets", secrets)}
+        {match(maybeVariables)
+          .with(P.nullish, () => null)
+          .otherwise((variables) =>
+            renderMissingSection("Variables", variables),
+          )}
+        {match(maybeSecrets)
+          .with(P.nullish, () => null)
+          .otherwise((secrets) => renderMissingSection("Secrets", secrets))}
         <p className="text-gray-600 text-sm dark:text-gray-400">
           Please check your environment configuration.
         </p>
@@ -20,8 +27,9 @@ export function EnvironmentError({
 }
 
 function renderMissingSection(title: string, items: string[]) {
-  return (
-    items.length > 0 && (
+  return match(items.length)
+    .with(0, () => null)
+    .otherwise(() => (
       <>
         <p className="mb-2 text-gray-700 dark:text-gray-300">{title}:</p>
         <ul className="mb-4 list-inside list-disc space-y-1">
@@ -35,6 +43,5 @@ function renderMissingSection(title: string, items: string[]) {
           ))}
         </ul>
       </>
-    )
-  );
+    ));
 }

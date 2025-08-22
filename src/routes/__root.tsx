@@ -14,6 +14,7 @@ import { ThemeToggle, themeQueryOptions, useTheme } from "@theme";
 import type { ReactNode } from "react";
 import { CookiesProvider } from "react-cookie";
 import { Toaster } from "sonner";
+import { match } from "ts-pattern";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { DefaultCatchBoundary } from "@/components/boundaries/DefaultCatchBoundary";
 import { EnvironmentError } from "@/components/environment/EnvironmentError";
@@ -96,7 +97,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 function RootComponent() {
-  const { environmentValidation } = useEnvironmentValidation();
+  const { maybeEnvironmentValidation } = useEnvironmentValidation();
   return (
     <CookiesProvider
       defaultSetOptions={{
@@ -107,12 +108,13 @@ function RootComponent() {
       }}
     >
       <RootDocument>
-        {environmentValidation?.isError !== undefined &&
-        environmentValidation.isError ? (
-          <EnvironmentError {...environmentValidation} />
-        ) : (
-          <Outlet />
-        )}
+        {match(maybeEnvironmentValidation)
+          .with({ isError: true }, (environmentValidation) => (
+            <EnvironmentError {...environmentValidation} />
+          ))
+          .otherwise(() => (
+            <Outlet />
+          ))}
       </RootDocument>
     </CookiesProvider>
   );

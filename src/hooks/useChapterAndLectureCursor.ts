@@ -36,11 +36,11 @@ export const useChapterAndLectureCursor = ({
       )!,
     [chapterListZipper.focus.lectures, currentLectureIndex],
   );
-  const previousChapterAndLecture = match({
+  const maybePreviousChapterAndLecture = match({
     previousLecture: lectureListZipper.left.peek(),
     previousChapter: chapterListZipper.left.peek(),
   })
-    .returnType<ChapterAndLecture | undefined>()
+    .returnType<MaybeChapterAndLecture>()
     .with(
       { previousLecture: P.nonNullable, previousChapter: P._ },
       ({ previousLecture }) => ({
@@ -64,11 +64,11 @@ export const useChapterAndLectureCursor = ({
     )
     .otherwise(() => undefined);
 
-  const nextChapterAndLecture = match({
+  const maybeNextChapterAndLecture = match({
     nextLecture: lectureListZipper.right.peek(),
     nextChapter: chapterListZipper.right.peek(),
   })
-    .returnType<ChapterAndLecture | undefined>()
+    .returnType<MaybeChapterAndLecture>()
     .with(
       { nextLecture: P.nonNullable, nextChapter: P._ },
       ({ nextLecture }) => ({
@@ -91,19 +91,19 @@ export const useChapterAndLectureCursor = ({
     )
     .otherwise(() => undefined);
 
-  const previous = useMemo(
+  const maybePrevious = useMemo(
     () =>
-      previousChapterAndLecture === undefined
-        ? undefined
-        : {
-            ...previousChapterAndLecture,
-            slugs: {
-              ...slugs,
-              chapterSlug: previousChapterAndLecture.chapter.slug,
-              lectureSlug: previousChapterAndLecture.lecture.slug,
-            },
+      match(maybePreviousChapterAndLecture)
+        .with(P.nullish, () => undefined)
+        .otherwise((previousChapterAndLecture) => ({
+          ...previousChapterAndLecture,
+          slugs: {
+            ...slugs,
+            chapterSlug: previousChapterAndLecture.chapter.slug,
+            lectureSlug: previousChapterAndLecture.lecture.slug,
           },
-    [previousChapterAndLecture, slugs],
+        })),
+    [maybePreviousChapterAndLecture, slugs],
   );
   const current = useMemo(
     () => ({
@@ -113,21 +113,21 @@ export const useChapterAndLectureCursor = ({
     }),
     [chapterListZipper.focus, lectureListZipper.focus, slugs],
   );
-  const next = useMemo(
+  const maybeNext = useMemo(
     () =>
-      nextChapterAndLecture === undefined
-        ? undefined
-        : {
-            ...nextChapterAndLecture,
-            slugs: {
-              ...slugs,
-              chapterSlug: nextChapterAndLecture.chapter.slug,
-              lectureSlug: nextChapterAndLecture.lecture.slug,
-            },
+      match(maybeNextChapterAndLecture)
+        .with(P.nullish, () => undefined)
+        .otherwise((nextChapterAndLecture) => ({
+          ...nextChapterAndLecture,
+          slugs: {
+            ...slugs,
+            chapterSlug: nextChapterAndLecture.chapter.slug,
+            lectureSlug: nextChapterAndLecture.lecture.slug,
           },
-    [nextChapterAndLecture, slugs],
+        })),
+    [maybeNextChapterAndLecture, slugs],
   );
-  return { previous, current, next, chapters };
+  return { maybePrevious, current, maybeNext, chapters };
 };
 
 interface ChapterAndLecture {
@@ -140,8 +140,11 @@ interface ExtendedChapterAndLecture extends ChapterAndLecture {
 }
 
 interface Return {
-  previous: ExtendedChapterAndLecture | undefined;
+  maybePrevious: MaybeExtendedChapterAndLecture;
   current: ExtendedChapterAndLecture;
-  next: ExtendedChapterAndLecture | undefined;
+  maybeNext: MaybeExtendedChapterAndLecture;
   chapters: Chapter[];
 }
+
+type MaybeChapterAndLecture = ChapterAndLecture | undefined;
+type MaybeExtendedChapterAndLecture = ExtendedChapterAndLecture | undefined;

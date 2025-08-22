@@ -2,6 +2,7 @@ import { Data, Duration, Effect, Schedule } from "effect";
 import { HTTPError } from "ky";
 import ms from "ms";
 import type { KyHeadersInit } from "node_modules/ky/distribution/types/options";
+import { match, P } from "ts-pattern";
 import { type ZodTypeAny, z } from "zod";
 import { httpClient } from "@/lib/httpClient";
 import { s } from "../utils/time";
@@ -26,13 +27,16 @@ const buildUrl = ({
 }): URL => {
   const base = `${protocol}://${domain}`;
   return new URL(
-    searchParams === undefined
-      ? path
-      : `${path}?${new URLSearchParams(
-          Object.fromEntries(
-            Object.entries(searchParams).map(([k, v]) => [k, String(v)]),
-          ),
-        )}`,
+    match(searchParams)
+      .with(P.nullish, () => path)
+      .otherwise(
+        (searchParams) =>
+          `${path}?${new URLSearchParams(
+            Object.fromEntries(
+              Object.entries(searchParams).map(([k, v]) => [k, String(v)]),
+            ),
+          )}`,
+      ),
     base,
   );
 };
@@ -206,7 +210,7 @@ export const concurrent = <
 ) => Effect.all(arg, { concurrency: "inherit" });
 
 export const fetchApi = <T extends ZodTypeAny>({
-  body,
+  body: maybeBody,
   headers,
   method,
   schema,
@@ -224,7 +228,9 @@ export const fetchApi = <T extends ZodTypeAny>({
       const response = httpClient(url, {
         method,
         headers,
-        ...(body === undefined ? {} : { json: body }),
+        ...match(maybeBody)
+          .with(P.nullish, () => ({}))
+          .otherwise((body) => ({ json: body })),
       });
       const data = await response.json();
       return strictParse(schema, data);

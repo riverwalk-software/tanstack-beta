@@ -4,15 +4,15 @@ import {
   environmentValidationQueryOptions,
 } from "@/lib/environment";
 
-export const useEnvironmentValidation = (): Return => {
+export const useEnvironmentValidation = (): {
+  maybeEnvironmentValidation: MaybeEnvironmentValidation;
+} => {
   const queryClient = useQueryClient();
-  const environmentValidation = queryClient.getQueryData(
+  const maybeEnvironmentValidation = queryClient.getQueryData(
     environmentValidationQueryOptions.queryKey,
   );
 
-  return { environmentValidation };
+  return { maybeEnvironmentValidation };
 };
 
-interface Return {
-  environmentValidation: EnvironmentValidation | undefined;
-}
+type MaybeEnvironmentValidation = EnvironmentValidation | undefined;

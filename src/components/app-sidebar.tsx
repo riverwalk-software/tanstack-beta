@@ -65,11 +65,11 @@ export function AppSidebar({
         </div>
         <LectureNavigationButtons slugs={current.slugs} />
         <div className="relative aspect-video w-full">
-          {current.lecture.video && (
-            <VideoPlayer
-              videoId={current.lecture.video.storageId}
-            ></VideoPlayer>
-          )}
+          {match(current.lecture.video)
+            .with(P.nullish, () => null)
+            .otherwise((video) => (
+              <VideoPlayer videoId={video.storageId}></VideoPlayer>
+            ))}
         </div>
         {current.lecture.attachments.map((attachment) => (
           <a
@@ -107,10 +107,11 @@ function LectureNavigationButtons({ slugs }: { slugs: UserStoreSlugs }) {
 }
 
 function PreviousLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
-  const { previous } = useChapterAndLectureCursor({ slugs });
+  const { maybePrevious } = useChapterAndLectureCursor({ slugs });
   const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
-  return (
-    previous && (
+  return match(maybePrevious)
+    .with(P.nullish, () => null)
+    .otherwise((previous) => (
       <Button
         className="bg-gray-400"
         disabled={isNavigating}
@@ -125,46 +126,44 @@ function PreviousLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
       >
         {isNavigating ? "Loading..." : "Previous Lecture"}
       </Button>
-    )
-  );
+    ));
 }
 
 function NextLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
-  const { next } = useChapterAndLectureCursor({ slugs });
+  const { maybeNext } = useChapterAndLectureCursor({ slugs });
   const { setProgressMt, getIsComplete } = useUserStore();
   const navigate = useNavigate();
   const isComplete = getIsComplete(slugs);
-
-  if (next === undefined && isComplete) return null;
-
-  return (
-    <Button
-      className={isComplete ? "bg-gray-400" : "bg-sky-500"}
-      disabled={setProgressMt.isPending}
-      onClick={async () =>
-        setProgressMt.mutate(
-          {
-            _tag: "LECTURE",
-            ...slugs,
-            completed: true,
-          },
-          {
-            onSuccess: async () => {
-              if (next === undefined) return;
-              await navigate({
-                to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
-                params: next.slugs,
-              });
+  return match([maybeNext, isComplete])
+    .with([P.nullish, true], () => null)
+    .otherwise(([next]) => (
+      <Button
+        className={isComplete ? "bg-gray-400" : "bg-sky-500"}
+        disabled={setProgressMt.isPending}
+        onClick={async () =>
+          setProgressMt.mutate(
+            {
+              _tag: "LECTURE",
+              ...slugs,
+              completed: true,
             },
-          },
-        )
-      }
-    >
-      {match([setProgressMt.isPending, isComplete, next])
-        .with([true, P._, P._], () => "Loading")
-        .with([P._, true, P._], () => "Next Lecture")
-        .with([P._, P._, P.nullish], () => "Complete")
-        .otherwise(() => "Complete And Continue")}
-    </Button>
-  );
+            {
+              onSuccess: async () => {
+                if (next === undefined) return;
+                await navigate({
+                  to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
+                  params: next.slugs,
+                });
+              },
+            },
+          )
+        }
+      >
+        {match([setProgressMt.isPending, isComplete, next])
+          .with([true, P._, P._], () => "Loading")
+          .with([P._, true, P._], () => "Next Lecture")
+          .with([P._, P._, P.nullish], () => "Complete")
+          .otherwise(() => "Complete And Continue")}
+      </Button>
+    ));
 }

@@ -26,8 +26,8 @@ type SecretsEnvironment = z.infer<typeof SecretsEnvironmentSchema>;
 export interface FailedEnvironmentValidation {
   isError: true;
   errors: {
-    variables?: string[];
-    secrets?: string[];
+    maybeVariables?: string[];
+    maybeSecrets?: string[];
   };
 }
 
@@ -52,10 +52,10 @@ const getEnvironmentValidationFn = createServerFn().handler(
       : ({
           isError: true,
           errors: {
-            variables: variables.error?.issues.map(
+            maybeVariables: variables.error?.issues.map(
               (issue) => `${String(issue.path[0])}: ${issue.message}`,
             ),
-            secrets: secrets.error?.issues.map((issue) =>
+            maybeSecrets: secrets.error?.issues.map((issue) =>
               issue.path[0].toString(),
             ),
           },

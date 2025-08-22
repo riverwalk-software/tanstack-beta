@@ -1,4 +1,5 @@
 import { createServerFileRoute } from "@tanstack/react-start/server";
+import { match, P } from "ts-pattern";
 import { getSessionDataServerMw } from "@/lib/authentication";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
@@ -8,24 +9,29 @@ export const ServerRoute = createServerFileRoute("/api/attachments/$key")
     GET: async ({ params }) => {
       const { ATTACHMENTS_BUCKET } = getCloudflareBindings();
       const key = decodeURIComponent(params.key);
-      const object = await ATTACHMENTS_BUCKET.get(key);
-      if (object === null)
-        return new Response("Object Not Found", { status: 404 });
-      const Headers_ = import.meta.env.DEV // https://github.com/cloudflare/workers-sdk/issues/6047
-        ? (await import("miniflare")).Headers
-        : Headers;
-      // biome-ignore lint/suspicious/noExplicitAny: https://github.com/cloudflare/workers-sdk/issues/6047
-      const responseHeaders = new Headers_() as any;
-      object.writeHttpMetadata(responseHeaders);
-      responseHeaders.set("etag", object.httpEtag);
-      responseHeaders.set(
-        "content-disposition",
-        `attachment; filename="${key.split("/").pop() || "file"}"`,
-      );
-      return new Response(object.body, {
-        status: 200,
-        headers: responseHeaders,
-      });
+      const maybeObject = await ATTACHMENTS_BUCKET.get(key);
+      return match(maybeObject)
+        .with(
+          P.nullish,
+          () => new Response("Object Not Found", { status: 404 }),
+        )
+        .otherwise(async (object) => {
+          const Headers_ = import.meta.env.DEV // https://github.com/cloudflare/workers-sdk/issues/6047
+            ? (await import("miniflare")).Headers
+            : Headers;
+          // biome-ignore lint/suspicious/noExplicitAny: https://github.com/cloudflare/workers-sdk/issues/6047
+          const responseHeaders = new Headers_() as any;
+          object.writeHttpMetadata(responseHeaders);
+          responseHeaders.set("etag", object.httpEtag);
+          responseHeaders.set(
+            "content-disposition",
+            `attachment; filename="${key.split("/").pop() || "file"}"`,
+          );
+          return new Response(object.body, {
+            status: 200,
+            headers: responseHeaders,
+          });
+        });
 
       // const range = request.headers.get("Range") ?? undefined;
       // const obj = await ATTACHMENTS_BUCKET.get(key, { range });
