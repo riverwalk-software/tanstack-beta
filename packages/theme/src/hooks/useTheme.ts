@@ -6,19 +6,17 @@ import {
 import {
   themeQueryOptions,
   toggleThemeMutationOptions,
-} from "../logic/themeLogic";
+} from "../machines/themeMachine";
 import type { Theme } from "../types/Theme";
-import { useThemeCookie } from "./useThemeCookie";
 
 export const useTheme = (): {
   theme: Theme;
   toggleTheme: () => void;
 } => {
   const { data: theme } = useSuspenseQuery(themeQueryOptions);
-  const { setThemeCookie } = useThemeCookie();
   const queryClient = useQueryClient();
   const { mutate: toggleTheme } = useMutation(
-    toggleThemeMutationOptions({ theme, setThemeCookie, queryClient }),
+    toggleThemeMutationOptions(queryClient),
   );
   return { theme, toggleTheme };
 };
