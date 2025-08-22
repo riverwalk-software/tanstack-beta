@@ -4,6 +4,11 @@
     "packages/*"
   ],
   "type": "module",
+  "sideEffects": [
+    "*.css",
+    "*.sass",
+    "*.scss"
+  ],
   "scripts": {
     "dev": "npm run typegen && vite dev",
     "build": "npm run typegen && vite build && tsc --noEmit",
