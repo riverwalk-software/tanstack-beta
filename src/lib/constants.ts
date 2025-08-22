@@ -28,3 +28,9 @@ export const AUTH_CALLBACK_ROUTE: RouteType = "/signin" as const;
 type RouteType = FileRouteTypes["fullPaths"];
 export const VIDEO_LIBRARY_ID = 478043 as const;
 export const PRODUCT_SLUG = "Test-Product" as const;
+export const DEFAULT_COOKIE_OPTIONS = {
+  httpOnly: false,
+  path: "/",
+  sameSite: "lax",
+  secure: !import.meta.env.DEV,
+} as const;

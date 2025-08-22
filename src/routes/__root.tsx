@@ -27,6 +27,7 @@ import {
 import { environmentValidationQueryOptions } from "@/lib/environment";
 import globalsCss from "@/styles/globals.css?url";
 import { seo } from "@/utils/seo";
+import { DEFAULT_COOKIE_OPTIONS } from "../lib/constants";
 
 interface RouterContext {
   queryClient: QueryClient;
@@ -99,14 +100,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootComponent() {
   const { maybeEnvironmentValidation } = useEnvironmentValidation();
   return (
-    <CookiesProvider
-      defaultSetOptions={{
-        httpOnly: false,
-        path: "/",
-        sameSite: "lax",
-        secure: !import.meta.env.DEV,
-      }}
-    >
+    <CookiesProvider defaultSetOptions={DEFAULT_COOKIE_OPTIONS}>
       <RootDocument>
         {match(maybeEnvironmentValidation)
           .with({ isError: true }, (environmentValidation) => (
