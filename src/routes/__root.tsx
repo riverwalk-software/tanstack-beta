@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import { DEFAULT_COOKIE_OPTIONS } from "@cookies";
 import type { QueryClient } from "@tanstack/query-core";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
@@ -27,7 +28,6 @@ import {
 import { environmentValidationQueryOptions } from "@/lib/environment";
 import globalsCss from "@/styles/globals.css?url";
 import { seo } from "@/utils/seo";
-import { DEFAULT_COOKIE_OPTIONS } from "../lib/constants";
 
 interface RouterContext {
   queryClient: QueryClient;

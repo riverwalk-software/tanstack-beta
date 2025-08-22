@@ -18,12 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { authClient } from "@/lib/auth-client";
 import { authenticationDataQueryOptions } from "@/lib/authentication";
-import {
-  MAXIMUM_PASSWORD_LENGTH,
-  MINIMUM_PASSWORD_LENGTH,
-  SITE_NAME,
-  TEST_USER,
-} from "@/lib/constants";
+import { PASSWORD_LENGTH, SITE_NAME, TEST_USER } from "@/lib/constants";
 import { FormButton } from "../primitives/FormButton";
 
 export function SignInWithEmailForm() {
@@ -161,14 +156,8 @@ const SignInFormSchema = z.object({
   email: z.string().email(),
   password: z
     .string()
-    .min(
-      MINIMUM_PASSWORD_LENGTH,
-      `Password must be at least ${MINIMUM_PASSWORD_LENGTH} characters long`,
-    )
-    .max(
-      MAXIMUM_PASSWORD_LENGTH,
-      `Password must be at most ${MAXIMUM_PASSWORD_LENGTH} characters long`,
-    ),
+    .min(PASSWORD_LENGTH.MINIMUM)
+    .max(PASSWORD_LENGTH.MAXIMUM),
   rememberMe: z.boolean(),
 });
 

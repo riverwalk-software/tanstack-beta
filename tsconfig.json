@@ -25,6 +25,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@cookies": ["packages/cookies/src/index.ts"],
+      "@schools": ["packages/schools/src/index.ts"],
       "@theme": ["packages/theme/src/index.ts"]
     },
     "noEmit": true,

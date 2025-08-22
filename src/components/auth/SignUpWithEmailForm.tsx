@@ -15,11 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
-import {
-  AUTH_CALLBACK_ROUTE,
-  MAXIMUM_PASSWORD_LENGTH,
-  MINIMUM_PASSWORD_LENGTH,
-} from "@/lib/constants";
+import { AUTH_CALLBACK_ROUTE, PASSWORD_LENGTH } from "@/lib/constants";
 import { resendVerificationEmailDurationMs } from "@/routes/_unauthenticated/signup/success";
 import { FormButton } from "../primitives/FormButton";
 
@@ -196,14 +192,8 @@ const SignUpFormSchema = z
     email: z.string().email(),
     password: z
       .string()
-      .min(
-        MINIMUM_PASSWORD_LENGTH,
-        `Password must be at least ${MINIMUM_PASSWORD_LENGTH} characters long`,
-      )
-      .max(
-        MAXIMUM_PASSWORD_LENGTH,
-        `Password must be at most ${MAXIMUM_PASSWORD_LENGTH} characters long`,
-      ),
+      .min(PASSWORD_LENGTH.MINIMUM)
+      .max(PASSWORD_LENGTH.MAXIMUM),
     confirmPassword: z.string(),
   })
   .refine((data) => data.confirmPassword === data.password, {

@@ -1,31 +1,9 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
-import { eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "src/db/main/schema";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
-
-const getSchoolsFn = createServerFn()
-  .validator((data: { schoolSlugs: string[] }) => data)
-  .handler(async ({ data: { schoolSlugs } }) => {
-    const { SCHOOL_DB } = getCloudflareBindings();
-    const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema });
-    const schools = await db.query.SchoolEntity.findMany({
-      where: (school) => inArray(school.slug, schoolSlugs),
-    });
-    return schools;
-  });
-
-const schoolsQueryOptions = (schoolSlugs: string[]) =>
-  queryOptions({
-    queryKey: ["schools"],
-    queryFn: () => getSchoolsFn({ data: { schoolSlugs } }),
-  });
-
-export const useSchools = (schoolSlugs: string[]) => {
-  const { data: schools } = useSuspenseQuery(schoolsQueryOptions(schoolSlugs));
-  return { schools };
-};
 
 const getCoursesFn = createServerFn()
   .validator((data: { schoolSlug: string }) => data)

@@ -10,8 +10,7 @@ import { VerifyEmailEmail } from "@/components/emails/VerifyEmailEmail";
 import {
   AUTH_COOKIE_PREFIX,
   EVENTUAL_CONSISTENCY_DELAY_S,
-  MAXIMUM_PASSWORD_LENGTH,
-  MINIMUM_PASSWORD_LENGTH,
+  PASSWORD_LENGTH,
   PRODUCT_SLUG,
 } from "@/lib/constants";
 import { environment } from "@/lib/environment";
@@ -34,8 +33,8 @@ export const auth = betterAuth({
     autoSignIn: false,
     requireEmailVerification: true,
     revokeSessionsOnPasswordReset: true,
-    minPasswordLength: MINIMUM_PASSWORD_LENGTH,
-    maxPasswordLength: MAXIMUM_PASSWORD_LENGTH,
+    minPasswordLength: PASSWORD_LENGTH.MINIMUM,
+    maxPasswordLength: PASSWORD_LENGTH.MAXIMUM,
     sendResetPassword: async ({ user, url }) => {
       await resend.emails.send({
         from: emailSender,

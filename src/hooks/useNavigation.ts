@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 export const useNavigation = (): Return => {
   const [isNavigating, setIsNavigating] = useState(false);
@@ -12,16 +12,12 @@ export const useNavigation = (): Return => {
   //   [_isNavigating, routerPending],
   // );
   const navigate = useNavigate();
-  const toggleIsNavigating = useCallback(
-    () => setIsNavigating((prev) => !prev),
-    [],
-  );
 
-  return { isNavigating, navigate, toggleIsNavigating };
+  return { isNavigating, navigate, setIsNavigating };
 };
 
 interface Return {
   isNavigating: boolean;
   navigate: ReturnType<typeof useNavigate>;
-  toggleIsNavigating: () => void;
+  setIsNavigating: (isNavigating: boolean) => void;
 }

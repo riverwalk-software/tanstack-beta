@@ -1,7 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import Confetti from "react-confetti";
 import { match, P } from "ts-pattern";
-import ExampleMdx from "@/components/prose/ExampleMdx.mdx";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
@@ -83,7 +82,7 @@ export function AppSidebar({
             </span>
           </a>
         ))}
-        <ExampleMdx />
+        {/* <ExampleMdx /> */}
       </div>
     </>
   );
@@ -108,7 +107,7 @@ function LectureNavigationButtons({ slugs }: { slugs: UserStoreSlugs }) {
 
 function PreviousLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
   const { maybePrevious } = useChapterAndLectureCursor({ slugs });
-  const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
+  const { isNavigating, navigate, setIsNavigating } = useNavigation();
   return match(maybePrevious)
     .with(P.nullish, () => null)
     .otherwise((previous) => (
@@ -116,12 +115,13 @@ function PreviousLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
         className="bg-gray-400"
         disabled={isNavigating}
         onClick={async () => {
-          toggleIsNavigating();
+          setIsNavigating(true);
+          await new Promise((resolve) => setTimeout(resolve, 3000));
           await navigate({
             to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
             params: previous.slugs,
           });
-          toggleIsNavigating();
+          setIsNavigating(false);
         }}
       >
         {isNavigating ? "Loading..." : "Previous Lecture"}

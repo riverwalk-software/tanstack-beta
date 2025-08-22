@@ -2,8 +2,14 @@ import type { FileRouteTypes } from "@/routeTree.gen.ts";
 
 export const EVENTUAL_CONSISTENCY_DELAY_S = 60 * 1;
 // export const IMGGEN_URL = "https://imggen.andrei-023.workers.dev";
-export const MAXIMUM_PASSWORD_LENGTH = 64;
-export const MINIMUM_PASSWORD_LENGTH = 16;
+export const PASSWORD_LENGTH = {
+  MINIMUM: 16,
+  MAXIMUM: 64,
+};
+export const SLUG_LENGTH = {
+  MINIMUM: 1,
+  MAXIMUM: 100,
+};
 export const AUTH_COOKIE_PREFIX = "auth" as const;
 export const AUTH_COOKIE_NAMES = [
   "session_token",
@@ -28,9 +34,3 @@ export const AUTH_CALLBACK_ROUTE: RouteType = "/signin" as const;
 type RouteType = FileRouteTypes["fullPaths"];
 export const VIDEO_LIBRARY_ID = 478043 as const;
 export const PRODUCT_SLUG = "Test-Product" as const;
-export const DEFAULT_COOKIE_OPTIONS = {
-  httpOnly: false,
-  path: "/",
-  sameSite: "lax",
-  secure: !import.meta.env.DEV,
-} as const;
