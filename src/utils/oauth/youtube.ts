@@ -58,7 +58,7 @@ const getYoutubeAuthorizationDataMw = createMiddleware({
     );
     const program = Effect.gen(function* () {
       const isYoutubeAuthorized = yield* verifyAcceptedScopes();
-      const { accessToken } = yield* AccessTokenDataService;
+      const { maybeAccessToken: accessToken } = yield* AccessTokenDataService;
       return yield* Effect.if(
         isYoutubeAuthorized && accessToken !== undefined,
         {
