@@ -1,4 +1,4 @@
-import { checkout, polar } from "@polar-sh/better-auth";
+import { checkout, polar, portal } from "@polar-sh/better-auth";
 import { Polar } from "@polar-sh/sdk";
 import { betterAuth } from "better-auth";
 import { reactStartCookies } from "better-auth/react-start";
@@ -125,7 +125,7 @@ export const auth = betterAuth({
           successUrl: process.env.POLAR_SUCCESS_URL,
           authenticatedUsersOnly: true,
         }),
-        // portal(),
+        portal(),
         // usage(),
         // webhooks({
         //     secret: process.env.POLAR_WEBHOOK_SECRET,
