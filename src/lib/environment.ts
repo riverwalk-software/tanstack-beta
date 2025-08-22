@@ -6,6 +6,7 @@ import { z } from "zod";
 const VariablesEnvironmentSchema = z.object({
   BETTER_AUTH_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "production"]), // Repeat of `drizzle.config.ts`
+  POLAR_SUCCESS_URL: z.string().url(),
 });
 
 type VariablesEnvironment = z.infer<typeof VariablesEnvironmentSchema>;
@@ -16,6 +17,7 @@ const SecretsEnvironmentSchema = z.object({
   CLOUDFLARE_ACCOUNT_ID: z.string().nonempty(),
   CLOUDFLARE_D1_TOKEN: z.string().nonempty(),
   CLOUDFLARE_DATABASE_ID: z.string().nonempty(),
+  POLAR_ACCESS_TOKEN: z.string().nonempty(),
   RESEND_API_KEY: z.string().nonempty(),
 });
 

@@ -7,6 +7,7 @@ import { AUTH_COOKIE_NAMES, AUTH_COOKIE_PREFIX } from "@/lib/constants";
 
 const {
   $ERROR_CODES,
+  // checkout,
   linkSocial,
   sendVerificationEmail,
   signIn,
@@ -20,6 +21,7 @@ const {
       throw errorContext;
     },
   },
+  // plugins: [polarClient()],
 });
 
 const removeAuthCookiesFn = createServerFn({ method: "POST" }).handler(
@@ -31,6 +33,7 @@ const removeAuthCookiesFn = createServerFn({ method: "POST" }).handler(
 );
 
 export const authClient = {
+  // checkout,
   linkSocial,
   sendVerificationEmail,
   signIn,

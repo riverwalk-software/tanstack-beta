@@ -12,12 +12,14 @@ import {
   EVENTUAL_CONSISTENCY_DELAY_S,
   MAXIMUM_PASSWORD_LENGTH,
   MINIMUM_PASSWORD_LENGTH,
+  PRODUCT_SLUG,
 } from "@/lib/constants";
 import { environment } from "@/lib/environment";
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
 
 const polarClient = new Polar({
   accessToken: process.env.POLAR_ACCESS_TOKEN,
+  server: "sandbox",
 });
 
 // https://www.better-auth.com/docs/guides/optimizing-for-performance
@@ -104,22 +106,36 @@ export const auth = betterAuth({
     cookiePrefix: AUTH_COOKIE_PREFIX,
   },
   plugins: [
-    // polar({
-    //   client: polarClient,
-    //   createCustomerOnSignUp: true,
-    //   use: [
-    //     checkout({
-    //       products: [
-    //         {
-    //           productId: "20b622f6-22d0-44da-999b-cd4a05c514e0",
-    //           slug: "Test-Course", // Custom slug for easy reference in Checkout URL, e.g. /checkout/Test-Course
-    //         },
-    //       ],
-    //       successUrl: process.env.POLAR_SUCCESS_URL,
-    //       authenticatedUsersOnly: true,
-    //     }),
-    //   ],
-    // }),
+    polar({
+      client: polarClient,
+      createCustomerOnSignUp: true,
+      // getCustomerCreateParams: ({ user }, request) => ({
+      //   metadata: {
+      //     myCustomProperty: 123,
+      //   },
+      // }),
+      use: [
+        checkout({
+          products: [
+            {
+              productId: "06ef753e-cecf-478e-b107-2422241a29ed",
+              slug: PRODUCT_SLUG,
+            },
+          ],
+          successUrl: process.env.POLAR_SUCCESS_URL,
+          authenticatedUsersOnly: true,
+        }),
+        // portal(),
+        // usage(),
+        // webhooks({
+        //     secret: process.env.POLAR_WEBHOOK_SECRET,
+        //     onCustomerStateChanged: (payload) => // Triggered when anything regarding a customer changes
+        //     onOrderPaid: (payload) => // Triggered when an order was paid (purchase, subscription renewal, etc.)
+        //      // Over 25 granular webhook handlers
+        //     onPayload: (payload) => // Catch-all for all events
+        // })
+      ],
+    }),
     reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
   ],
 });
