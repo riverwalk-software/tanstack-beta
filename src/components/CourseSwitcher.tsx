@@ -15,10 +15,11 @@ import {
 } from "@/components/ui/sidebar";
 import { useCourseCursor } from "@/hooks/useCourseCursor";
 import { useNavigation } from "@/hooks/useNavigation";
+import type { UserStoreSlugs } from "../lib/userStore";
 
-export function CourseSwitcher() {
+export function CourseSwitcher({ slugs }: { slugs: UserStoreSlugs }) {
   const { isMobile } = useSidebar();
-  const { current, courses } = useCourseCursor();
+  const { current, courses } = useCourseCursor({ slugs });
   const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
   return (
     <SidebarMenu>

@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import Confetti from "react-confetti";
 import { match, P } from "ts-pattern";
 import ExampleMdx from "@/components/prose/ExampleMdx.mdx";
@@ -20,8 +20,11 @@ import { Progress } from "./ui/progress";
 import { ResetProgressButton } from "./userStore/ResetProgressButton";
 import { VideoPlayer } from "./VideoPlayer";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { current } = useChapterAndLectureCursor();
+export function AppSidebar({
+  slugs,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { slugs: UserStoreSlugs }) {
+  const { current } = useChapterAndLectureCursor({ slugs });
   const { getProgress } = useUserStore();
   const { progress: courseProgress, isComplete: isCourseComplete } =
     getProgress({
@@ -33,10 +36,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <Sidebar collapsible="icon" {...props}>
         <SidebarHeader>
           <TeamSwitcher />
-          <CourseSwitcher />
+          <CourseSwitcher slugs={current.slugs} />
         </SidebarHeader>
         <SidebarContent>
-          <NavMain />
+          <NavMain slugs={current.slugs} />
           {/* <NavProjects projects={data.projects} /> */}
         </SidebarContent>
         {/* <SidebarFooter>
@@ -60,7 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           )}
           <ResetButtons {...current.slugs} />
         </div>
-        <LectureNavigationButtons />
+        <LectureNavigationButtons slugs={current.slugs} />
         <div className="relative aspect-video w-full">
           {current.lecture.video && (
             <VideoPlayer
@@ -94,17 +97,17 @@ function ResetButtons(slugs: UserStoreSlugs) {
   );
 }
 
-function LectureNavigationButtons() {
+function LectureNavigationButtons({ slugs }: { slugs: UserStoreSlugs }) {
   return (
     <div className="flex gap-4">
-      <PreviousLectureButton />
-      <NextLectureButton />
+      <PreviousLectureButton slugs={slugs} />
+      <NextLectureButton slugs={slugs} />
     </div>
   );
 }
 
-function PreviousLectureButton() {
-  const { previous } = useChapterAndLectureCursor();
+function PreviousLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
+  const { previous } = useChapterAndLectureCursor({ slugs });
   const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
   return (
     previous && (
@@ -126,11 +129,8 @@ function PreviousLectureButton() {
   );
 }
 
-function NextLectureButton() {
-  const slugs = useParams({
-    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
-  });
-  const { next } = useChapterAndLectureCursor();
+function NextLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
+  const { next } = useChapterAndLectureCursor({ slugs });
   const { setProgressMt, getIsComplete } = useUserStore();
   const navigate = useNavigate();
   const isComplete = getIsComplete(slugs);

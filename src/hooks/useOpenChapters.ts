@@ -1,14 +1,15 @@
-import { useParams } from "@tanstack/react-router";
 import { createStore } from "@xstate/store";
 import { useSelector } from "@xstate/store/react";
 import * as Immutable from "immutable";
 import { useCallback, useEffect } from "react";
 import { combineSlugs } from "@/utils/combineSlugs";
+import type { UserStoreSlugs } from "../lib/userStore";
 
-export const useOpenChapters = (): Return => {
-  const slugs = useParams({
-    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
-  });
+export const useOpenChapters = ({
+  slugs,
+}: {
+  slugs: UserStoreSlugs;
+}): Return => {
   const { lectureSlug } = slugs;
   const state = useSelector(store, (state) => state.context.openChapters);
 

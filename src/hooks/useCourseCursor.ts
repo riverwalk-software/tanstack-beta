@@ -1,13 +1,13 @@
-import { useParams } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { type Course, useCourses } from "@/lib/schools";
 import type { UserStoreSlugs } from "@/lib/userStore";
 import * as ListZipper from "@/utils/listZipper";
 
-export const useCourseCursor = (): Return => {
-  const slugs = useParams({
-    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
-  });
+export const useCourseCursor = ({
+  slugs,
+}: {
+  slugs: UserStoreSlugs;
+}): Return => {
   const { schoolSlug } = slugs;
   const { courses } = useCourses(slugs);
   const currentCourseIndex = useMemo(

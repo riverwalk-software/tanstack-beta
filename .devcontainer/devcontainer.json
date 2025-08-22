@@ -10,7 +10,8 @@
   },
   "containerEnv": {
     "BETTER_AUTH_URL": "http://localhost:3000",
-    "NODE_ENV": "development"
+    "NODE_ENV": "development",
+    "POLAR_SUCCESS_URL": "http://localhost:3000/success?checkout_id={CHECKOUT_ID}"
   },
   "customizations": {
     "vscode": {

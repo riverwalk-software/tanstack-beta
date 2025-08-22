@@ -1,4 +1,4 @@
-import { Link, useParams } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { ChevronRight, SquareTerminal } from "lucide-react";
 import {
   Collapsible,
@@ -18,14 +18,12 @@ import {
 import { useChapterAndLectureCursor } from "@/hooks/useChapterAndLectureCursor";
 import { useOpenChapters } from "@/hooks/useOpenChapters";
 import { useUserStore } from "@/hooks/useUserStore";
+import type { UserStoreSlugs } from "../lib/userStore";
 
-export function NavMain() {
-  const { current, chapters } = useChapterAndLectureCursor();
-  const openChapters = useOpenChapters();
+export function NavMain({ slugs }: { slugs: UserStoreSlugs }) {
+  const { current, chapters } = useChapterAndLectureCursor({ slugs });
+  const openChapters = useOpenChapters({ slugs: current.slugs });
   const { getIsComplete } = useUserStore();
-  const slugs = useParams({
-    from: "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
-  });
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Chapters</SidebarGroupLabel>
