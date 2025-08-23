@@ -8,18 +8,18 @@ import { useTheme } from "../hooks/useTheme";
  *
  * Displays a sun icon for light mode and a moon icon for dark mode,
  * with smooth transitions between the two. Uses the `useTheme` hook
- * to access the `toggleTheme` function, which switches the theme.
+ * to access the `toggleThemeMt` function, which switches the theme.
  *
  * @returns {JSX.Element} The rendered theme toggle button.
  */
 export function ThemeToggle(): JSX.Element {
-  const { toggleTheme } = useTheme();
+  const { toggleThemeMt } = useTheme();
   return (
     <Button
-      disabled={false}
+      disabled={toggleThemeMt.isPending}
       variant="ghost"
       size="icon"
-      onClick={() => toggleTheme()}
+      onClick={() => toggleThemeMt.mutate()}
     >
       <Sun className="!h-[1.2rem] !w-[1.2rem] dark:-rotate-90 rotate-0 scale-100 transition-all dark:scale-0" />
       <Moon className="!h-[1.2rem] !w-[1.2rem] absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />

@@ -11,13 +11,12 @@ import {
 import type { School } from "../types/SchemaTypes";
 import { createDb } from "../utils/createDb";
 
-const Params = z.object({
+const GetUserSchoolsParams = z.object({
   schoolIds: z.array(ID_SCHEMA),
 });
-
 // TODO: Paginate
 export const getUserSchoolsFn = createServerFn()
-  .validator(Params)
+  .validator(GetUserSchoolsParams)
   .handler(async ({ data: { schoolIds } }): Promise<School[]> => {
     const cloudflareBindings = getCloudflareBindings();
     const context = Context.empty().pipe(

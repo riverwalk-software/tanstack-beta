@@ -12,14 +12,13 @@ import {
 import type { Course } from "../types/SchemaTypes";
 import { createDb } from "../utils/createDb";
 
-const Params = z.object({
+const GetUserCourseParams = z.object({
   schoolId: ID_SCHEMA,
   courseId: ID_SCHEMA,
 });
-
 // TODO: Paginate
 export const getUserCourseFn = createServerFn()
-  .validator(Params)
+  .validator(GetUserCourseParams)
   .handler(async ({ data: { schoolId, courseId } }): Promise<Course> => {
     const cloudflareBindings = getCloudflareBindings();
     const context = Context.empty().pipe(

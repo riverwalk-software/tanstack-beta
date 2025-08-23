@@ -1,4 +1,5 @@
 import {
+  type UseMutationResult,
   useMutation,
   useQueryClient,
   useSuspenseQuery,
@@ -18,16 +19,14 @@ import type { Theme } from "../types/Theme";
  *
  * @returns An object containing:
  * - `theme`: The current theme value.
- * - `toggleTheme`: A function to toggle the theme.
+ * - `toggleThemeMt`: A function to toggle the theme.
  */
 export const useTheme = (): {
   theme: Theme;
-  toggleTheme: () => void;
+  toggleThemeMt: UseMutationResult<Theme, Error, void, unknown>;
 } => {
   const { data: theme } = useSuspenseQuery(themeQueryOptions);
   const queryClient = useQueryClient();
-  const { mutate: toggleTheme } = useMutation(
-    toggleThemeMutationOptions(queryClient),
-  );
-  return { theme, toggleTheme };
+  const toggleThemeMt = useMutation(toggleThemeMutationOptions(queryClient));
+  return { theme, toggleThemeMt };
 };

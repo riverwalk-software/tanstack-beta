@@ -2,7 +2,7 @@ import { type QueryClient, queryOptions } from "@tanstack/react-query";
 import { THEME_COOKIE_NAME } from "../constants/THEME_COOKIE_NAME";
 import { getThemeFn, toggleTheme } from "../logic/themeLogic";
 import type { Theme } from "../types/Theme";
-import { setThemeCookie } from "./themeCookieMachine";
+import { getThemeCookie, setThemeCookie } from "./themeCookieMachine";
 
 export const themeQueryOptions = queryOptions({
   queryKey: [THEME_COOKIE_NAME],
@@ -14,7 +14,7 @@ export const themeQueryOptions = queryOptions({
 export const toggleThemeMutationOptions = (queryClient: QueryClient) => ({
   mutationKey: ["toggleTheme"],
   mutationFn: async () => {
-    const currentTheme = queryClient.getQueryData(themeQueryOptions.queryKey)!;
+    const currentTheme = getThemeCookie();
     const newTheme = toggleTheme(currentTheme);
     setThemeCookie(newTheme);
     return newTheme;
