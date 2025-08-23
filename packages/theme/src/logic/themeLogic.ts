@@ -9,8 +9,8 @@ export const getThemeFn = createServerFn().handler(
   async (): Promise<Theme> => ThemeSchema.parse(getCookie(THEME_COOKIE_NAME)),
 );
 
-export const toggleTheme = (currentTheme: Theme): Theme =>
-  match(currentTheme)
+export const toggleTheme = (theme: Theme): Theme =>
+  match(theme)
     .returnType<Theme>()
     .with("dark", () => "light")
     .with("light", () => "dark")
