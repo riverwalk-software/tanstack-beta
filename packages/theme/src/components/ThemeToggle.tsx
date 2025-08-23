@@ -1,10 +1,19 @@
 import { Moon, Sun } from "lucide-react";
+import type { JSX } from "react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "../hooks/useTheme";
 
-export function ThemeToggle() {
+/**
+ * A button component that toggles between light and dark themes.
+ *
+ * Displays a sun icon for light mode and a moon icon for dark mode,
+ * with smooth transitions between the two. Uses the `useTheme` hook
+ * to access the `toggleTheme` function, which switches the theme.
+ *
+ * @returns {JSX.Element} The rendered theme toggle button.
+ */
+export function ThemeToggle(): JSX.Element {
   const { toggleTheme } = useTheme();
-
   return (
     <Button
       disabled={false}

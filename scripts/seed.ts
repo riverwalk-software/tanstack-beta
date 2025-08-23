@@ -1,10 +1,10 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { schema } from "@schools";
 import { drizzle } from "drizzle-orm/d1";
 import { reset, seed } from "drizzle-seed";
 import { produce } from "immer";
 import mime from "mime-types";
-import * as schema from "src/db/main/schema";
 import { TEST_USER } from "@/lib/constants";
 import type { UserStore } from "@/lib/userStore";
 
