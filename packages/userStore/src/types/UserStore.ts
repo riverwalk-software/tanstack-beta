@@ -17,3 +17,17 @@ export interface ChapterAndLecture {
   };
   isComplete?: boolean;
 }
+
+export interface UserStoreIds {
+  schoolId: number;
+  courseId: number;
+  chapterId: number;
+  lectureId: number;
+}
+
+export interface UserStoreSlugs {
+  schoolSlug: string;
+  courseSlug: string;
+  chapterSlug: string;
+  lectureSlug: string;
+}

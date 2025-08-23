@@ -1,6 +1,6 @@
+import { useCourses } from "@schools";
 import { createFileRoute } from "@tanstack/react-router";
 import { CourseCard } from "@/components/CourseCard";
-import { useCourses } from "@/lib/schools";
 
 export const Route = createFileRoute("/_authenticated/schools/$schoolSlug/")({
   component: RouteComponent,
@@ -13,9 +13,7 @@ function RouteComponent() {
     <div>
       <h1>Courses</h1>
       <ul>
-        {courses.map(({ slug: courseSlug, title, description, chapters }) => {
-          const firstChapter = chapters[0];
-          const firstLecture = firstChapter.lectures[0];
+        {courses.map(({ slug: courseSlug, title, description, chapter }) => {
           return (
             <li key={courseSlug}>
               <CourseCard
@@ -23,8 +21,8 @@ function RouteComponent() {
                 description={description}
                 schoolSlug={schoolSlug}
                 courseSlug={courseSlug}
-                chapterSlug={firstChapter.slug}
-                lectureSlug={firstLecture.slug}
+                chapterSlug={chapter.slug}
+                lectureSlug={chapter.lecture.slug}
               />
             </li>
           );

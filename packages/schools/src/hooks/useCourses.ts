@@ -1,12 +1,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { coursesQueryOptions } from "../machines/coursesMachine";
-import type { Course } from "../types/SchemaTypes";
+import type { CourseWithFirstChapterAndLecture } from "../types/SchemaTypes";
 
 export const useCourses = ({
   schoolSlug,
 }: {
   schoolSlug: string;
-}): { courses: Course[] } => {
+}): { courses: CourseWithFirstChapterAndLecture[] } => {
   const { data: courses } = useSuspenseQuery(
     coursesQueryOptions({ schoolSlug }),
   );

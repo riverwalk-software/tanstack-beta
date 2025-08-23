@@ -11,8 +11,7 @@ import {
   userStoreQueryOptions,
 } from "../machines/userStoreMachine";
 import type { ProgressData } from "../types/ProgressData";
-import type { UserStore } from "../types/UserStore";
-import type { UserStoreIds } from "../types/UserStoreIds";
+import type { UserStore, UserStoreIds } from "../types/UserStore";
 import type {
   GetUserStoreParams,
   SetUserStoreParams,

@@ -27,8 +27,15 @@ export const getCourseFn = createServerFn()
     const program = Effect.gen(function* () {
       const { SCHOOL_DB } = yield* CloudflareBindingsService;
       const db = yield* Effect.sync(() => createDb(SCHOOL_DB));
+      const maybeSchool = yield* Effect.promise(() =>
+        getSchool({ db, schoolSlug }),
+      );
+      const school = yield* Either.fromNullable(
+        maybeSchool,
+        () => new SERVICE_UNAVAILABLE(),
+      );
       const maybeCourse = yield* Effect.promise(() =>
-        getCourse({ db, schoolSlug, courseSlug }),
+        getCourse({ db, schoolId: school.id, courseSlug }),
       );
       return yield* Either.fromNullable(
         maybeCourse,
@@ -38,18 +45,29 @@ export const getCourseFn = createServerFn()
     return effectRunPromise({ context, program });
   });
 
-const getCourse = ({
+export const getSchool = ({
   db,
   schoolSlug,
-  courseSlug,
 }: {
   db: ReturnType<typeof createDb>;
   schoolSlug: string;
+}) =>
+  db.query.SchoolEntity.findFirst({
+    where: (school) => eq(school.slug, schoolSlug),
+  });
+
+const getCourse = ({
+  db,
+  schoolId,
+  courseSlug,
+}: {
+  db: ReturnType<typeof createDb>;
+  schoolId: number;
   courseSlug: string;
 }) =>
   db.query.CourseEntity.findFirst({
     where: (course) =>
-      eq(course.slug, schoolSlug) && eq(course.slug, courseSlug),
+      eq(course.schoolId, schoolId) && eq(course.slug, courseSlug),
     with: {
       chapters: {
         orderBy: (chapter) => chapter.ordinal,

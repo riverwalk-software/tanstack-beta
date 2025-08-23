@@ -12,8 +12,11 @@ import {
 } from "@/utils/getCloudflareBindings";
 import { sum } from "@/utils/prelude";
 import type { ProgressData } from "../types/ProgressData";
-import type { ChapterAndLecture, UserStore } from "../types/UserStore";
-import type { UserStoreIds } from "../types/UserStoreIds";
+import type {
+  ChapterAndLecture,
+  UserStore,
+  UserStoreIds,
+} from "../types/UserStore";
 import {
   type GetUserStoreParams,
   type SetUserStoreParams,

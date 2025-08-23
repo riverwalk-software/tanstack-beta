@@ -1,7 +1,7 @@
 import { useSchools } from "@schools";
 import { createFileRoute } from "@tanstack/react-router";
+import { userStoreQueryOptions } from "@userStore";
 import { SchoolCard } from "@/components/SchoolCard";
-import { userStoreQueryOptions, useUserStore } from "@/hooks/useUserStore";
 
 export const Route = createFileRoute("/_authenticated/schools/")({
   component: RouteComponent,
@@ -10,8 +10,7 @@ export const Route = createFileRoute("/_authenticated/schools/")({
 });
 
 function RouteComponent() {
-  const { schoolSlugs } = useUserStore();
-  const { schools } = useSchools(schoolSlugs);
+  const { schools } = useSchools();
   return (
     <div>
       <h1>Schools</h1>

@@ -6,7 +6,7 @@ export const useSchools = ({
   schoolSlugs,
 }: {
   schoolSlugs?: string[];
-}): { schools: School[] } => {
+} = {}): { schools: School[] } => {
   const { data: schools } = useSuspenseQuery(
     schoolsQueryOptions({ schoolSlugs }),
   );
