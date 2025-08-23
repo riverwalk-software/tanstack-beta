@@ -1,7 +1,37 @@
+import { createServerFn } from "@tanstack/react-start";
 import { inArray } from "drizzle-orm";
-import type { createDb } from "../utils/createDb";
+import { Context, Effect } from "effect";
+import z from "zod";
+import { ID_SCHEMA } from "@/lib/constants";
+import { effectRunPromise } from "@/utils/effect";
+import {
+  CloudflareBindingsService,
+  getCloudflareBindings,
+} from "@/utils/getCloudflareBindings";
+import type { School } from "../types/SchemaTypes";
+import { createDb } from "../utils/createDb";
 
-export const getUserSchools = ({
+const Params = z.object({
+  schoolIds: z.array(ID_SCHEMA),
+});
+
+// TODO: Paginate
+export const getUserSchoolsFn = createServerFn()
+  .validator(Params)
+  .handler(async ({ data: { schoolIds } }): Promise<School[]> => {
+    const cloudflareBindings = getCloudflareBindings();
+    const context = Context.empty().pipe(
+      Context.add(CloudflareBindingsService, cloudflareBindings),
+    );
+    const program = Effect.gen(function* () {
+      const { SCHOOL_DB } = yield* CloudflareBindingsService;
+      const db = yield* Effect.sync(() => createDb(SCHOOL_DB));
+      return yield* Effect.promise(() => getUserSchools({ db, schoolIds }));
+    });
+    return effectRunPromise({ context, program });
+  });
+
+const getUserSchools = ({
   db,
   schoolIds,
 }: {
