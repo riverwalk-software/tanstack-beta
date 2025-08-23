@@ -11,6 +11,7 @@ interface ClientError {
 const clientErrorTag = {
   UNAUTHENTICATED: "UNAUTHENTICATED",
   YOUTUBE_UNAUTHORIZED: "YOUTUBE_UNAUTHORIZED",
+  UNAUTHORIZED: "UNAUTHORIZED",
   SERVICE_UNAVAILABLE: "SERVICE_UNAVAILABLE",
 } as const;
 
@@ -39,6 +40,21 @@ export class YOUTUBE_UNAUTHORIZED extends Data.TaggedError(
     super({
       message: message ?? "YouTube API access is unauthorized.",
       description: description ?? "Please reauthorize your YouTube account.",
+    });
+  }
+}
+
+export class UNAUTHORIZED extends Data.TaggedError(
+  clientErrorTag.UNAUTHORIZED,
+)<ClientError> {
+  constructor({
+    message,
+    description,
+  }: { message?: string; description?: string } = {}) {
+    super({
+      message: message ?? "Unauthorized access.",
+      description:
+        description ?? "You do not have permission to access this resource.",
     });
   }
 }

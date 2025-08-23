@@ -77,6 +77,7 @@ export function createRouter() {
               });
             })
             .with("SERVICE_UNAVAILABLE", () => {})
+            .with("UNAUTHORIZED", () => {})
             .exhaustive();
         },
       )
