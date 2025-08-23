@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { inArray } from "drizzle-orm";
 import { Context, Effect } from "effect";
+import { match, P } from "ts-pattern";
 import z from "zod";
-import { ID_SCHEMA } from "@/lib/constants";
+import { SLUG_SCHEMA } from "@/lib/constants";
 import { effectRunPromise } from "@/utils/effect";
 import {
   CloudflareBindingsService,
@@ -11,13 +12,13 @@ import {
 import type { School } from "../types/SchemaTypes";
 import { createDb } from "../utils/createDb";
 
-const GetUserSchoolsParams = z.object({
-  schoolIds: z.array(ID_SCHEMA),
+const GetSchoolsParams = z.object({
+  schoolSlugs: z.array(SLUG_SCHEMA).optional(),
 });
 // TODO: Paginate
-export const getUserSchoolsFn = createServerFn()
-  .validator(GetUserSchoolsParams)
-  .handler(async ({ data: { schoolIds } }): Promise<School[]> => {
+export const getSchoolsFn = createServerFn()
+  .validator(GetSchoolsParams)
+  .handler(async ({ data: { schoolSlugs } }): Promise<School[]> => {
     const cloudflareBindings = getCloudflareBindings();
     const context = Context.empty().pipe(
       Context.add(CloudflareBindingsService, cloudflareBindings),
@@ -25,19 +26,27 @@ export const getUserSchoolsFn = createServerFn()
     const program = Effect.gen(function* () {
       const { SCHOOL_DB } = yield* CloudflareBindingsService;
       const db = yield* Effect.sync(() => createDb(SCHOOL_DB));
-      return yield* Effect.promise(() => getUserSchools({ db, schoolIds }));
+      return yield* Effect.promise(() => getSchools({ db, schoolSlugs }));
     });
     return effectRunPromise({ context, program });
   });
 
-const getUserSchools = ({
+const getSchools = ({
   db,
-  schoolIds,
+  schoolSlugs: maybeSchoolSlugs,
 }: {
   db: ReturnType<typeof createDb>;
-  schoolIds: number[];
+  schoolSlugs?: string[];
 }) =>
-  db.query.SchoolEntity.findMany({
-    where: (school) => inArray(school.id, schoolIds),
-    orderBy: (school) => school.name,
-  });
+  match(maybeSchoolSlugs)
+    .with(P.nullish, () =>
+      db.query.SchoolEntity.findMany({
+        orderBy: (school) => school.name,
+      }),
+    )
+    .otherwise((schoolSlugs) =>
+      db.query.SchoolEntity.findMany({
+        where: (school) => inArray(school.slug, schoolSlugs),
+        orderBy: (school) => school.name,
+      }),
+    );

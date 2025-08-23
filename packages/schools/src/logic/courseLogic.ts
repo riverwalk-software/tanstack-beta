@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { eq } from "drizzle-orm";
-import { Context, Effect } from "effect";
+import { Context, Effect, Either } from "effect";
 import z from "zod";
-import { ID_SCHEMA } from "@/lib/constants";
+import { SLUG_SCHEMA } from "@/lib/constants";
+import { SERVICE_UNAVAILABLE } from "@/lib/errors";
 import { effectRunPromise } from "@/utils/effect";
 import {
   CloudflareBindingsService,
@@ -11,13 +12,14 @@ import {
 import type { Course } from "../types/SchemaTypes";
 import { createDb } from "../utils/createDb";
 
-const GetUserCoursesParams = z.object({
-  schoolId: ID_SCHEMA,
+const GetCourseParams = z.object({
+  schoolSlug: SLUG_SCHEMA,
+  courseSlug: SLUG_SCHEMA,
 });
 // TODO: Paginate
-export const getUserCoursesFn = createServerFn()
-  .validator(GetUserCoursesParams)
-  .handler(async ({ data: { schoolId } }): Promise<Course[]> => {
+export const getCourseFn = createServerFn()
+  .validator(GetCourseParams)
+  .handler(async ({ data: { schoolSlug, courseSlug } }): Promise<Course> => {
     const cloudflareBindings = getCloudflareBindings();
     const context = Context.empty().pipe(
       Context.add(CloudflareBindingsService, cloudflareBindings),
@@ -25,29 +27,39 @@ export const getUserCoursesFn = createServerFn()
     const program = Effect.gen(function* () {
       const { SCHOOL_DB } = yield* CloudflareBindingsService;
       const db = yield* Effect.sync(() => createDb(SCHOOL_DB));
-      return yield* Effect.promise(() => getUserCourses({ db, schoolId }));
+      const maybeCourse = yield* Effect.promise(() =>
+        getCourse({ db, schoolSlug, courseSlug }),
+      );
+      return yield* Either.fromNullable(
+        maybeCourse,
+        () => new SERVICE_UNAVAILABLE(),
+      );
     });
     return effectRunPromise({ context, program });
   });
 
-const getUserCourses = ({
+const getCourse = ({
   db,
-  schoolId,
+  schoolSlug,
+  courseSlug,
 }: {
   db: ReturnType<typeof createDb>;
-  schoolId: number;
+  schoolSlug: string;
+  courseSlug: string;
 }) =>
-  db.query.CourseEntity.findMany({
-    where: (course) => eq(course.schoolId, schoolId),
-    orderBy: (course) => course.title,
+  db.query.CourseEntity.findFirst({
+    where: (course) =>
+      eq(course.slug, schoolSlug) && eq(course.slug, courseSlug),
     with: {
       chapters: {
-        limit: 1,
         orderBy: (chapter) => chapter.ordinal,
         with: {
           lectures: {
-            limit: 1,
             orderBy: (lecture) => lecture.ordinal,
+            with: {
+              video: true,
+              attachments: true,
+            },
           },
         },
       },
