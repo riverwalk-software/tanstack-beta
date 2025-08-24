@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment node
+ */
 import { BoundedPercentageSchema } from "@prelude";
 import * as fc from "fast-check";
 import { describe, expect, it } from "vitest";

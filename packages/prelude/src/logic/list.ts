@@ -1,4 +1,6 @@
-import { match } from "ts-pattern";
+import { match, P } from "ts-pattern";
+import { flatten } from "../subpackages/functors/monad";
+import { pipe } from "./combinators";
 
 export const replicate =
   <A>(n: number) =>
@@ -11,23 +13,39 @@ export const replicate =
       )
       .otherwise(() => []);
 
-// export const intersperse =
-//   <A>(delimiter: A) =>
-//   (xs: readonly A[]): readonly A[] =>
-//     match(xs)
-//       .returnType<readonly A[]>()
-//       .when(
-//         (xs) => xs.length === 0,
-//         () => [],
-//       )
-//       .when(
-//         (xs) => xs.length === 1,
-//         ([head, ..._tail]) => [head],
-//       )
-//       .otherwise(([head, ...tail]) => [
-//         head,
-//         delimiter,
-//         ...flatMap((x: A) => [x, delimiter])(tail),
-//       ]);
+export const intersperse =
+  <A>(delimiter: A) =>
+  (xs: readonly A[]): readonly A[] =>
+    match(xs)
+      .returnType<readonly A[]>()
+      .when(
+        (xs) => xs.length === 0,
+        () => [],
+      )
+      .otherwise(([head, ...tail]) => [head, ...prependToAll(delimiter)(tail)]);
 
-// export function intercalate(delimiter: string): (strings: readonly string[])
+const prependToAll =
+  <A>(delimiter: A) =>
+  (xs: readonly A[]): readonly A[] =>
+    match(xs)
+      .returnType<readonly A[]>()
+      .with(
+        P._,
+        (xs) => xs.length === 0,
+        () => [],
+      )
+      .otherwise(([head, ...tail]) => [
+        delimiter,
+        head,
+        ...prependToAll(delimiter)(tail),
+      ]);
+
+export const intercalateList =
+  <A>(delimiter: A[]) =>
+  (xss: readonly A[][]): readonly A[] =>
+    pipe(xss, intersperse(delimiter), flatten);
+
+export const intercalate =
+  (delimiter: string) =>
+  (strings: readonly string[]): string =>
+    strings.join(delimiter);

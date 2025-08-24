@@ -8,6 +8,9 @@ export function combine<A>(
   xs: readonly A[] | string,
 ): ((ys: readonly A[]) => readonly A[]) | ((ys: string) => string) {
   return match(xs)
+    .returnType<
+      ((ys: readonly A[]) => readonly A[]) | ((ys: string) => string)
+    >()
     .when(
       (xs): xs is readonly A[] => Array.isArray(xs),
       (xs) => (ys: readonly A[]) => [...xs, ...ys],

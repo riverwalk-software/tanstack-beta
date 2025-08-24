@@ -1,4 +1,5 @@
 export { flow, pipe } from "./logic/combinators";
+export { intercalate, intercalateList, intersperse } from "./logic/list";
 export {
   type Bijection,
   conjugate,
