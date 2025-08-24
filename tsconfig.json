@@ -26,7 +26,8 @@
       "@/*": ["src/*"],
       "@cookies": ["packages/cookies/src/index.ts"],
       "@schools": ["packages/schools/src/index.ts"],
-      "@theme": ["packages/theme/src/index.ts"]
+      "@theme": ["packages/theme/src/index.ts"],
+      "@userStore": ["packages/userStore/src/index.ts"]
     },
     "noEmit": true,
     "verbatimModuleSyntax": false, // https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
