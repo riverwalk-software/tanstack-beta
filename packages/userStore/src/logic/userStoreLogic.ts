@@ -1,3 +1,4 @@
+import { divide, mapMaybe, pipe } from "@prelude";
 import { createServerFn } from "@tanstack/react-start";
 import { Context, Effect, Either } from "effect";
 import { produce } from "immer";
@@ -10,7 +11,6 @@ import {
   CloudflareBindingsService,
   getCloudflareBindings,
 } from "@/utils/getCloudflareBindings";
-import { sum } from "@/utils/prelude";
 import type { ProgressData } from "../types/ProgressData";
 import type {
   ChapterAndLecture,
@@ -107,16 +107,26 @@ const getChaptersAndLectures =
       )
       .exhaustive();
 
-const calculateProgress = (
+export const calculateProgress = (
   chaptersAndLectures: ChapterAndLecture[],
 ): number => {
-  const completedLectures = sum(
-    chaptersAndLectures.map(({ isComplete }) => (isComplete ? 1 : 0)),
+  const completedLectures = pipe(
+    chaptersAndLectures,
+    mapMaybe(({ isComplete: maybeIsComplete }) =>
+      match(maybeIsComplete)
+        .with(true, () => ({}))
+        .otherwise(() => null),
+    ),
   );
-  const totalLectures = chaptersAndLectures.length;
-  return match(totalLectures)
-    .with(0, () => 0)
-    .otherwise(() => (completedLectures / totalLectures) * 100);
+  const part = completedLectures.length;
+  const whole = chaptersAndLectures.length;
+  const divisionResult = divide(part)(whole);
+  const quotient = match(divisionResult)
+    .returnType<number>()
+    .with({ _tag: "DIVIDE_BY_ZERO" }, () => 0)
+    .with({ _tag: "VALID" }, ({ quotient }) => quotient)
+    .exhaustive();
+  return quotient * 100;
 };
 
 export const setProgressFn = createServerFn({ method: "POST" })
