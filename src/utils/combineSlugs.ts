@@ -1,2 +1,4 @@
+import { intercalate, pipe } from "@prelude";
+
 export const combineSlugs = (slugs: string[]): string =>
-  slugs.join("::");
+  pipe(slugs, intercalate("::"));
