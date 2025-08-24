@@ -9,8 +9,9 @@ import {
   CloudflareBindingsService,
   getCloudflareBindings,
 } from "@/utils/getCloudflareBindings";
-import type { Course } from "../types/SchemaTypes";
-import { createDb } from "../utils/createDb";
+import { getSchool } from "../../../../logic/utilityLogic";
+import type { Course } from "../../../types/SchemaTypes";
+import { createDb } from "../../../utils/createDb";
 
 const GetCourseParams = z.object({
   schoolSlug: SLUG_SCHEMA,
@@ -43,17 +44,6 @@ export const getCourseFn = createServerFn()
       );
     });
     return effectRunPromise({ context, program });
-  });
-
-export const getSchool = ({
-  db,
-  schoolSlug,
-}: {
-  db: ReturnType<typeof createDb>;
-  schoolSlug: string;
-}) =>
-  db.query.SchoolEntity.findFirst({
-    where: (school) => eq(school.slug, schoolSlug),
   });
 
 const getCourse = ({

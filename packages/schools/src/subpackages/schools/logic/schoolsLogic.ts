@@ -9,8 +9,8 @@ import {
   CloudflareBindingsService,
   getCloudflareBindings,
 } from "@/utils/getCloudflareBindings";
-import type { School } from "../types/SchemaTypes";
-import { createDb } from "../utils/createDb";
+import type { School } from "../../../types/SchemaTypes";
+import { createDb } from "../../../utils/createDb";
 
 const GetSchoolsParams = z.object({
   schoolSlugs: z.array(SLUG_SCHEMA).optional(),

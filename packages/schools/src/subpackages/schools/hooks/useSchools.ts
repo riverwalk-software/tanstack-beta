@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+import type { School } from "../../../types/SchemaTypes";
 import { schoolsQueryOptions } from "../machines/schoolsMachine";
-import type { School } from "../types/SchemaTypes";
 
 export const useSchools = ({
   schoolSlugs,

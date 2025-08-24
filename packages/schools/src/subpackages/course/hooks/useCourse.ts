@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+import type { Course } from "../../../types/SchemaTypes";
 import { courseQueryOptions } from "../machines/courseMachine";
-import type { Course } from "../types/SchemaTypes";
 
 export const useCourse = ({
   schoolSlug,

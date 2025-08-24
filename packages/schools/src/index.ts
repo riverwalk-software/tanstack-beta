@@ -1,6 +1,6 @@
 import * as schema from "./db/schema";
 
-export { useCourse } from "./hooks/useCourse";
-export { useCourses } from "./hooks/useCourses";
-export { useSchools } from "./hooks/useSchools";
+export { useCourse } from "./subpackages/course/hooks/useCourse";
+export { useCourses } from "./subpackages/courses/hooks/useCourses";
+export { useSchools } from "./subpackages/schools/hooks/useSchools";
 export { schema };
