@@ -25,7 +25,9 @@ jobs:
         task: [build, lint, test, typecheck]
     name: ${{ matrix.task }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+        with:
+          lfs: true
       - uses: actions/setup-node@v4
         with:
           node-version: 22
