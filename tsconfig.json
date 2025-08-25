@@ -9,6 +9,7 @@
     "packages/**/*.tsx"
   ],
   "compilerOptions": {
+    // Typechecking
     "strict": true,
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
@@ -16,17 +17,28 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    
+    "noEmitOnError": true,
 
-    "esModuleInterop": true,
+    // Tanstack Start: https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
     "jsx": "react-jsx",
-    "module": "ESNext",
     "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ES2022",
+    "skipLibCheck": true,
+    "strictNullChecks": true
+    "verbatimModuleSyntax": false,
+
+
+    
+    "esModuleInterop": true,
+
+
+
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "isolatedModules": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "target": "ES2022",
+
+
     "allowJs": true, // Required for MDX: https://www.npmjs.com/package/vite-tsconfig-paths
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
@@ -39,7 +51,7 @@
       "@userStore": ["packages/userStore/src/index.ts"]
     },
     "noEmit": true,
-    "verbatimModuleSyntax": false, // https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
+
     "types": ["./worker-configuration.d.ts", "node"] // https://developers.cloudflare.com/workers/languages/typescript/#3-make-sure-your-tsconfigjson-includes-the-generated-types
   }
 }
