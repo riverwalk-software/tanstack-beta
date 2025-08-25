@@ -31,7 +31,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
 
-    // Typecheck Only: https://vite.dev/guide/features#transpile-only
+    // Turn Off Transpilation: https://vite.dev/guide/features#transpile-only
     "noEmit": true,
 
     // Vite: https://vite.dev/guide/features.html#typescript-compiler-options
