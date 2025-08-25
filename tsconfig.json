@@ -19,35 +19,6 @@
       "@theme": ["packages/theme/src/index.ts"],
       "@userStore": ["packages/userStore/src/index.ts"]
     },
-    
-    // Typechecking
-    "strict": true,
-    "exactOptionalPropertyTypes": true,
-    "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-
-    // Turn Off Transpilation: https://vite.dev/guide/features#transpile-only
-    "noEmit": true,
-
-    // Vite: https://vite.dev/guide/features.html#typescript-compiler-options
-    "isolatedModules": true,
-    
-    // Tanstack Start: https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
-    "jsx": "react-jsx",
-    "moduleResolution": "Bundler",
-    "module": "ESNext",
-    "target": "ES2022",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "skipLibCheck": true,
-    "verbatimModuleSyntax": false,
-
-    // MDX: https://www.npmjs.com/package/vite-tsconfig-paths
-    "allowJs": true,
 
     // Types
     "types": [
@@ -56,6 +27,36 @@
       // Cloudflare: https://developers.cloudflare.com/workers/languages/typescript/#3-make-sure-your-tsconfigjson-includes-the-generated-types
       "./worker-configuration.d.ts",
       "node",
-    ]
+    ],
+
+    // Base
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": true, // MDX: https://www.npmjs.com/package/vite-tsconfig-paths
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true, // Vite: https://vite.dev/guide/features.html#typescript-compiler-options
+    
+    // Strictness
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noFallthroughCasesInSwitch": true,
+    
+    
+    // Turn Off Transpilation: https://vite.dev/guide/features#transpile-only
+    "module": "preserve",
+    "noEmit": true,
+
+    // Tanstack Start: https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
+    "jsx": "react-jsx",
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "verbatimModuleSyntax": false
   }
 }
