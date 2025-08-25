@@ -9,16 +9,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
 env:
   OS_TEMPLATES: windows,macos,linux
   USER_SPACE_TEMPLATES: git,zsh,dotenv
   EDITOR_TEMPLATES: visualstudiocode
   RUNTIME_TEMPLATES: node
-
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
 
 jobs:
   validate:
