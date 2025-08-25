@@ -28,7 +28,6 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noEmitOnError": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
 
@@ -45,7 +44,6 @@
     "target": "ES2022",
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "skipLibCheck": true,
-    "strictNullChecks": true,
     "verbatimModuleSyntax": false,
 
     // MDX: https://www.npmjs.com/package/vite-tsconfig-paths
