@@ -37,36 +37,27 @@
 
     // Vite: https://vite.dev/guide/features.html#typescript-compiler-options
     "isolatedModules": true,
-
-
-
-
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-
-
     
-
     // Tanstack Start: https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
     "module": "ESNext",
     "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "skipLibCheck": true,
     "strictNullChecks": true,
     "verbatimModuleSyntax": false,
 
-    // Cloudflare: https://developers.cloudflare.com/workers/languages/typescript/#3-make-sure-your-tsconfigjson-includes-the-generated-types
-    "types": ["./worker-configuration.d.ts", "node"]
-
     // MDX: https://www.npmjs.com/package/vite-tsconfig-paths
     "allowJs": true,
 
-    
- 
-
-
-
-
-    
+    // Types
+    "types": [
+      // Vite: https://vite.dev/guide/features.html#client-types
+      "vite/client",
+      // Cloudflare: https://developers.cloudflare.com/workers/languages/typescript/#3-make-sure-your-tsconfigjson-includes-the-generated-types
+      "./worker-configuration.d.ts",
+      "node",
+    ]
   }
 }
