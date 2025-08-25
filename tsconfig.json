@@ -46,7 +46,6 @@
     "noPropertyAccessFromIndexSignature": true,
     "noFallthroughCasesInSwitch": true,
     
-    
     // Turn Off Transpilation: https://vite.dev/guide/features#transpile-only
     "noEmit": true,
 
