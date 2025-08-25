@@ -18,11 +18,24 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "complexity": {
+        "noExcessiveLinesPerFunction": {
+          "level": "warn",
+          "options": { "maxLines": 50, "skipBlankLines": true }
+        }
+      },
       "style": {
-        "noNonNullAssertion": "off"
+        "useThrowOnlyError": "error",
+        "noNonNullAssertion": "off",
+        "noParameterAssign": {
+          "level": "error",
+          "options": { "propertyAssignment": "deny" }
+        },
+        "useObjectSpread": "error"
       },
       "suspicious": {
         "noConsole": "error",
+        "noVar": "error",
         "noEmptyInterface": "off"
       },
       "nursery": {
