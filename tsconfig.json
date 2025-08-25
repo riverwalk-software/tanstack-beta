@@ -9,6 +9,17 @@
     "packages/**/*.tsx"
   ],
   "compilerOptions": {
+    // Paths
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@cookies": ["packages/cookies/src/index.ts"],
+      "@prelude": ["packages/prelude/src/index.ts"],
+      "@schools": ["packages/schools/src/index.ts"],
+      "@theme": ["packages/theme/src/index.ts"],
+      "@userStore": ["packages/userStore/src/index.ts"]
+    },
+    
     // Typechecking
     "strict": true,
     "exactOptionalPropertyTypes": true,
@@ -19,6 +30,9 @@
     "noFallthroughCasesInSwitch": true,
     "noEmitOnError": true,
 
+    // Typecheck Only: https://vite.dev/guide/features#transpile-only
+    "noEmit": true,
+
     // Tanstack Start: https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
@@ -28,30 +42,16 @@
     "strictNullChecks": true,
     "verbatimModuleSyntax": false,
 
+    // Cloudflare: https://developers.cloudflare.com/workers/languages/typescript/#3-make-sure-your-tsconfigjson-includes-the-generated-types
+    "types": ["./worker-configuration.d.ts", "node"]
+
+    // MDX: https://www.npmjs.com/package/vite-tsconfig-paths
+    "allowJs": true,
 
     
     "esModuleInterop": true,
-
-
-
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "isolatedModules": true,
     "resolveJsonModule": true,
-
-
-    "allowJs": true, // Required for MDX: https://www.npmjs.com/package/vite-tsconfig-paths
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@cookies": ["packages/cookies/src/index.ts"],
-      "@prelude": ["packages/prelude/src/index.ts"],
-      "@schools": ["packages/schools/src/index.ts"],
-      "@theme": ["packages/theme/src/index.ts"],
-      "@userStore": ["packages/userStore/src/index.ts"]
-    },
-    "noEmit": true,
-
-    "types": ["./worker-configuration.d.ts", "node"] // https://developers.cloudflare.com/workers/languages/typescript/#3-make-sure-your-tsconfigjson-includes-the-generated-types
   }
 }
