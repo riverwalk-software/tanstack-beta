@@ -29,9 +29,22 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noEmitOnError": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
 
     // Typecheck Only: https://vite.dev/guide/features#transpile-only
     "noEmit": true,
+
+    // Vite: https://vite.dev/guide/features.html#typescript-compiler-options
+    "isolatedModules": true,
+
+
+
+
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+
+
+    
 
     // Tanstack Start: https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
     "jsx": "react-jsx",
@@ -49,9 +62,11 @@
     "allowJs": true,
 
     
-    "esModuleInterop": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "isolatedModules": true,
-    "resolveJsonModule": true,
+ 
+
+
+
+
+    
   }
 }
