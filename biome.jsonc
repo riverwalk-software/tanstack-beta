@@ -34,7 +34,6 @@
       "style": {
         "noDefaultExport": "error",
         "useThrowOnlyError": "error",
-        "noNonNullAssertion": "off",
         "noEnum": "error",
         "noParameterAssign": {
           "level": "error",
@@ -46,7 +45,6 @@
         "useAwait": "error",
         "noConsole": "error",
         "noVar": "error",
-        "noEmptyInterface": "off",
         "noEvolvingTypes": "error"
       },
       "nursery": {
