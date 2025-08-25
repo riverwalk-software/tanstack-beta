@@ -22,11 +22,7 @@
 
     // Types
     "types": [
-      // Vite: https://vite.dev/guide/features.html#client-types
-      "vite/client",
-      // Cloudflare: https://developers.cloudflare.com/workers/languages/typescript/#3-make-sure-your-tsconfigjson-includes-the-generated-types
-      "./worker-configuration.d.ts",
-      "node",
+      "vite/client", // Vite: https://vite.dev/guide/features.html#client-types
     ],
 
     // Base
