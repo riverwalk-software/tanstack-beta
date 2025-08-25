@@ -48,7 +48,6 @@
     
     
     // Turn Off Transpilation: https://vite.dev/guide/features#transpile-only
-    "module": "preserve",
     "noEmit": true,
 
     // Tanstack Start: https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
