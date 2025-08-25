@@ -6,7 +6,7 @@ on:
     - cron: '0 2 * * 0'
 
 concurrency:
-  group: validate-gitignore
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
