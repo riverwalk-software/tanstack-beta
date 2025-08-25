@@ -5,20 +5,20 @@ on:
   schedule:
     - cron: '0 2 * * 0'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+env:
+  OS_TEMPLATES: windows,macos,linux
+  USER_SPACE_TEMPLATES: git,zsh,dotenv
+  EDITOR_TEMPLATES: visualstudiocode
+  RUNTIME_TEMPLATES: node
 
 permissions:
   contents: write
   pull-requests: write
   issues: write
 
-env:
-  OS_TEMPLATES: windows,macos,linux
-  USER_SPACE_TEMPLATES: git,zsh,dotenv
-  EDITOR_TEMPLATES: visualstudiocode
-  RUNTIME_TEMPLATES: node
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
