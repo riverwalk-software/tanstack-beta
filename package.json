@@ -10,7 +10,7 @@
     "*.scss"
   ],
   "scripts": {
-    "dev": "npm run typegen && vite dev",
+    "dev": "npm run typegen && tsc --noEmit --watch && vite dev",
     "build": "vite build",
     "typegen": "wrangler types --env-interface CloudflareBindings",
     "typecheck": "npm run typegen && tsc --noEmit",
