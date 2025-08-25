@@ -4,27 +4,30 @@
 import { BoundedPercentageSchema } from "@prelude";
 import * as fc from "fast-check";
 import { describe, expect, it } from "vitest";
+import { ZodFastCheck } from "zod-fast-check";
 import { calculateProgress } from "../../src/logic/userStoreLogic";
+import { ChapterAndLectureSchema } from "../../src/types/UserStore";
 
-const chapterAndLectureArbitrary = fc.record({
-  chapter: fc.record({
-    id: fc.nat(),
-  }),
-  lecture: fc.record({
-    id: fc.nat(),
-  }),
-  isComplete: fc.option(fc.boolean(), { nil: undefined }),
-});
-
-const chaptersAndLecturesArbitrary = fc.array(chapterAndLectureArbitrary);
+const ChapterAndLectureArbitrary = ZodFastCheck().inputOf(
+  ChapterAndLectureSchema,
+);
+const ChaptersAndLecturesArbitrary = fc.array(ChapterAndLectureArbitrary);
 
 describe("calculateProgress", () => {
-  it("Output is BoundedPercentage", () => {
+  it("ChapterAndLecture[] => BoundedPercentage", () => {
     fc.assert(
-      fc.property(chaptersAndLecturesArbitrary, (chaptersAndLectures) => {
+      fc.property(ChaptersAndLecturesArbitrary, (chaptersAndLectures) => {
         const result = calculateProgress(chaptersAndLectures);
-        const x = BoundedPercentageSchema.safeParse(result);
-        expect(x.success).toBe(true);
+        BoundedPercentageSchema.parse(result);
+      }),
+    );
+  });
+
+  it("returns proper percentage scale (0-100)", () => {
+    fc.assert(
+      fc.property(ChapterAndLectureArbitrary, (chapterAndLecture) => {
+        const result = calculateProgress([chapterAndLecture]);
+        expect(result).toBeOneOf([0, 100]);
       }),
     );
   });

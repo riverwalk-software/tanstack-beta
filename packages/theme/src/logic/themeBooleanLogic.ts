@@ -1,8 +1,8 @@
-import { type Bijection, conjugate } from "@prelude";
+import type { Bijection } from "@prelude";
 import { match } from "ts-pattern";
 import type { Theme } from "../types/Theme";
 
-const themeBooleanBijection: Bijection<Theme, boolean> = {
+export const themeBooleanBijection: Bijection<Theme, boolean> = {
   to: (theme) =>
     match(theme)
       .returnType<boolean>()
@@ -16,5 +16,3 @@ const themeBooleanBijection: Bijection<Theme, boolean> = {
       .with(true, () => "light")
       .exhaustive(),
 };
-
-export const conjugateThemeBoolean = conjugate(themeBooleanBijection);
