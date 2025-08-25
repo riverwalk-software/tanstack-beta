@@ -1,10 +1,5 @@
 {
-  "include": [
-    "*.ts",
-    "scripts",
-    "src",
-    "packages/**/src"
-  ],
+  "include": ["*.ts", "scripts", "src", "packages/**/src"],
   "compilerOptions": {
     // Paths
     "baseUrl": ".",
@@ -19,7 +14,7 @@
 
     // Types
     "types": [
-      "vite/client", // Vite: https://vite.dev/guide/features.html#client-types
+      "vite/client" // Vite: https://vite.dev/guide/features.html#client-types
     ],
 
     // Base
@@ -29,7 +24,7 @@
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true, // Vite: https://vite.dev/guide/features.html#typescript-compiler-options
-    
+
     // Strictness
     "strict": true,
     "noUncheckedIndexedAccess": true,
@@ -37,7 +32,7 @@
     "noImplicitReturns": true,
     "exactOptionalPropertyTypes": true,
     "noPropertyAccessFromIndexSignature": true,
-    
+
     // Turn Off Transpilation: https://vite.dev/guide/features#transpile-only
     "noEmit": true,
 
