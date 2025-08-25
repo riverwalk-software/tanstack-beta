@@ -11,8 +11,9 @@
   ],
   "scripts": {
     "dev": "npm run typegen && vite dev",
-    "build": "npm run typegen && tsc --noEmit && vite build",
+    "build": "vite build",
     "typegen": "wrangler types --env-interface CloudflareBindings",
+    "typecheck": "npm run typegen && tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
