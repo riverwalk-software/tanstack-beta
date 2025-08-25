@@ -11,6 +11,9 @@ concurrency:
 
 permissions:
   contents: read
+
+env:
+  NODE_ENV: development
   
 jobs:
   checks:
