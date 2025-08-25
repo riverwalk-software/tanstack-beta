@@ -3,7 +3,7 @@
     "*.ts",
     "scripts",
     "src",
-    "packages"
+    "packages/**/src"
   ],
   "compilerOptions": {
     // Paths
