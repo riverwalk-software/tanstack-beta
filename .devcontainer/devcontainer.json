@@ -34,10 +34,11 @@
       ]
     }
   },
-  "onCreateCommand": "git lfs install",
-  "postCreateCommand": "git lfs pull && bash ./scripts/setup-zsh.bash",
-  // "postAttachCommand": "pnpm install --prefer-offline --frozen-lockfile && pnpm dev",
-  "postAttachCommand": "npm run dev",
+  "onCreateCommand": "bash .devcontainer/scripts/onCreateCommand.bash",
+  "updateContentCommand": "bash .devcontainer/scripts/updateContentCommand.bash",
+  "postCreateCommand": "bash .devcontainer/scripts/postCreateCommand.bash",
+  "postStartCommand": "bash .devcontainer/scripts/postStartCommand.bash",
+  "postAttachCommand": "bash .devcontainer/scripts/postAttachCommand.bash",
   "forwardPorts": [3000],
   "portsAttributes": {
     "3000": {
