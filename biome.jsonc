@@ -11,8 +11,8 @@
   },
   "formatter": {
     "enabled": true,
-    "useEditorconfig": true,
-    "lineWidth": 80
+    "lineWidth": 80,
+    "useEditorconfig": true
   },
   "linter": {
     "enabled": true,
@@ -68,9 +68,7 @@
   "javascript": {
     "formatter": {
       "semicolons": "asNeeded",
-      "arrowParentheses": "asNeeded",
-      "attributePosition": "multiline",
-      "expand": "always"
+      "arrowParentheses": "asNeeded"
     }
   },
   "assist": {
