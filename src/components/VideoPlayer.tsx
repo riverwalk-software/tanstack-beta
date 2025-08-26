@@ -1,7 +1,7 @@
-import { useVideoToken } from "@/lib/video";
+import { useVideoToken } from "@/lib/video"
 
 export function VideoPlayer({ videoId }: { videoId: string }) {
-  const { token, expiresAt } = useVideoToken({ videoId });
+  const { token, expiresAt } = useVideoToken({ videoId })
   return (
     <iframe
       src={`https://iframe.mediadelivery.net/embed/478043/${videoId}?token=${token}&expires=${expiresAt}`}
@@ -11,5 +11,5 @@ export function VideoPlayer({ videoId }: { videoId: string }) {
       allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
       allowFullScreen={true}
     ></iframe>
-  );
+  )
 }

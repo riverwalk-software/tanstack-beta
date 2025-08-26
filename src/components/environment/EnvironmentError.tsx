@@ -1,5 +1,5 @@
-import { match, P } from "ts-pattern";
-import type { FailedEnvironmentValidation } from "@/lib/environment";
+import { match, P } from "ts-pattern"
+import type { FailedEnvironmentValidation } from "@/lib/environment"
 
 export function EnvironmentError({
   errors: { maybeVariables, maybeSecrets },
@@ -12,18 +12,16 @@ export function EnvironmentError({
         </h1>
         {match(maybeVariables)
           .with(P.nullish, () => null)
-          .otherwise((variables) =>
-            renderMissingSection("Variables", variables),
-          )}
+          .otherwise(variables => renderMissingSection("Variables", variables))}
         {match(maybeSecrets)
           .with(P.nullish, () => null)
-          .otherwise((secrets) => renderMissingSection("Secrets", secrets))}
+          .otherwise(secrets => renderMissingSection("Secrets", secrets))}
         <p className="text-gray-600 text-sm dark:text-gray-400">
           Please check your environment configuration.
         </p>
       </div>
     </div>
-  );
+  )
 }
 
 function renderMissingSection(title: string, items: string[]) {
@@ -33,7 +31,7 @@ function renderMissingSection(title: string, items: string[]) {
       <>
         <p className="mb-2 text-gray-700 dark:text-gray-300">{title}:</p>
         <ul className="mb-4 list-inside list-disc space-y-1">
-          {items.map((envVar) => (
+          {items.map(envVar => (
             <li
               key={envVar}
               className="font-mono text-red-600 dark:text-red-400"
@@ -43,5 +41,5 @@ function renderMissingSection(title: string, items: string[]) {
           ))}
         </ul>
       </>
-    ));
+    ))
 }

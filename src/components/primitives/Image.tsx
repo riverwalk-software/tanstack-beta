@@ -1,10 +1,10 @@
-import type React from "react";
-import { cn } from "@/lib/utils";
+import type React from "react"
+import { cn } from "@/lib/utils"
 
-type ImageProps = React.ComponentProps<"img"> & Image;
+type ImageProps = React.ComponentProps<"img"> & Image
 interface Image {
-  src: string;
-  alt: string;
+  src: string
+  alt: string
 }
 
 export function Image({
@@ -26,5 +26,5 @@ export function Image({
       decoding="async"
       {...props}
     />
-  );
+  )
 }

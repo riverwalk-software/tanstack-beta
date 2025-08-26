@@ -1,14 +1,14 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { createFileRoute } from "@tanstack/react-router"
+import { AppSidebar } from "@/components/app-sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 export const Route = createFileRoute(
   "/_authenticated/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug/",
 )({
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
-  const slugs = Route.useParams();
+  const slugs = Route.useParams()
   return (
     <SidebarProvider>
       <AppSidebar slugs={slugs} />
@@ -49,5 +49,5 @@ function RouteComponent() {
             </div> */}
       {/* </SidebarInset> */}
     </SidebarProvider>
-  );
+  )
 }

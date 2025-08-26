@@ -1,21 +1,21 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authClient } from "@/lib/auth-client";
-import { AUTH_CALLBACK_ROUTE } from "@/lib/constants";
-import { youtubeScopes } from "@/utils/oauth/google";
-import { youtubeAuthorizationDataQueryOptions } from "@/utils/oauth/youtube";
-import { Button } from "../ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { authClient } from "@/lib/auth-client"
+import { AUTH_CALLBACK_ROUTE } from "@/lib/constants"
+import { youtubeScopes } from "@/utils/oauth/google"
+import { youtubeAuthorizationDataQueryOptions } from "@/utils/oauth/youtube"
+import { Button } from "../ui/button"
 
 export function AuthorizeYoutubeButton() {
-  const { authorizeYoutube, isPending } = useAuthorizeYoutube();
+  const { authorizeYoutube, isPending } = useAuthorizeYoutube()
   return (
     <Button disabled={isPending} onClick={() => authorizeYoutube()}>
       Authorize YouTube
     </Button>
-  );
+  )
 }
 
 const useAuthorizeYoutube = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const { mutate: authorizeYoutube, isPending } = useMutation({
     mutationKey: ["authorizeYoutube"],
     mutationFn: () =>
@@ -27,8 +27,8 @@ const useAuthorizeYoutube = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: youtubeAuthorizationDataQueryOptions.queryKey,
-      });
+      })
     },
-  });
-  return { authorizeYoutube, isPending };
-};
+  })
+  return { authorizeYoutube, isPending }
+}

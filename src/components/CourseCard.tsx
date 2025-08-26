@@ -1,11 +1,11 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router"
 import {
   Card,
   CardAction,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 
 export function CourseCard({
   title,
@@ -36,14 +36,14 @@ export function CourseCard({
         <p>Card Footer</p>
       </CardFooter> */}
     </Card>
-  );
+  )
 }
 
 interface Props {
-  title: string;
-  description: string;
-  schoolSlug: string;
-  courseSlug: string;
-  chapterSlug: string;
-  lectureSlug: string;
+  title: string
+  description: string
+  schoolSlug: string
+  courseSlug: string
+  chapterSlug: string
+  lectureSlug: string
 }

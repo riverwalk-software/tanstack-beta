@@ -1,35 +1,35 @@
-import { useNavigate } from "@tanstack/react-router";
-import Confetti from "react-confetti";
-import { match, P } from "ts-pattern";
-import { TeamSwitcher } from "@/components/team-switcher";
+import { useNavigate } from "@tanstack/react-router"
+import Confetti from "react-confetti"
+import { match, P } from "ts-pattern"
+import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
-import { useChapterAndLectureCursor } from "@/hooks/useChapterAndLectureCursor";
-import { useNavigation } from "@/hooks/useNavigation";
-import { useUserStore } from "@/hooks/useUserStore";
-import type { UserStoreSlugs } from "@/lib/userStore";
-import { CourseSwitcher } from "./CourseSwitcher";
-import { NavMain } from "./nav-main";
-import { Button } from "./ui/button";
-import { Progress } from "./ui/progress";
-import { ResetProgressButton } from "./userStore/ResetProgressButton";
-import { VideoPlayer } from "./VideoPlayer";
+} from "@/components/ui/sidebar"
+import { useChapterAndLectureCursor } from "@/hooks/useChapterAndLectureCursor"
+import { useNavigation } from "@/hooks/useNavigation"
+import { useUserStore } from "@/hooks/useUserStore"
+import type { UserStoreSlugs } from "@/lib/userStore"
+import { CourseSwitcher } from "./CourseSwitcher"
+import { NavMain } from "./nav-main"
+import { Button } from "./ui/button"
+import { Progress } from "./ui/progress"
+import { ResetProgressButton } from "./userStore/ResetProgressButton"
+import { VideoPlayer } from "./VideoPlayer"
 
 export function AppSidebar({
   slugs,
   ...props
 }: React.ComponentProps<typeof Sidebar> & { slugs: UserStoreSlugs }) {
-  const { current } = useChapterAndLectureCursor({ slugs });
-  const { getProgress } = useUserStore();
+  const { current } = useChapterAndLectureCursor({ slugs })
+  const { getProgress } = useUserStore()
   const { progress: courseProgress, isComplete: isCourseComplete } =
     getProgress({
       ...current.slugs,
       _tag: "COURSE",
-    });
+    })
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
@@ -66,11 +66,11 @@ export function AppSidebar({
         <div className="relative aspect-video w-full">
           {match(current.lecture.video)
             .with(P.nullish, () => null)
-            .otherwise((video) => (
+            .otherwise(video => (
               <VideoPlayer videoId={video.storageId}></VideoPlayer>
             ))}
         </div>
-        {current.lecture.attachments.map((attachment) => (
+        {current.lecture.attachments.map(attachment => (
           <a
             key={attachment.id}
             href={`/api/attachments/${encodeURIComponent(attachment.storageId)}`}
@@ -85,7 +85,7 @@ export function AppSidebar({
         {/* <ExampleMdx /> */}
       </div>
     </>
-  );
+  )
 }
 
 function ResetButtons(slugs: UserStoreSlugs) {
@@ -93,7 +93,7 @@ function ResetButtons(slugs: UserStoreSlugs) {
     <div className="flex gap-4">
       <ResetProgressButton _tag="LECTURE" {...slugs} />
     </div>
-  );
+  )
 }
 
 function LectureNavigationButtons({ slugs }: { slugs: UserStoreSlugs }) {
@@ -102,38 +102,38 @@ function LectureNavigationButtons({ slugs }: { slugs: UserStoreSlugs }) {
       <PreviousLectureButton slugs={slugs} />
       <NextLectureButton slugs={slugs} />
     </div>
-  );
+  )
 }
 
 function PreviousLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
-  const { maybePrevious } = useChapterAndLectureCursor({ slugs });
-  const { isNavigating, navigate, setIsNavigating } = useNavigation();
+  const { maybePrevious } = useChapterAndLectureCursor({ slugs })
+  const { isNavigating, navigate, setIsNavigating } = useNavigation()
   return match(maybePrevious)
     .with(P.nullish, () => null)
-    .otherwise((previous) => (
+    .otherwise(previous => (
       <Button
         className="bg-gray-400"
         disabled={isNavigating}
         onClick={async () => {
-          setIsNavigating(true);
-          await new Promise((resolve) => setTimeout(resolve, 3000));
+          setIsNavigating(true)
+          await new Promise(resolve => setTimeout(resolve, 3000))
           await navigate({
             to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
             params: previous.slugs,
-          });
-          setIsNavigating(false);
+          })
+          setIsNavigating(false)
         }}
       >
         {isNavigating ? "Loading..." : "Previous Lecture"}
       </Button>
-    ));
+    ))
 }
 
 function NextLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
-  const { maybeNext } = useChapterAndLectureCursor({ slugs });
-  const { setProgressMt, getIsComplete } = useUserStore();
-  const navigate = useNavigate();
-  const isComplete = getIsComplete(slugs);
+  const { maybeNext } = useChapterAndLectureCursor({ slugs })
+  const { setProgressMt, getIsComplete } = useUserStore()
+  const navigate = useNavigate()
+  const isComplete = getIsComplete(slugs)
   return match([maybeNext, isComplete])
     .with([P.nullish, true], () => null)
     .otherwise(([next]) => (
@@ -149,11 +149,11 @@ function NextLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
             },
             {
               onSuccess: async () => {
-                if (next === undefined) return;
+                if (next === undefined) return
                 await navigate({
                   to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
                   params: next.slugs,
-                });
+                })
               },
             },
           )
@@ -165,5 +165,5 @@ function NextLectureButton({ slugs }: { slugs: UserStoreSlugs }) {
           .with([P._, P._, P.nullish], () => "Complete")
           .otherwise(() => "Complete And Continue")}
       </Button>
-    ));
+    ))
 }

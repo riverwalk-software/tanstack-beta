@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 export function CenteredContainer({
   className,
@@ -9,5 +9,5 @@ export function CenteredContainer({
     <div className={cn("grid place-content-center", className)} {...props}>
       {children}
     </div>
-  );
+  )
 }

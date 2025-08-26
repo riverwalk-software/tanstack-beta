@@ -1,9 +1,9 @@
-import type { QueryClient } from "@tanstack/query-core";
-import type { useRouter } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { deleteCookie } from "@tanstack/react-start/server";
-import { type BetterFetchError, createAuthClient } from "better-auth/react";
-import { AUTH_COOKIE_NAMES, AUTH_COOKIE_PREFIX } from "@/lib/constants";
+import type { QueryClient } from "@tanstack/query-core"
+import type { useRouter } from "@tanstack/react-router"
+import { createServerFn } from "@tanstack/react-start"
+import { deleteCookie } from "@tanstack/react-start/server"
+import { type BetterFetchError, createAuthClient } from "better-auth/react"
+import { AUTH_COOKIE_NAMES, AUTH_COOKIE_PREFIX } from "@/lib/constants"
 
 const {
   $ERROR_CODES,
@@ -17,20 +17,20 @@ const {
   fetchOptions: {
     retry: 0,
     throw: true,
-    onError: (errorContext) => {
-      throw errorContext;
+    onError: errorContext => {
+      throw errorContext
     },
   },
   // plugins: [polarClient()],
-});
+})
 
 const removeAuthCookiesFn = createServerFn({ method: "POST" }).handler(
   async () => {
-    AUTH_COOKIE_NAMES.forEach((cookieName) =>
+    AUTH_COOKIE_NAMES.forEach(cookieName =>
       deleteCookie(`${AUTH_COOKIE_PREFIX}.${cookieName}`),
-    );
+    )
   },
-);
+)
 
 export const authClient = {
   // checkout,
@@ -40,28 +40,28 @@ export const authClient = {
   signUp,
   signOut: async () => {
     try {
-      await _signOut();
+      await _signOut()
     } catch (error) {
-      console.error("Error during sign out:", error);
-      await removeAuthCookiesFn(); // Does not throw
+      console.error("Error during sign out:", error)
+      await removeAuthCookiesFn() // Does not throw
     }
   },
-};
+}
 
 export const afterSignOut = async (
   queryClient: QueryClient,
   router: ReturnType<typeof useRouter>,
 ): Promise<void> => {
-  queryClient.clear();
-  await router.invalidate({ sync: true });
-};
+  queryClient.clear()
+  await router.invalidate({ sync: true })
+}
 
-type BetterAuthErrorCode = keyof typeof $ERROR_CODES;
+type BetterAuthErrorCode = keyof typeof $ERROR_CODES
 interface BetterAuthErrorContext {
   error: (BetterFetchError & Record<string, any>) & {
-    code: BetterAuthErrorCode;
-  };
-  response: Response;
+    code: BetterAuthErrorCode
+  }
+  response: Response
 }
 export const isBetterAuthErrorContext = (
   errorContext: unknown,
@@ -75,5 +75,5 @@ export const isBetterAuthErrorContext = (
     "code" in errorContext.error &&
     "response" in errorContext &&
     errorContext.response instanceof Response
-  );
-};
+  )
+}

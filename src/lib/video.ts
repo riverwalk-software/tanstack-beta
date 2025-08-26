@@ -1,42 +1,42 @@
-import crypto from "node:crypto";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { createServerFn } from "@tanstack/react-start";
-import ms from "ms";
-import { s, ttlToExpiresAt } from "../utils/time";
-import { environment } from "./environment";
+import crypto from "node:crypto"
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
+import { createServerFn } from "@tanstack/react-start"
+import ms from "ms"
+import { s, ttlToExpiresAt } from "../utils/time"
+import { environment } from "./environment"
 
 // TODO: Should I add auth middleware???
 
 export const useVideoToken = (params: { videoId: string }): VideoTokenData => {
-  const { data } = useSuspenseQuery(getVideoTokenQueryOptions(params));
-  return data;
-};
+  const { data } = useSuspenseQuery(getVideoTokenQueryOptions(params))
+  return data
+}
 
 const getVideoTokenQueryOptions = ({ videoId }: { videoId: string }) =>
   queryOptions({
     queryKey: ["videoToken", videoId],
     queryFn: () => getVideoTokenFn({ data: { videoId, ttl: TTL } }),
     staleTime: ms(`${TTL}s`),
-  });
+  })
 
 const getVideoTokenFn = createServerFn()
   .validator((data: { videoId: string; ttl: number }) => data)
   .handler(async ({ data: { videoId, ttl } }): Promise<VideoTokenData> => {
-    const { BUNNY_TOKEN_API_KEY } = environment.secrets;
-    const expiresAt = ttlToExpiresAt(ttl);
-    const payload = BUNNY_TOKEN_API_KEY + videoId + expiresAt;
+    const { BUNNY_TOKEN_API_KEY } = environment.secrets
+    const expiresAt = ttlToExpiresAt(ttl)
+    const payload = BUNNY_TOKEN_API_KEY + videoId + expiresAt
     const token = crypto
       .createHash("sha256")
       .update(payload, "utf8")
-      .digest("hex");
-    return { token, expiresAt };
-  });
+      .digest("hex")
+    return { token, expiresAt }
+  })
 
-const TTL = s("15m");
+const TTL = s("15m")
 
 interface VideoTokenData {
-  token: string;
-  expiresAt: number;
+  token: string
+  expiresAt: number
 }
 
 // const getVideoFn = createServerFn()

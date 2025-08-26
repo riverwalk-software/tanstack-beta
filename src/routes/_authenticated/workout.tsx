@@ -1,12 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useExerciseList } from "@/hooks/useExerciseList";
+import { createFileRoute } from "@tanstack/react-router"
+import { useExerciseList } from "@/hooks/useExerciseList"
 
 export const Route = createFileRoute("/_authenticated/workout")({
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
-  const { addExercise, exerciseList, removeExercise } = useExerciseList();
+  const { addExercise, exerciseList, removeExercise } = useExerciseList()
   return (
     <>
       <ul>
@@ -35,5 +35,5 @@ function RouteComponent() {
         Add Exercise
       </button>
     </>
-  );
+  )
 }

@@ -1,14 +1,14 @@
-import { useCourses } from "@schools";
-import { createFileRoute } from "@tanstack/react-router";
-import { CourseCard } from "@/components/CourseCard";
+import { useCourses } from "@schools"
+import { createFileRoute } from "@tanstack/react-router"
+import { CourseCard } from "@/components/CourseCard"
 
 export const Route = createFileRoute("/_authenticated/schools/$schoolSlug/")({
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
-  const { schoolSlug } = Route.useParams();
-  const { courses } = useCourses({ schoolSlug });
+  const { schoolSlug } = Route.useParams()
+  const { courses } = useCourses({ schoolSlug })
   return (
     <div>
       <h1>Courses</h1>
@@ -25,9 +25,9 @@ function RouteComponent() {
                 lectureSlug={chapter.lecture.slug}
               />
             </li>
-          );
+          )
         })}
       </ul>
     </div>
-  );
+  )
 }

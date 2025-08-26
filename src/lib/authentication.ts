@@ -1,49 +1,49 @@
-import { queryOptions } from "@tanstack/react-query";
-import { createMiddleware, createServerFn } from "@tanstack/react-start";
-import { getWebRequest } from "@tanstack/react-start/server";
-import { Context } from "effect";
-import { match, P } from "ts-pattern";
-import { auth } from "@/lib/auth";
-import { UNAUTHENTICATED } from "./errors";
+import { queryOptions } from "@tanstack/react-query"
+import { createMiddleware, createServerFn } from "@tanstack/react-start"
+import { getWebRequest } from "@tanstack/react-start/server"
+import { Context } from "effect"
+import { match, P } from "ts-pattern"
+import { auth } from "@/lib/auth"
+import { UNAUTHENTICATED } from "./errors"
 
-export type SessionData = typeof auth.$Infer.Session;
+export type SessionData = typeof auth.$Infer.Session
 export type AuthenticationData =
   | {
-      isAuthenticated: false;
-      sessionData: null;
+      isAuthenticated: false
+      sessionData: null
     }
   | {
-      isAuthenticated: true;
-      sessionData: SessionData;
-    };
+      isAuthenticated: true
+      sessionData: SessionData
+    }
 
 const getAuthenticationDataMw = createMiddleware({
   type: "function",
 }).server(async ({ next }) => {
-  const { headers } = getWebRequest();
-  const maybeSessionData = await auth.api.getSession({ headers });
+  const { headers } = getWebRequest()
+  const maybeSessionData = await auth.api.getSession({ headers })
   const authenticationData = match(maybeSessionData)
     .with(
       P.nullish,
-      (sessionData) =>
+      sessionData =>
         ({
           isAuthenticated: false,
           sessionData,
         }) as const,
     )
     .otherwise(
-      (sessionData) =>
+      sessionData =>
         ({
           isAuthenticated: true,
           sessionData,
         }) as const,
-    );
+    )
   return next<{ authenticationData: AuthenticationData }>({
     context: {
       authenticationData,
     },
-  });
-});
+  })
+})
 
 export const getSessionDataMw = createMiddleware({ type: "function" })
   .middleware([getAuthenticationDataMw])
@@ -54,33 +54,33 @@ export const getSessionDataMw = createMiddleware({ type: "function" })
         authenticationData: { isAuthenticated, sessionData },
       },
     }) => {
-      if (!isAuthenticated) throw new UNAUTHENTICATED();
+      if (!isAuthenticated) throw new UNAUTHENTICATED()
       return next<{ sessionData: SessionData }>({
         context: {
           sessionData,
         },
-      });
+      })
     },
-  );
+  )
 
 export const getSessionDataServerMw = createMiddleware({
   type: "request",
 }).server(async ({ next, request: { headers } }) => {
-  const sessionData = await auth.api.getSession({ headers });
-  if (!sessionData) throw new UNAUTHENTICATED();
+  const sessionData = await auth.api.getSession({ headers })
+  if (!sessionData) throw new UNAUTHENTICATED()
   return next<{ sessionData: SessionData }>({
     context: {
       sessionData,
     },
-  });
-});
+  })
+})
 
 const getAuthenticationDataFn = createServerFn()
   .middleware([getAuthenticationDataMw])
   .handler(
     async ({ context: { authenticationData } }): Promise<AuthenticationData> =>
       authenticationData,
-  );
+  )
 
 export const authenticationDataQueryOptions = queryOptions({
   queryKey: ["authenticationData"],
@@ -88,7 +88,7 @@ export const authenticationDataQueryOptions = queryOptions({
   staleTime: Infinity,
   gcTime: Infinity,
   subscribed: false,
-});
+})
 
 export class SessionDataService extends Context.Tag("SessionDataService")<
   SessionDataService,
@@ -99,8 +99,8 @@ export class AccessTokenDataService extends Context.Tag(
   "AccessTokenDataService",
 )<AccessTokenDataService, AccessTokenData>() {}
 export interface AccessTokenData {
-  maybeAccessToken: string | undefined;
-  acceptedScopes: string[];
+  maybeAccessToken: string | undefined
+  acceptedScopes: string[]
 }
 
 export const getAccessTokenDataMw = createMiddleware({ type: "function" })
@@ -118,7 +118,7 @@ export const getAccessTokenDataMw = createMiddleware({ type: "function" })
             providerId: "google",
             userId: user.id,
           },
-        });
+        })
       return next<{ accessTokenData: AccessTokenData }>({
         context: {
           accessTokenData: {
@@ -126,6 +126,6 @@ export const getAccessTokenDataMw = createMiddleware({ type: "function" })
             acceptedScopes,
           },
         },
-      });
+      })
     },
-  );
+  )

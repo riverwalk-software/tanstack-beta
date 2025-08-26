@@ -1,12 +1,12 @@
 export const min =
   (a: number) =>
   (b: number): number =>
-    Math.min(a, b);
+    Math.min(a, b)
 
 export const max =
   (a: number) =>
   (b: number): number =>
-    Math.max(a, b);
+    Math.max(a, b)
 
 /**
  * Creates a function that clamps a number within the inclusive range specified by `minValue` and `maxValue`.
@@ -26,7 +26,7 @@ export const max =
 export const clamp =
   (minValue: number, maxValue: number) =>
   (value: number): number =>
-    min(maxValue)(max(minValue)(value));
+    min(maxValue)(max(minValue)(value))
 
 /**
  * Creates a validator function that checks if a given number is within a specified range.
@@ -64,15 +64,15 @@ export const clamp =
 export const validateRange =
   (minValue: number, maxValue: number, options: RangeOptions = {}) =>
   (value: number): boolean => {
-    const { minInclusive = true, maxInclusive = true } = options;
-    const minCheck = minInclusive ? value >= minValue : value > minValue;
-    const maxCheck = maxInclusive ? value <= maxValue : value < maxValue;
-    return minCheck && maxCheck;
-  };
+    const { minInclusive = true, maxInclusive = true } = options
+    const minCheck = minInclusive ? value >= minValue : value > minValue
+    const maxCheck = maxInclusive ? value <= maxValue : value < maxValue
+    return minCheck && maxCheck
+  }
 
 interface RangeOptions {
   /** Whether the minimum value is inclusive (default: true) */
-  minInclusive?: boolean;
+  minInclusive?: boolean
   /** Whether the maximum value is inclusive (default: true) */
-  maxInclusive?: boolean;
+  maxInclusive?: boolean
 }

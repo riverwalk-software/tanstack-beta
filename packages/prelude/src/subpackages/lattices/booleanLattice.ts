@@ -1,1 +1,1 @@
-export const not = (p: boolean): boolean => !p;
+export const not = (p: boolean): boolean => !p

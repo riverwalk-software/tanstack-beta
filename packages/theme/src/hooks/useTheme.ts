@@ -3,12 +3,12 @@ import {
   useMutation,
   useQueryClient,
   useSuspenseQuery,
-} from "@tanstack/react-query";
+} from "@tanstack/react-query"
 import {
   themeQueryOptions,
   toggleThemeMutationOptions,
-} from "../machines/themeMachine";
-import type { Theme } from "../types/Theme";
+} from "../machines/themeMachine"
+import type { Theme } from "../types/Theme"
 
 /**
  * Custom React hook to access and toggle the current theme.
@@ -22,11 +22,11 @@ import type { Theme } from "../types/Theme";
  * - `toggleThemeMt`: A function to toggle the theme.
  */
 export const useTheme = (): {
-  theme: Theme;
-  toggleThemeMt: UseMutationResult<Theme, Error, void, unknown>;
+  theme: Theme
+  toggleThemeMt: UseMutationResult<Theme, Error, void, unknown>
 } => {
-  const { data: theme } = useSuspenseQuery(themeQueryOptions);
-  const queryClient = useQueryClient();
-  const toggleThemeMt = useMutation(toggleThemeMutationOptions(queryClient));
-  return { theme, toggleThemeMt };
-};
+  const { data: theme } = useSuspenseQuery(themeQueryOptions)
+  const queryClient = useQueryClient()
+  const toggleThemeMt = useMutation(toggleThemeMutationOptions(queryClient))
+  return { theme, toggleThemeMt }
+}

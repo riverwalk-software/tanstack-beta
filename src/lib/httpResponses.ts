@@ -1,17 +1,17 @@
-import { Data, Duration, Effect, Schedule } from "effect";
-import { HTTPError } from "ky";
-import ms from "ms";
-import type { KyHeadersInit } from "node_modules/ky/distribution/types/options";
-import { match, P } from "ts-pattern";
-import { type ZodTypeAny, z } from "zod";
-import { httpClient } from "@/lib/httpClient";
-import { s } from "../utils/time";
+import { Data, Duration, Effect, Schedule } from "effect"
+import { HTTPError } from "ky"
+import ms from "ms"
+import type { KyHeadersInit } from "node_modules/ky/distribution/types/options"
+import { match, P } from "ts-pattern"
+import { type ZodTypeAny, z } from "zod"
+import { httpClient } from "@/lib/httpClient"
+import { s } from "../utils/time"
 
 export function strictParse<T extends ZodTypeAny>(
   schema: T,
   obj: z.input<T>,
 ): z.infer<T> {
-  return schema.parse(obj);
+  return schema.parse(obj)
 }
 
 const buildUrl = ({
@@ -20,17 +20,17 @@ const buildUrl = ({
   path,
   searchParams,
 }: {
-  domain: string;
-  protocol?: "http" | "https";
-  path: string;
-  searchParams?: Record<string, string | number | boolean>;
+  domain: string
+  protocol?: "http" | "https"
+  path: string
+  searchParams?: Record<string, string | number | boolean>
 }): URL => {
-  const base = `${protocol}://${domain}`;
+  const base = `${protocol}://${domain}`
   return new URL(
     match(searchParams)
       .with(P.nullish, () => path)
       .otherwise(
-        (searchParams) =>
+        searchParams =>
           `${path}?${new URLSearchParams(
             Object.fromEntries(
               Object.entries(searchParams).map(([k, v]) => [k, String(v)]),
@@ -38,8 +38,8 @@ const buildUrl = ({
           )}`,
       ),
     base,
-  );
-};
+  )
+}
 
 // export const effectToResponse = <A>({
 //   request,
@@ -160,27 +160,27 @@ export const OauthSearchParamsSchema = z
   .object({
     oauthSucceeded: z.enum(["true", "false"]),
   })
-  .transform((schema) => ({
+  .transform(schema => ({
     oauthSucceeded: schema.oauthSucceeded === "true",
-  }));
+  }))
 
-const MAXIMUM_RETRY_AFTER = s("15s");
+const MAXIMUM_RETRY_AFTER = s("15s")
 const RetryAfterSchema = z.coerce
   .number()
   .int()
   .positive()
   .max(MAXIMUM_RETRY_AFTER)
-  .default(MAXIMUM_RETRY_AFTER);
+  .default(MAXIMUM_RETRY_AFTER)
 const ContentTypeSchema = z.enum([
   "application/json",
   "application/x-www-form-urlencoded",
-]);
+])
 const BaseHeadersSchema = z
   .object({
     "content-type": ContentTypeSchema,
     "retry-after": RetryAfterSchema.transform(String),
   })
-  .partial();
+  .partial()
 export const RequestHeadersSchema = BaseHeadersSchema.extend({
   accept: ContentTypeSchema,
   authorization: z.object({
@@ -196,10 +196,10 @@ export const RequestHeadersSchema = BaseHeadersSchema.extend({
           authorization: `${authorization.scheme} ${authorization.credentials}`,
         }
       : {}),
-  }));
-export const ResponseHeadersSchema = BaseHeadersSchema.extend({}).partial();
+  }))
+export const ResponseHeadersSchema = BaseHeadersSchema.extend({}).partial()
 // export type RequestHeaders = z.infer<typeof RequestHeadersSchema>;
-export type ResponseHeaders = z.infer<typeof ResponseHeadersSchema>;
+export type ResponseHeaders = z.infer<typeof ResponseHeadersSchema>
 
 export const concurrent = <
   const Arg extends
@@ -207,7 +207,7 @@ export const concurrent = <
     | Record<string, Effect.Effect<any, any, any>>,
 >(
   arg: Arg,
-) => Effect.all(arg, { concurrency: "inherit" });
+) => Effect.all(arg, { concurrency: "inherit" })
 
 export const fetchApi = <T extends ZodTypeAny>({
   body: maybeBody,
@@ -216,49 +216,49 @@ export const fetchApi = <T extends ZodTypeAny>({
   schema,
   urlParts,
 }: {
-  body?: Record<string, unknown>;
-  headers?: KyHeadersInit;
-  method: "delete" | "get" | "head" | "patch" | "post" | "put";
-  schema: T;
-  urlParts: Parameters<typeof buildUrl>[0];
+  body?: Record<string, unknown>
+  headers?: KyHeadersInit
+  method: "delete" | "get" | "head" | "patch" | "post" | "put"
+  schema: T
+  urlParts: Parameters<typeof buildUrl>[0]
 }) => {
   const task = Effect.tryPromise({
     try: async () => {
-      const url = buildUrl(urlParts);
+      const url = buildUrl(urlParts)
       const response = httpClient(url, {
         method,
         headers,
         ...match(maybeBody)
           .with(P.nullish, () => ({}))
-          .otherwise((body) => ({ json: body })),
-      });
-      const data = await response.json();
-      return strictParse(schema, data);
+          .otherwise(body => ({ json: body })),
+      })
+      const data = await response.json()
+      return strictParse(schema, data)
     },
-    catch: (error) => {
-      console.error(error);
-      if (!(error instanceof HTTPError)) throw error;
+    catch: error => {
+      console.error(error)
+      if (!(error instanceof HTTPError)) throw error
       const {
         response: { headers, status },
-      } = error;
+      } = error
       if (status === 429 || status === 503) {
         const { data: retryAfter } = RetryAfterSchema.safeParse(
           headers.get("retry-after"),
-        );
+        )
         return new SERVICE_UNAVAILABLE({
           retryAfter,
-        });
+        })
       }
-      if (is4xx(status)) return new INTERNAL_SERVER_ERROR();
-      if (is5xx(status)) return new BAD_GATEWAY();
-      throw error;
+      if (is4xx(status)) return new INTERNAL_SERVER_ERROR()
+      if (is5xx(status)) return new BAD_GATEWAY()
+      throw error
     },
-  });
+  })
   return Effect.catchTags(task, {
     BAD_GATEWAY: () =>
       Effect.retry(task, {
-        while: (error) => error instanceof BAD_GATEWAY,
-        schedule: Schedule.addDelay(Schedule.recurs(2), (n) =>
+        while: error => error instanceof BAD_GATEWAY,
+        schedule: Schedule.addDelay(Schedule.recurs(2), n =>
           ms(`${100 * 2 ** n}ms`),
         ),
       }),
@@ -268,33 +268,33 @@ export const fetchApi = <T extends ZodTypeAny>({
           onTrue: () => Effect.succeed(0),
           onFalse: () =>
             Effect.gen(function* () {
-              yield* Effect.sleep(Duration.seconds(retryAfter!));
-              return yield* Effect.succeed(1);
+              yield* Effect.sleep(Duration.seconds(retryAfter!))
+              return yield* Effect.succeed(1)
             }),
-        });
+        })
         return yield* Effect.retry(task, {
           times,
-        });
+        })
       }),
-  });
-};
+  })
+}
 
-const is4xx = (code: number) => code >= 400 && code < 500;
-const is5xx = (code: number) => code >= 500 && code < 600;
+const is4xx = (code: number) => code >= 400 && code < 500
+const is5xx = (code: number) => code >= 500 && code < 600
 
 export interface SuccessResponse<T> {
-  code: number;
-  message: string;
-  data: T;
+  code: number
+  message: string
+  data: T
 }
 
 export interface ErrorResponse {
-  code: number;
-  message: string;
-  retryAfter?: number;
+  code: number
+  message: string
+  retryAfter?: number
 }
 
-export type HttpResponse<T> = SuccessResponse<T> | ErrorResponse;
+export type HttpResponse<T> = SuccessResponse<T> | ErrorResponse
 
 export class OK<T = unknown> extends Data.TaggedError("OK")<
   SuccessResponse<T>
@@ -304,7 +304,7 @@ export class OK<T = unknown> extends Data.TaggedError("OK")<
       code: 200,
       message: args?.message ?? "The request has succeeded.",
       data: args.data,
-    });
+    })
   }
 }
 
@@ -318,7 +318,7 @@ export class CREATED extends Data.TaggedError("CREATED")<
         args?.message ??
         "The request has succeeded and a new resource has been created.",
       data: null,
-    });
+    })
   }
 }
 
@@ -332,7 +332,7 @@ export class ACCEPTED extends Data.TaggedError("ACCEPTED")<
         args?.message ??
         "The request has been accepted for processing, but the processing has not been completed.",
       data: null,
-    });
+    })
   }
 }
 
@@ -346,7 +346,7 @@ export class NO_CONTENT extends Data.TaggedError("NO_CONTENT")<
         args?.message ??
         "The server successfully processed the request and is not returning any content.",
       data: null,
-    });
+    })
   }
 }
 
@@ -357,7 +357,7 @@ export class BAD_REQUEST extends Data.TaggedError(
     super({
       code: 400,
       message: args?.message ?? "The client sent invalid input.",
-    });
+    })
   }
 }
 
@@ -380,7 +380,7 @@ export class UNAUTHENTICATED extends Data.TaggedError(
       code: 401,
       message:
         args?.message ?? "The client lacks valid authentication credentials.",
-    });
+    })
   }
 }
 
@@ -392,7 +392,7 @@ export class UNAUTHORIZED extends Data.TaggedError(
       code: 403,
       message:
         args?.message ?? "The client is not authorized to access a resource.",
-    });
+    })
   }
 }
 
@@ -402,7 +402,7 @@ export class NOT_FOUND extends Data.TaggedError("NOT_FOUND")<ErrorResponse> {
       code: 404,
       message:
         args?.message ?? "The server cannot find the requested resource.",
-    });
+    })
   }
 }
 
@@ -414,7 +414,7 @@ export class METHOD_NOT_SUPPORTED extends Data.TaggedError(
       code: 405,
       message:
         args?.message ?? "The server does not support the requested method.",
-    });
+    })
   }
 }
 
@@ -427,7 +427,7 @@ export class NOT_ACCEPTABLE extends Data.TaggedError(
       message:
         args?.message ??
         "The server cannot produce a response matching the list of acceptable values.",
-    });
+    })
   }
 }
 
@@ -437,7 +437,7 @@ export class TIMEOUT extends Data.TaggedError("TIMEOUT")<ErrorResponse> {
       code: 408,
       message:
         args?.message ?? "The server timed out while processing the request.",
-    });
+    })
   }
 }
 
@@ -448,7 +448,7 @@ export class CONFLICT extends Data.TaggedError("CONFLICT")<ErrorResponse> {
       message:
         args?.message ??
         "The server cannot update a resource due to a conflict.",
-    });
+    })
   }
 }
 
@@ -461,7 +461,7 @@ export class PRECONDITION_FAILED extends Data.TaggedError(
       message:
         args?.message ??
         "The server does not meet a precondition of the request.",
-    });
+    })
   }
 }
 
@@ -474,7 +474,7 @@ export class PAYLOAD_TOO_LARGE extends Data.TaggedError(
       message:
         args?.message ??
         "The server cannot process the request because the payload is too large.",
-    });
+    })
   }
 }
 
@@ -487,7 +487,7 @@ export class UNSUPPORTED_MEDIA_TYPE extends Data.TaggedError(
       message:
         args?.message ??
         "The server does not support the request's media type.",
-    });
+    })
   }
 }
 
@@ -500,7 +500,7 @@ export class UNPROCESSABLE_CONTENT extends Data.TaggedError(
       message:
         args?.message ??
         "The server cannot process the request due to semantic errors.",
-    });
+    })
   }
 }
 
@@ -513,7 +513,7 @@ export class TOO_MANY_REQUESTS extends Data.TaggedError(
       message:
         args?.message ?? "The server has exceeded a specified rate limit.",
       retryAfter: args?.retryAfter,
-    });
+    })
   }
 }
 
@@ -526,7 +526,7 @@ export class CLIENT_CLOSED_REQUEST extends Data.TaggedError(
       message:
         args?.message ??
         "The client closed the request before the server could respond.",
-    });
+    })
   }
 }
 
@@ -537,7 +537,7 @@ export class INTERNAL_SERVER_ERROR extends Data.TaggedError(
     super({
       code: 500,
       message: args?.message ?? "The server failed unexpectedly.",
-    });
+    })
   }
 }
 
@@ -549,7 +549,7 @@ export class NOT_IMPLEMENTED extends Data.TaggedError(
       code: 501,
       message:
         args?.message ?? "The server does not support the requested feature.",
-    });
+    })
   }
 }
 
@@ -562,7 +562,7 @@ export class BAD_GATEWAY extends Data.TaggedError(
       message:
         args?.message ??
         "The server received an invalid response from an upstream server.",
-    });
+    })
   }
 }
 
@@ -574,7 +574,7 @@ export class SERVICE_UNAVAILABLE extends Data.TaggedError(
       code: 503,
       message: args?.message ?? "The server is temporarily unavailable.",
       retryAfter: args?.retryAfter,
-    });
+    })
   }
 }
 
@@ -587,6 +587,6 @@ export class GATEWAY_TIMEOUT extends Data.TaggedError(
       message:
         args?.message ??
         "The server received a timeout from an upstream server.",
-    });
+    })
   }
 }

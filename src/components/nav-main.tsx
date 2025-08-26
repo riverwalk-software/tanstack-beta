@@ -1,10 +1,10 @@
-import { Link } from "@tanstack/react-router";
-import { ChevronRight, SquareTerminal } from "lucide-react";
+import { Link } from "@tanstack/react-router"
+import { ChevronRight, SquareTerminal } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@/components/ui/collapsible"
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -14,26 +14,26 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar";
-import { useChapterAndLectureCursor } from "@/hooks/useChapterAndLectureCursor";
-import { useOpenChapters } from "@/hooks/useOpenChapters";
-import { useUserStore } from "@/hooks/useUserStore";
-import type { UserStoreSlugs } from "../lib/userStore";
+} from "@/components/ui/sidebar"
+import { useChapterAndLectureCursor } from "@/hooks/useChapterAndLectureCursor"
+import { useOpenChapters } from "@/hooks/useOpenChapters"
+import { useUserStore } from "@/hooks/useUserStore"
+import type { UserStoreSlugs } from "../lib/userStore"
 
 export function NavMain({ slugs }: { slugs: UserStoreSlugs }) {
-  const { current, chapters } = useChapterAndLectureCursor({ slugs });
-  const openChapters = useOpenChapters({ slugs: current.slugs });
-  const { getIsComplete } = useUserStore();
+  const { current, chapters } = useChapterAndLectureCursor({ slugs })
+  const openChapters = useOpenChapters({ slugs: current.slugs })
+  const { getIsComplete } = useUserStore()
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Chapters</SidebarGroupLabel>
       <SidebarMenu>
-        {chapters.map((chapter) => (
+        {chapters.map(chapter => (
           <Collapsible
             key={chapter.id}
             asChild
             open={openChapters.contains(chapter.slug)}
-            onOpenChange={(isOpen) =>
+            onOpenChange={isOpen =>
               isOpen
                 ? openChapters.open(chapter.slug)
                 : openChapters.close(chapter.slug)
@@ -50,12 +50,12 @@ export function NavMain({ slugs }: { slugs: UserStoreSlugs }) {
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {chapter.lectures.map((lecture) => {
+                  {chapter.lectures.map(lecture => {
                     const isComplete = getIsComplete({
                       ...slugs,
                       chapterSlug: chapter.slug,
                       lectureSlug: lecture.slug,
-                    });
+                    })
                     return (
                       <SidebarMenuSubItem key={lecture.id}>
                         <SidebarMenuSubButton
@@ -87,7 +87,7 @@ export function NavMain({ slugs }: { slugs: UserStoreSlugs }) {
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
-                    );
+                    )
                   })}
                 </SidebarMenuSub>
               </CollapsibleContent>
@@ -96,5 +96,5 @@ export function NavMain({ slugs }: { slugs: UserStoreSlugs }) {
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  );
+  )
 }

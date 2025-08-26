@@ -1,10 +1,10 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useRouter } from "@tanstack/react-router";
-import { GalleryVerticalEnd } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Link, useRouter } from "@tanstack/react-router"
+import { GalleryVerticalEnd } from "lucide-react"
 
-import { type UseFormReturn, useForm } from "react-hook-form";
-import z from "zod";
+import { type UseFormReturn, useForm } from "react-hook-form"
+import z from "zod"
 import {
   Form,
   FormControl,
@@ -13,13 +13,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { authClient } from "@/lib/auth-client";
-import { authenticationDataQueryOptions } from "@/lib/authentication";
-import { PASSWORD_LENGTH, SITE_NAME, TEST_USER } from "@/lib/constants";
-import { FormButton } from "../primitives/FormButton";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
+import { authClient } from "@/lib/auth-client"
+import { authenticationDataQueryOptions } from "@/lib/authentication"
+import { PASSWORD_LENGTH, SITE_NAME, TEST_USER } from "@/lib/constants"
+import { FormButton } from "../primitives/FormButton"
 
 export function SignInWithEmailForm() {
   const form = useForm<SignInForm>({
@@ -29,12 +29,12 @@ export function SignInWithEmailForm() {
       password: TEST_USER.password,
       rememberMe: false,
     },
-  });
-  const { signInWithEmail, isPending } = useSignInWithEmail();
+  })
+  const { signInWithEmail, isPending } = useSignInWithEmail()
   const onSubmit = (values: SignInForm) => {
-    const formData = SignInFormTransformedSchema.parse(values);
-    signInWithEmail(formData);
-  };
+    const formData = SignInFormTransformedSchema.parse(values)
+    signInWithEmail(formData)
+  }
   return (
     <Form {...form}>
       <form
@@ -48,12 +48,12 @@ export function SignInWithEmailForm() {
         <FormSubmitButton isPending={isPending} />
       </form>
     </Form>
-  );
+  )
 }
 
 const useSignInWithEmail = () => {
-  const queryClient = useQueryClient();
-  const router = useRouter();
+  const queryClient = useQueryClient()
+  const router = useRouter()
   const { mutate: signInWithEmail, isPending } = useMutation({
     mutationKey: ["signInWithEmail"],
     mutationFn: (formData: SignInFormTransformed) =>
@@ -61,12 +61,12 @@ const useSignInWithEmail = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: authenticationDataQueryOptions.queryKey,
-      });
-      await router.invalidate({ sync: true });
+      })
+      await router.invalidate({ sync: true })
     },
-  });
-  return { signInWithEmail, isPending };
-};
+  })
+  return { signInWithEmail, isPending }
+}
 
 function FormHeader() {
   return (
@@ -80,7 +80,7 @@ function FormHeader() {
         </Link>
       </FormDescription>
     </div>
-  );
+  )
 }
 
 function FormEmail({ form }: { form: UseFormReturn<SignInForm> }) {
@@ -98,7 +98,7 @@ function FormEmail({ form }: { form: UseFormReturn<SignInForm> }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function FormPassword({ form }: { form: UseFormReturn<SignInForm> }) {
@@ -124,7 +124,7 @@ function FormPassword({ form }: { form: UseFormReturn<SignInForm> }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function FormRememberMe({ form }: { form: UseFormReturn<SignInForm> }) {
@@ -141,7 +141,7 @@ function FormRememberMe({ form }: { form: UseFormReturn<SignInForm> }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function FormSubmitButton({ isPending }: { isPending: boolean }) {
@@ -149,7 +149,7 @@ function FormSubmitButton({ isPending }: { isPending: boolean }) {
     <FormButton disabled={isPending} className="w-full">
       {isPending ? "Signing in..." : "Sign In"}
     </FormButton>
-  );
+  )
 }
 
 const SignInFormSchema = z.object({
@@ -159,11 +159,11 @@ const SignInFormSchema = z.object({
     .min(PASSWORD_LENGTH.MINIMUM)
     .max(PASSWORD_LENGTH.MAXIMUM),
   rememberMe: z.boolean(),
-});
+})
 
 const SignInFormTransformedSchema = SignInFormSchema.transform(
-  (schema) => schema satisfies Parameters<typeof authClient.signIn.email>[0],
-);
+  schema => schema satisfies Parameters<typeof authClient.signIn.email>[0],
+)
 
-type SignInForm = z.infer<typeof SignInFormSchema>;
-type SignInFormTransformed = z.infer<typeof SignInFormTransformedSchema>;
+type SignInForm = z.infer<typeof SignInFormSchema>
+type SignInFormTransformed = z.infer<typeof SignInFormTransformedSchema>

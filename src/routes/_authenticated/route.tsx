@@ -1,6 +1,6 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import type { SessionData } from "@/lib/authentication";
-import { AUTH_CALLBACK_ROUTE } from "@/lib/constants";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
+import type { SessionData } from "@/lib/authentication"
+import { AUTH_CALLBACK_ROUTE } from "@/lib/constants"
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({
@@ -15,13 +15,13 @@ export const Route = createFileRoute("/_authenticated")({
         search: {
           redirect: location.href,
         },
-      });
+      })
 
-    return { sessionData };
+    return { sessionData }
   },
   component: AuthenticatedPathlessLayout,
-});
+})
 
 function AuthenticatedPathlessLayout() {
-  return <Outlet />;
+  return <Outlet />
 }

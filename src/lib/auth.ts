@@ -1,32 +1,32 @@
-import { checkout, polar, portal } from "@polar-sh/better-auth";
-import { Polar } from "@polar-sh/sdk";
-import { betterAuth } from "better-auth";
-import { reactStartCookies } from "better-auth/react-start";
-import { Kysely } from "kysely";
-import { D1Dialect } from "kysely-d1";
-import { Resend } from "resend";
-import { ResetPasswordEmail } from "@/components/emails/ResetPasswordEmail";
-import { VerifyEmailEmail } from "@/components/emails/VerifyEmailEmail";
+import { checkout, polar, portal } from "@polar-sh/better-auth"
+import { Polar } from "@polar-sh/sdk"
+import { betterAuth } from "better-auth"
+import { reactStartCookies } from "better-auth/react-start"
+import { Kysely } from "kysely"
+import { D1Dialect } from "kysely-d1"
+import { Resend } from "resend"
+import { ResetPasswordEmail } from "@/components/emails/ResetPasswordEmail"
+import { VerifyEmailEmail } from "@/components/emails/VerifyEmailEmail"
 import {
   AUTH_COOKIE_PREFIX,
   EVENTUAL_CONSISTENCY_DELAY_S,
   PASSWORD_LENGTH,
   PRODUCT_SLUG,
-} from "@/lib/constants";
-import { environment } from "@/lib/environment";
-import { getCloudflareBindings } from "@/utils/getCloudflareBindings";
+} from "@/lib/constants"
+import { environment } from "@/lib/environment"
+import { getCloudflareBindings } from "@/utils/getCloudflareBindings"
 
 const polarClient = new Polar({
   accessToken: process.env.POLAR_ACCESS_TOKEN,
   server: "sandbox",
-});
+})
 
 // https://www.better-auth.com/docs/guides/optimizing-for-performance
 // https://www.better-auth.com/docs/guides/browser-extension-guide
-const { AUTH_DB, SESSION_STORE } = getCloudflareBindings();
-const { RESEND_API_KEY } = environment.secrets;
-const resend = new Resend(RESEND_API_KEY);
-const emailSender = "info@riverwalk.dev";
+const { AUTH_DB, SESSION_STORE } = getCloudflareBindings()
+const { RESEND_API_KEY } = environment.secrets
+const resend = new Resend(RESEND_API_KEY)
+const emailSender = "info@riverwalk.dev"
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
@@ -41,7 +41,7 @@ export const auth = betterAuth({
         to: user.email,
         subject: "Reset your password",
         react: ResetPasswordEmail({ url }),
-      });
+      })
     },
   },
   emailVerification: {
@@ -54,7 +54,7 @@ export const auth = betterAuth({
         to: user.email,
         subject: "Verify your email address",
         react: VerifyEmailEmail({ url }),
-      });
+      })
     },
   },
   // socialProviders: {
@@ -78,10 +78,10 @@ export const auth = betterAuth({
     },
   },
   secondaryStorage: {
-    get: (key) => SESSION_STORE.get(key),
+    get: key => SESSION_STORE.get(key),
     set: (key, value, ttl) =>
       SESSION_STORE.put(key, value, { expirationTtl: ttl }),
-    delete: (key) => SESSION_STORE.delete(key),
+    delete: key => SESSION_STORE.delete(key),
   },
   // rateLimit: { // https://www.better-auth.com/docs/concepts/rate-limit
   //   enabled: true,
@@ -137,4 +137,4 @@ export const auth = betterAuth({
     }),
     reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
   ],
-});
+})

@@ -1,27 +1,27 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { toast } from "sonner";
-import { match, P } from "ts-pattern";
-import { z } from "zod";
-import { SignInWithEmailForm } from "@/components/auth/SignInWithEmailForm";
-import { CenteredContainer } from "@/components/containers/CenteredContainer";
-import { Button } from "@/components/ui/button";
-import { PRIVACY_POLICY_LINK, TERMS_OF_USE_LINK } from "@/lib/constants";
-import { resendVerificationEmailDurationMs } from "./signup/success";
+import { createFileRoute } from "@tanstack/react-router"
+import { useEffect } from "react"
+import { toast } from "sonner"
+import { match, P } from "ts-pattern"
+import { z } from "zod"
+import { SignInWithEmailForm } from "@/components/auth/SignInWithEmailForm"
+import { CenteredContainer } from "@/components/containers/CenteredContainer"
+import { Button } from "@/components/ui/button"
+import { PRIVACY_POLICY_LINK, TERMS_OF_USE_LINK } from "@/lib/constants"
+import { resendVerificationEmailDurationMs } from "./signup/success"
 
 const SearchParamsSchema = z
   .object({
     error: z.string(),
   })
-  .partial();
+  .partial()
 
 export const Route = createFileRoute("/_unauthenticated/signin")({
   validateSearch: SearchParamsSchema,
   component: SignIn,
-});
+})
 
 function SignIn() {
-  useFailedSignIn();
+  useFailedSignIn()
   return (
     <CenteredContainer>
       <div className="flex flex-col items-center gap-8">
@@ -30,11 +30,11 @@ function SignIn() {
         <LegalFooter />
       </div>
     </CenteredContainer>
-  );
+  )
 }
 
 const useFailedSignIn = () => {
-  const { error } = Route.useSearch();
+  const { error } = Route.useSearch()
   useEffect(() => {
     match(error)
       .with(P.nullish, () => {})
@@ -48,9 +48,9 @@ const useFailedSignIn = () => {
         toast.error("Sign in failed", {
           description: "Please try again.",
         }),
-      );
-  }, [error]);
-};
+      )
+  }, [error])
+}
 
 function AlternativeSignInButtons() {
   return (
@@ -95,7 +95,7 @@ function AlternativeSignInButtons() {
         </Button>
       </div>
     </>
-  );
+  )
 }
 
 function LegalFooter() {
@@ -107,5 +107,5 @@ function LegalFooter() {
         <a href={PRIVACY_POLICY_LINK}>Privacy Policy</a>.
       </div>
     </>
-  );
+  )
 }

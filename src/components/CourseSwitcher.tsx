@@ -1,4 +1,4 @@
-import { ChevronsUpDown, GalleryVerticalEnd, Square } from "lucide-react";
+import { ChevronsUpDown, GalleryVerticalEnd, Square } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,21 +6,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { useCourseCursor } from "@/hooks/useCourseCursor";
-import { useNavigation } from "@/hooks/useNavigation";
-import type { UserStoreSlugs } from "../lib/userStore";
+} from "@/components/ui/sidebar"
+import { useCourseCursor } from "@/hooks/useCourseCursor"
+import { useNavigation } from "@/hooks/useNavigation"
+import type { UserStoreSlugs } from "../lib/userStore"
 
 export function CourseSwitcher({ slugs }: { slugs: UserStoreSlugs }) {
-  const { isMobile } = useSidebar();
-  const { current, courses } = useCourseCursor({ slugs });
-  const { isNavigating, navigate, toggleIsNavigating } = useNavigation();
+  const { isMobile } = useSidebar()
+  const { current, courses } = useCourseCursor({ slugs })
+  const { isNavigating, navigate, toggleIsNavigating } = useNavigation()
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -52,14 +52,14 @@ export function CourseSwitcher({ slugs }: { slugs: UserStoreSlugs }) {
               Courses
             </DropdownMenuLabel>
             {courses.map((course, index) => {
-              const firstChapter = course.chapters[0];
-              const firstLecture = firstChapter.lectures[0];
+              const firstChapter = course.chapters[0]
+              const firstLecture = firstChapter.lectures[0]
               return (
                 <DropdownMenuItem
                   key={course.title}
                   disabled={isNavigating}
                   onClick={async () => {
-                    toggleIsNavigating();
+                    toggleIsNavigating()
                     try {
                       await navigate({
                         to: "/schools/$schoolSlug/$courseSlug/$chapterSlug/$lectureSlug",
@@ -69,9 +69,9 @@ export function CourseSwitcher({ slugs }: { slugs: UserStoreSlugs }) {
                           chapterSlug: firstChapter.slug,
                           lectureSlug: firstLecture.slug,
                         },
-                      });
+                      })
                     } finally {
-                      toggleIsNavigating();
+                      toggleIsNavigating()
                     }
                   }}
                   className="gap-2 p-2"
@@ -82,7 +82,7 @@ export function CourseSwitcher({ slugs }: { slugs: UserStoreSlugs }) {
                   {course.title}
                   <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                 </DropdownMenuItem>
-              );
+              )
             })}
             {/* <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
@@ -97,5 +97,5 @@ export function CourseSwitcher({ slugs }: { slugs: UserStoreSlugs }) {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  );
+  )
 }

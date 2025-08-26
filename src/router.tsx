@@ -1,18 +1,18 @@
-import { QueryClient } from "@tanstack/react-query";
-import { createRouter as createTanStackRouter } from "@tanstack/react-router";
-import { routerWithQueryClient } from "@tanstack/react-router-with-query";
-import { toast } from "sonner";
-import { match } from "ts-pattern";
-import { DefaultCatchBoundary } from "./components/boundaries/DefaultCatchBoundary";
-import { NotFound } from "./components/fallbacks/NotFound";
+import { QueryClient } from "@tanstack/react-query"
+import { createRouter as createTanStackRouter } from "@tanstack/react-router"
+import { routerWithQueryClient } from "@tanstack/react-router-with-query"
+import { toast } from "sonner"
+import { match } from "ts-pattern"
+import { DefaultCatchBoundary } from "./components/boundaries/DefaultCatchBoundary"
+import { NotFound } from "./components/fallbacks/NotFound"
 import {
   afterSignOut,
   authClient,
   isBetterAuthErrorContext,
-} from "./lib/auth-client";
-import { isClientError, redirectDescription } from "./lib/errors";
-import { routeTree } from "./routeTree.gen";
-import { youtubeAuthorizationDataQueryOptions } from "./utils/oauth/youtube";
+} from "./lib/auth-client"
+import { isClientError, redirectDescription } from "./lib/errors"
+import { routeTree } from "./routeTree.gen"
+import { youtubeAuthorizationDataQueryOptions } from "./utils/oauth/youtube"
 
 export function createRouter() {
   const queryClient = new QueryClient({
@@ -24,21 +24,21 @@ export function createRouter() {
         retry: false,
       },
     },
-  });
+  })
 
   const onError = async (unknownError: unknown) =>
     match(unknownError)
       .when(
-        (unknownError) => isBetterAuthErrorContext(unknownError),
+        unknownError => isBetterAuthErrorContext(unknownError),
         ({ error, response }) => {
           match(response.status)
             .when(
-              (status) => status === 429,
+              status => status === 429,
               () => {
-                const retryAfter = response.headers.get("X-Retry-After");
+                const retryAfter = response.headers.get("X-Retry-After")
                 toast.error("Rate limit exceeded", {
                   description: `Retry after ${retryAfter} seconds`,
-                });
+                })
               },
             )
             .otherwise(() => {
@@ -46,8 +46,8 @@ export function createRouter() {
                 .with("SESSION_EXPIRED", async () => {
                   toast.error(error.message, {
                     description: redirectDescription,
-                  });
-                  await redirectFlow();
+                  })
+                  await redirectFlow()
                 })
                 .with("EMAIL_NOT_VERIFIED", () =>
                   alert(
@@ -59,30 +59,30 @@ export function createRouter() {
   If you don't see the email, check your spam folder and whitelist our email address.`,
                   ),
                 )
-                .otherwise(() => toast.error(error.message));
-            });
+                .otherwise(() => toast.error(error.message))
+            })
         },
       )
       .when(
-        (unknownError) => isClientError(unknownError),
+        unknownError => isClientError(unknownError),
         ({ _tag, message, description }) => {
-          toast.error(message, { description });
+          toast.error(message, { description })
           match(_tag)
             .with("UNAUTHENTICATED", async () => {
-              await redirectFlow();
+              await redirectFlow()
             })
             .with("YOUTUBE_UNAUTHORIZED", () => {
               queryClient.invalidateQueries({
                 queryKey: youtubeAuthorizationDataQueryOptions.queryKey,
-              });
+              })
             })
             .with("SERVICE_UNAVAILABLE", () => {})
             .with("UNAUTHORIZED", () => {})
-            .exhaustive();
+            .exhaustive()
         },
       )
       .otherwise(() => {
-        console.error("Unexpected error", unknownError);
+        console.error("Unexpected error", unknownError)
         toast.error(
           <div>
             Something went wrong.{" "}
@@ -98,16 +98,16 @@ export function createRouter() {
           {
             description: "Please try again later.",
           },
-        );
-      });
+        )
+      })
 
   const redirectFlow = async () => {
-    await authClient.signOut(); // Does not throw
-    await afterSignOut(queryClient, router);
-  };
+    await authClient.signOut() // Does not throw
+    await afterSignOut(queryClient, router)
+  }
 
-  queryClient.getQueryCache().config.onError = onError;
-  queryClient.getMutationCache().config.onError = onError;
+  queryClient.getQueryCache().config.onError = onError
+  queryClient.getMutationCache().config.onError = onError
 
   const router = createTanStackRouter({
     routeTree,
@@ -116,13 +116,13 @@ export function createRouter() {
     defaultPreload: "intent",
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
-  });
+  })
 
-  return routerWithQueryClient(router, queryClient);
+  return routerWithQueryClient(router, queryClient)
 }
 
 declare module "@tanstack/react-router" {
   interface Register {
-    router: ReturnType<typeof createRouter>;
+    router: ReturnType<typeof createRouter>
   }
 }

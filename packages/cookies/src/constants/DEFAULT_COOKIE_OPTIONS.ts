@@ -3,4 +3,4 @@ export const DEFAULT_COOKIE_OPTIONS = {
   path: "/",
   sameSite: "lax",
   secure: !import.meta.env.DEV,
-} as const;
+} as const

@@ -1,15 +1,15 @@
-import { Context } from "effect";
+import { Context } from "effect"
 
-let cachedEnv: CloudflareBindings | null = null;
+let cachedEnv: CloudflareBindings | null = null
 
 const initDevEnv = async () => {
-  const { getPlatformProxy } = await import("wrangler");
-  const proxy = await getPlatformProxy();
-  cachedEnv = proxy.env as unknown as CloudflareBindings;
-};
+  const { getPlatformProxy } = await import("wrangler")
+  const proxy = await getPlatformProxy()
+  cachedEnv = proxy.env as unknown as CloudflareBindings
+}
 
 if (import.meta.env.DEV) {
-  await initDevEnv();
+  await initDevEnv()
 }
 
 export function getCloudflareBindings(): CloudflareBindings {
@@ -17,12 +17,12 @@ export function getCloudflareBindings(): CloudflareBindings {
     if (!cachedEnv) {
       throw new Error(
         "Dev bindings not initialized yet. Call initDevEnv() first.",
-      );
+      )
     }
-    return cachedEnv;
+    return cachedEnv
   }
 
-  return process.env as unknown as CloudflareBindings;
+  return process.env as unknown as CloudflareBindings
 }
 
 export class CloudflareBindingsService extends Context.Tag(

@@ -1,9 +1,5 @@
-import {
-  AudioWaveform,
-  ChevronsUpDown,
-  GalleryVerticalEnd,
-} from "lucide-react";
-import * as React from "react";
+import { AudioWaveform, ChevronsUpDown, GalleryVerticalEnd } from "lucide-react"
+import * as React from "react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,24 +7,24 @@ import {
   DropdownMenuLabel,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { useUserStore } from "@/hooks/useUserStore";
-import { useSchools } from "@/lib/schools";
+} from "@/components/ui/sidebar"
+import { useUserStore } from "@/hooks/useUserStore"
+import { useSchools } from "@/lib/schools"
 
 export function TeamSwitcher() {
-  const { isMobile } = useSidebar();
-  const { schoolSlugs } = useUserStore();
-  const { schools } = useSchools(schoolSlugs);
-  const [activeSchool, setActiveSchool] = React.useState(schools[0]);
+  const { isMobile } = useSidebar()
+  const { schoolSlugs } = useUserStore()
+  const { schools } = useSchools(schoolSlugs)
+  const [activeSchool, setActiveSchool] = React.useState(schools[0])
 
   if (!activeSchool) {
-    return null;
+    return null
   }
 
   return (
@@ -87,5 +83,5 @@ export function TeamSwitcher() {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  );
+  )
 }

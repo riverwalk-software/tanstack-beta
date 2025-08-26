@@ -1,31 +1,31 @@
-import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { toast } from "sonner";
-import z from "zod";
-import { verifyEmailQueryKey } from "@/components/auth/SignUpWithEmailForm";
+import { useMutation } from "@tanstack/react-query"
+import { createFileRoute, redirect } from "@tanstack/react-router"
+import { toast } from "sonner"
+import z from "zod"
+import { verifyEmailQueryKey } from "@/components/auth/SignUpWithEmailForm"
 // import { useCountdown } from "@/hooks/useCountdown";
-import { authClient } from "@/lib/auth-client";
-import { AUTH_CALLBACK_ROUTE } from "@/lib/constants";
-import { s, ttlSToMs } from "@/utils/time";
+import { authClient } from "@/lib/auth-client"
+import { AUTH_CALLBACK_ROUTE } from "@/lib/constants"
+import { s, ttlSToMs } from "@/utils/time"
 
-const VerifyEmailSchema = z.string().email();
-const resendVerificationEmailDurationS = s("30s");
+const VerifyEmailSchema = z.string().email()
+const resendVerificationEmailDurationS = s("30s")
 export const resendVerificationEmailDurationMs = ttlSToMs(
   resendVerificationEmailDurationS,
-);
+)
 
 export const Route = createFileRoute("/_unauthenticated/signup/success")({
   beforeLoad: async ({ context: { queryClient } }) => {
-    const unknown = queryClient.getQueryData(verifyEmailQueryKey);
-    const { data: email, success } = VerifyEmailSchema.safeParse(unknown);
-    if (!success) throw redirect({ to: "/signup" });
-    return { email };
+    const unknown = queryClient.getQueryData(verifyEmailQueryKey)
+    const { data: email, success } = VerifyEmailSchema.safeParse(unknown)
+    if (!success) throw redirect({ to: "/signup" })
+    return { email }
   },
   loader: async ({ context: { email } }) => {
-    return { email };
+    return { email }
   },
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
   // const { email } = Route.useLoaderData();
@@ -46,7 +46,7 @@ function RouteComponent() {
           : "Resend Verification Email"}
       </Button> */}
     </div>
-  );
+  )
 }
 
 export const useResendVerificationEmail = ({ email }: { email: string }) => {
@@ -62,9 +62,9 @@ export const useResendVerificationEmail = ({ email }: { email: string }) => {
         description: "Please check your inbox.",
         duration: resendVerificationEmailDurationMs,
       }),
-  });
-  return { resendVerificationEmail };
-};
+  })
+  return { resendVerificationEmail }
+}
 
 // function useResendVerificationEmailCountdown() {
 //   const { count, restartCountdown, isFinished } = useCountdown({

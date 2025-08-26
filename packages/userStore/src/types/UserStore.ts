@@ -1,22 +1,22 @@
-import z from "zod";
-import { ID_SCHEMA } from "@/lib/constants";
+import z from "zod"
+import { ID_SCHEMA } from "@/lib/constants"
 
 export interface UserStore {
   schools: {
-    id: number;
+    id: number
     courses: {
-      id: number;
-      chaptersAndLectures: ChapterAndLecture[];
-    }[];
-  }[];
+      id: number
+      chaptersAndLectures: ChapterAndLecture[]
+    }[]
+  }[]
 }
 
 export const ChapterAndLectureSchema = z.object({
   chapter: z.object({ id: ID_SCHEMA }),
   lecture: z.object({ id: ID_SCHEMA }),
   isComplete: z.boolean().optional(),
-});
-export type ChapterAndLecture = z.infer<typeof ChapterAndLectureSchema>;
+})
+export type ChapterAndLecture = z.infer<typeof ChapterAndLectureSchema>
 
 // export interface ChapterAndLecture {
 //   chapter: {
@@ -29,15 +29,15 @@ export type ChapterAndLecture = z.infer<typeof ChapterAndLectureSchema>;
 // }
 
 export interface UserStoreIds {
-  schoolId: number;
-  courseId: number;
-  chapterId: number;
-  lectureId: number;
+  schoolId: number
+  courseId: number
+  chapterId: number
+  lectureId: number
 }
 
 export interface UserStoreSlugs {
-  schoolSlug: string;
-  courseSlug: string;
-  chapterSlug: string;
-  lectureSlug: string;
+  schoolSlug: string
+  courseSlug: string
+  chapterSlug: string
+  lectureSlug: string
 }

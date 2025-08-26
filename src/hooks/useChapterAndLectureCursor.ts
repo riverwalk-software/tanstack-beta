@@ -1,33 +1,33 @@
-import { useMemo } from "react";
-import { match, P } from "ts-pattern";
-import { type Chapter, type Lecture, useCourse } from "@/lib/schools";
-import type { UserStoreSlugs } from "@/lib/userStore";
-import * as ListZipper from "@/utils/listZipper";
+import { useMemo } from "react"
+import { match, P } from "ts-pattern"
+import { type Chapter, type Lecture, useCourse } from "@/lib/schools"
+import type { UserStoreSlugs } from "@/lib/userStore"
+import * as ListZipper from "@/utils/listZipper"
 
 export const useChapterAndLectureCursor = ({
   slugs,
 }: {
-  slugs: UserStoreSlugs;
+  slugs: UserStoreSlugs
 }): Return => {
   const {
     course: { chapters },
-  } = useCourse(slugs);
-  const { chapterSlug, lectureSlug } = slugs;
+  } = useCourse(slugs)
+  const { chapterSlug, lectureSlug } = slugs
   const currentChapterIndex = useMemo(
-    () => chapters.findIndex((chapter) => chapter.slug === chapterSlug),
+    () => chapters.findIndex(chapter => chapter.slug === chapterSlug),
     [chapterSlug, chapters],
-  );
+  )
   const chapterListZipper = useMemo(
     () => ListZipper.fromArrayAt(chapters, currentChapterIndex)!,
     [chapters, currentChapterIndex],
-  );
+  )
   const currentLectureIndex = useMemo(
     () =>
       chapterListZipper.focus.lectures.findIndex(
-        (lecture) => lecture.slug === lectureSlug,
+        lecture => lecture.slug === lectureSlug,
       ),
     [lectureSlug, chapterListZipper.focus.lectures],
-  );
+  )
   const lectureListZipper = useMemo(
     () =>
       ListZipper.fromArrayAt(
@@ -35,7 +35,7 @@ export const useChapterAndLectureCursor = ({
         currentLectureIndex,
       )!,
     [chapterListZipper.focus.lectures, currentLectureIndex],
-  );
+  )
   const maybePreviousChapterAndLecture = match({
     previousLecture: lectureListZipper.left.peek(),
     previousChapter: chapterListZipper.left.peek(),
@@ -62,7 +62,7 @@ export const useChapterAndLectureCursor = ({
         chapter: previousChapter,
       }),
     )
-    .otherwise(() => undefined);
+    .otherwise(() => undefined)
 
   const maybeNextChapterAndLecture = match({
     nextLecture: lectureListZipper.right.peek(),
@@ -89,13 +89,13 @@ export const useChapterAndLectureCursor = ({
         chapter: nextChapter,
       }),
     )
-    .otherwise(() => undefined);
+    .otherwise(() => undefined)
 
   const maybePrevious = useMemo(
     () =>
       match(maybePreviousChapterAndLecture)
         .with(P.nullish, () => undefined)
-        .otherwise((previousChapterAndLecture) => ({
+        .otherwise(previousChapterAndLecture => ({
           ...previousChapterAndLecture,
           slugs: {
             ...slugs,
@@ -104,7 +104,7 @@ export const useChapterAndLectureCursor = ({
           },
         })),
     [maybePreviousChapterAndLecture, slugs],
-  );
+  )
   const current = useMemo(
     () => ({
       chapter: chapterListZipper.focus,
@@ -112,12 +112,12 @@ export const useChapterAndLectureCursor = ({
       slugs,
     }),
     [chapterListZipper.focus, lectureListZipper.focus, slugs],
-  );
+  )
   const maybeNext = useMemo(
     () =>
       match(maybeNextChapterAndLecture)
         .with(P.nullish, () => undefined)
-        .otherwise((nextChapterAndLecture) => ({
+        .otherwise(nextChapterAndLecture => ({
           ...nextChapterAndLecture,
           slugs: {
             ...slugs,
@@ -126,25 +126,25 @@ export const useChapterAndLectureCursor = ({
           },
         })),
     [maybeNextChapterAndLecture, slugs],
-  );
-  return { maybePrevious, current, maybeNext, chapters };
-};
+  )
+  return { maybePrevious, current, maybeNext, chapters }
+}
 
 interface ChapterAndLecture {
-  chapter: Chapter;
-  lecture: Lecture;
+  chapter: Chapter
+  lecture: Lecture
 }
 
 interface ExtendedChapterAndLecture extends ChapterAndLecture {
-  slugs: UserStoreSlugs;
+  slugs: UserStoreSlugs
 }
 
 interface Return {
-  maybePrevious: MaybeExtendedChapterAndLecture;
-  current: ExtendedChapterAndLecture;
-  maybeNext: MaybeExtendedChapterAndLecture;
-  chapters: Chapter[];
+  maybePrevious: MaybeExtendedChapterAndLecture
+  current: ExtendedChapterAndLecture
+  maybeNext: MaybeExtendedChapterAndLecture
+  chapters: Chapter[]
 }
 
-type MaybeChapterAndLecture = ChapterAndLecture | undefined;
-type MaybeExtendedChapterAndLecture = ExtendedChapterAndLecture | undefined;
+type MaybeChapterAndLecture = ChapterAndLecture | undefined
+type MaybeExtendedChapterAndLecture = ExtendedChapterAndLecture | undefined

@@ -4,16 +4,16 @@ import {
   CheckCircle2,
   Info,
   Lightbulb,
-} from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+} from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-type AdmonitionType = "note" | "tip" | "caution" | "danger" | "success";
+type AdmonitionType = "note" | "tip" | "caution" | "danger" | "success"
 
 const variantMap: Record<
   AdmonitionType,
   {
-    icon: React.ComponentType<any>;
-    className: string;
+    icon: React.ComponentType<any>
+    className: string
   }
 > = {
   note: {
@@ -41,23 +41,23 @@ const variantMap: Record<
     className:
       "border-green-300 bg-green-50 text-green-900 dark:border-green-700 dark:bg-green-950 dark:text-green-100",
   },
-};
+}
 
 export function Admonition({
   type,
   title,
   children,
 }: {
-  type: AdmonitionType;
-  title: string;
-  children: React.ReactNode;
+  type: AdmonitionType
+  title: string
+  children: React.ReactNode
 }) {
-  const { icon: Icon, className } = variantMap[type];
+  const { icon: Icon, className } = variantMap[type]
   return (
     <Alert className={`${className} border`}>
       <Icon className="h-5 w-5" />
       <AlertTitle>{title}</AlertTitle>
       <AlertDescription>{children}</AlertDescription>
     </Alert>
-  );
+  )
 }

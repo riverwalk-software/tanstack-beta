@@ -1,18 +1,18 @@
-import type { Constrain } from "@tanstack/react-router";
+import type { Constrain } from "@tanstack/react-router"
 import {
   type AnyFunctionMiddleware,
   createMiddleware,
   createServerFn,
-} from "@tanstack/react-start";
-import { match } from "ts-pattern";
-import { getSessionDataMw } from "./authentication";
-import { UNAUTHORIZED } from "./errors";
+} from "@tanstack/react-start"
+import { match } from "ts-pattern"
+import { getSessionDataMw } from "./authentication"
+import { UNAUTHORIZED } from "./errors"
 
 export const isAuthorizedMw = (requiredRole: Role) =>
   match(requiredRole)
     .with("guest", () =>
       unauthenticatedMw.server(async ({ next }) => {
-        return next();
+        return next()
       }),
     )
     .with("authenticated", () =>
@@ -21,7 +21,7 @@ export const isAuthorizedMw = (requiredRole: Role) =>
           context: {
             sessionData,
           },
-        });
+        })
       }),
     )
     .with("courseOwner", () =>
@@ -36,7 +36,7 @@ export const isAuthorizedMw = (requiredRole: Role) =>
     )
     .with("admin", () =>
       authenticatedMw.server(async ({ next, context: { sessionData } }) => {
-        throw new UNAUTHORIZED();
+        throw new UNAUTHORIZED()
         // return next({
         //   context: {
         //     sessionData,
@@ -44,17 +44,17 @@ export const isAuthorizedMw = (requiredRole: Role) =>
         // });
       }),
     )
-    .exhaustive();
+    .exhaustive()
 
-type Role = "guest" | "authenticated" | "courseOwner" | "admin";
+type Role = "guest" | "authenticated" | "courseOwner" | "admin"
 
 const unauthenticatedMw = createMiddleware({
   type: "function",
-});
+})
 
 const authenticatedMw = createMiddleware({
   type: "function",
-}).middleware([getSessionDataMw]);
+}).middleware([getSessionDataMw])
 
 const myCreateServerFn = <
   TNewMiddlewares extends readonly AnyFunctionMiddleware[],
@@ -63,13 +63,13 @@ const myCreateServerFn = <
   method = "GET",
   middlewares = [],
 }: {
-  requiredRole: Role;
-  method?: "GET" | "POST";
-  middlewares?: Constrain<TNewMiddlewares, readonly AnyFunctionMiddleware[]>;
+  requiredRole: Role
+  method?: "GET" | "POST"
+  middlewares?: Constrain<TNewMiddlewares, readonly AnyFunctionMiddleware[]>
 }) =>
   createServerFn({ method }).middleware([
     isAuthorizedMw(requiredRole),
     ...middlewares,
-  ]);
+  ])
 
-myCreateServerFn({ requiredRole: "authenticated" }).handler(async () => {});
+myCreateServerFn({ requiredRole: "authenticated" }).handler(async () => {})

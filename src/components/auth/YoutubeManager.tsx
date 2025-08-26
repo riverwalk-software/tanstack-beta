@@ -1,11 +1,11 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { youtubeAuthorizationDataQueryOptions } from "@/utils/oauth/youtube";
-import { AuthorizeYoutubeButton } from "./AuthorizeYoutubeButton";
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { youtubeAuthorizationDataQueryOptions } from "@/utils/oauth/youtube"
+import { AuthorizeYoutubeButton } from "./AuthorizeYoutubeButton"
 
 export function YoutubeManager() {
   const {
     youtubeAuthorizationData: { isAuthorized, channelsData },
-  } = useYoutubeAuthorizationData();
+  } = useYoutubeAuthorizationData()
   return !isAuthorized ? (
     <AuthorizeYoutubeButton />
   ) : (
@@ -20,7 +20,7 @@ export function YoutubeManager() {
               {channelsData.channels.snippet.title} ({channelsData.channels.id})
             </li>
           ) : (
-            channelsData.channels.map((channel) => (
+            channelsData.channels.map(channel => (
               <li key={channel.id}>
                 {channel.snippet.title} ({channel.id})
               </li>
@@ -28,12 +28,12 @@ export function YoutubeManager() {
           ))}
       </ul>
     </div>
-  );
+  )
 }
 
 const useYoutubeAuthorizationData = () => {
   const { data: youtubeAuthorizationData } = useSuspenseQuery(
     youtubeAuthorizationDataQueryOptions,
-  );
-  return { youtubeAuthorizationData };
-};
+  )
+  return { youtubeAuthorizationData }
+}

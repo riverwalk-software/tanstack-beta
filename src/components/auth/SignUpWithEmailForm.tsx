@@ -1,9 +1,9 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import { type UseFormReturn, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "@tanstack/react-router"
+import { type UseFormReturn, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
 import {
   Form,
   FormControl,
@@ -12,12 +12,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
-import { AUTH_CALLBACK_ROUTE, PASSWORD_LENGTH } from "@/lib/constants";
-import { resendVerificationEmailDurationMs } from "@/routes/_unauthenticated/signup/success";
-import { FormButton } from "../primitives/FormButton";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { authClient } from "@/lib/auth-client"
+import { AUTH_CALLBACK_ROUTE, PASSWORD_LENGTH } from "@/lib/constants"
+import { resendVerificationEmailDurationMs } from "@/routes/_unauthenticated/signup/success"
+import { FormButton } from "../primitives/FormButton"
 
 export function SignUpWithEmailForm() {
   const form = useForm<SignUpForm>({
@@ -29,12 +29,12 @@ export function SignUpWithEmailForm() {
       password: "",
       confirmPassword: "",
     },
-  });
-  const { signUpWithEmail, isPending } = useSignUpWithEmail();
+  })
+  const { signUpWithEmail, isPending } = useSignUpWithEmail()
   const onSubmit = async (values: SignUpForm) => {
-    const formData = SignUpFormTransformedSchema.parse(values);
-    signUpWithEmail(formData);
-  };
+    const formData = SignUpFormTransformedSchema.parse(values)
+    signUpWithEmail(formData)
+  }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -53,13 +53,13 @@ export function SignUpWithEmailForm() {
         <FormSubmitButton isPending={isPending} />
       </form>
     </Form>
-  );
+  )
 }
 
-export const verifyEmailQueryKey = ["verifyEmail"];
+export const verifyEmailQueryKey = ["verifyEmail"]
 const useSignUpWithEmail = () => {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
   const { mutate: signUpWithEmail, isPending } = useMutation({
     mutationKey: ["signUpWithEmail"],
     mutationFn: (formData: SignUpFormTransformed) =>
@@ -68,13 +68,13 @@ const useSignUpWithEmail = () => {
       toast.success("Sign up successful!", {
         description: "Please check your email to verify your account.",
         duration: resendVerificationEmailDurationMs,
-      });
-      queryClient.setQueryData(verifyEmailQueryKey, email);
-      navigate({ to: "/signup/success" });
+      })
+      queryClient.setQueryData(verifyEmailQueryKey, email)
+      navigate({ to: "/signup/success" })
     },
-  });
-  return { signUpWithEmail, isPending };
-};
+  })
+  return { signUpWithEmail, isPending }
+}
 
 function FormHeader() {
   return (
@@ -84,7 +84,7 @@ function FormHeader() {
         Enter your information to create an account
       </FormDescription>
     </div>
-  );
+  )
 }
 
 function FormFirstName({ form }: { form: UseFormReturn<SignUpForm> }) {
@@ -102,7 +102,7 @@ function FormFirstName({ form }: { form: UseFormReturn<SignUpForm> }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function FormLastName({ form }: { form: UseFormReturn<SignUpForm> }) {
@@ -120,7 +120,7 @@ function FormLastName({ form }: { form: UseFormReturn<SignUpForm> }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function FormEmail({ form }: { form: UseFormReturn<SignUpForm> }) {
@@ -138,7 +138,7 @@ function FormEmail({ form }: { form: UseFormReturn<SignUpForm> }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function FormPassword({ form }: { form: UseFormReturn<SignUpForm> }) {
@@ -156,7 +156,7 @@ function FormPassword({ form }: { form: UseFormReturn<SignUpForm> }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function FormConfirmPassword({ form }: { form: UseFormReturn<SignUpForm> }) {
@@ -174,7 +174,7 @@ function FormConfirmPassword({ form }: { form: UseFormReturn<SignUpForm> }) {
         </FormItem>
       )}
     />
-  );
+  )
 }
 
 function FormSubmitButton({ isPending }: { isPending: boolean }) {
@@ -182,7 +182,7 @@ function FormSubmitButton({ isPending }: { isPending: boolean }) {
     <FormButton disabled={isPending} className="w-full">
       {isPending ? "Signing Up..." : "Sign Up"}
     </FormButton>
-  );
+  )
 }
 
 const SignUpFormSchema = z
@@ -196,10 +196,10 @@ const SignUpFormSchema = z
       .max(PASSWORD_LENGTH.MAXIMUM),
     confirmPassword: z.string(),
   })
-  .refine((data) => data.confirmPassword === data.password, {
+  .refine(data => data.confirmPassword === data.password, {
     message: "Passwords must match",
     path: ["confirmPassword"],
-  });
+  })
 
 const SignUpFormTransformedSchema = SignUpFormSchema.transform(
   ({ confirmPassword, firstName, lastName, ...rest }) =>
@@ -208,7 +208,7 @@ const SignUpFormTransformedSchema = SignUpFormSchema.transform(
       name: `${firstName} ${lastName}`,
       callbackURL: AUTH_CALLBACK_ROUTE,
     }) satisfies Parameters<typeof authClient.signUp.email>[0],
-);
+)
 
-type SignUpForm = z.infer<typeof SignUpFormSchema>;
-type SignUpFormTransformed = z.infer<typeof SignUpFormTransformedSchema>;
+type SignUpForm = z.infer<typeof SignUpFormSchema>
+type SignUpFormTransformed = z.infer<typeof SignUpFormTransformedSchema>

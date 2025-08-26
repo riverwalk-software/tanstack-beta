@@ -1,14 +1,14 @@
-import { z } from "zod";
+import { z } from "zod"
 
 const BaseParamsSchema = z.object({
   _tag: z.enum(["ALL", "SCHOOL", "COURSE", "CHAPTER", "LECTURE"]),
-});
+})
 
-const SchoolIdSchema = z.object({ schoolId: z.number() });
-const CourseIdSchema = z.object({ courseId: z.number() });
-const ChapterIdSchema = z.object({ chapterId: z.number() });
-const LectureIdSchema = z.object({ lectureId: z.number() });
-const IsCompleteSchema = z.object({ isComplete: z.boolean() });
+const SchoolIdSchema = z.object({ schoolId: z.number() })
+const CourseIdSchema = z.object({ courseId: z.number() })
+const ChapterIdSchema = z.object({ chapterId: z.number() })
+const LectureIdSchema = z.object({ lectureId: z.number() })
+const IsCompleteSchema = z.object({ isComplete: z.boolean() })
 
 export const GetUserStoreParamsSchema = z.discriminatedUnion("_tag", [
   BaseParamsSchema.extend({ _tag: z.literal("ALL") }),
@@ -16,7 +16,7 @@ export const GetUserStoreParamsSchema = z.discriminatedUnion("_tag", [
   BaseParamsSchema.extend({ _tag: z.literal("COURSE") })
     .merge(SchoolIdSchema)
     .merge(CourseIdSchema),
-]);
+])
 
 export const SetUserStoreParamsSchema = z.discriminatedUnion("_tag", [
   BaseParamsSchema.extend({ _tag: z.literal("ALL") }).merge(IsCompleteSchema),
@@ -33,7 +33,7 @@ export const SetUserStoreParamsSchema = z.discriminatedUnion("_tag", [
     .merge(ChapterIdSchema)
     .merge(LectureIdSchema)
     .merge(IsCompleteSchema),
-]);
+])
 
-export type GetUserStoreParams = z.infer<typeof GetUserStoreParamsSchema>;
-export type SetUserStoreParams = z.infer<typeof SetUserStoreParamsSchema>;
+export type GetUserStoreParams = z.infer<typeof GetUserStoreParamsSchema>
+export type SetUserStoreParams = z.infer<typeof SetUserStoreParamsSchema>

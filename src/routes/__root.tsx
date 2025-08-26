@@ -1,36 +1,36 @@
 /// <reference types="vite/client" />
 
-import { DEFAULT_COOKIE_OPTIONS } from "@cookies";
-import type { QueryClient } from "@tanstack/query-core";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { DEFAULT_COOKIE_OPTIONS } from "@cookies"
+import type { QueryClient } from "@tanstack/query-core"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import {
   createRootRouteWithContext,
   HeadContent,
   Link,
   Outlet,
   Scripts,
-} from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { ThemeToggle, themeQueryOptions, useTheme } from "@theme";
-import type { ReactNode } from "react";
-import { CookiesProvider } from "react-cookie";
-import { Toaster } from "sonner";
-import { match } from "ts-pattern";
-import { SignOutButton } from "@/components/auth/SignOutButton";
-import { DefaultCatchBoundary } from "@/components/boundaries/DefaultCatchBoundary";
-import { EnvironmentError } from "@/components/environment/EnvironmentError";
-import { NotFound } from "@/components/fallbacks/NotFound";
-import { useEnvironmentValidation } from "@/hooks/useEnvironment";
+} from "@tanstack/react-router"
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
+import { ThemeToggle, themeQueryOptions, useTheme } from "@theme"
+import type { ReactNode } from "react"
+import { CookiesProvider } from "react-cookie"
+import { Toaster } from "sonner"
+import { match } from "ts-pattern"
+import { SignOutButton } from "@/components/auth/SignOutButton"
+import { DefaultCatchBoundary } from "@/components/boundaries/DefaultCatchBoundary"
+import { EnvironmentError } from "@/components/environment/EnvironmentError"
+import { NotFound } from "@/components/fallbacks/NotFound"
+import { useEnvironmentValidation } from "@/hooks/useEnvironment"
 import {
   type AuthenticationData,
   authenticationDataQueryOptions,
-} from "@/lib/authentication";
-import { environmentValidationQueryOptions } from "@/lib/environment";
-import globalsCss from "@/styles/globals.css?url";
-import { seo } from "@/utils/seo";
+} from "@/lib/authentication"
+import { environmentValidationQueryOptions } from "@/lib/environment"
+import globalsCss from "@/styles/globals.css?url"
+import { seo } from "@/utils/seo"
 
 interface RouterContext {
-  queryClient: QueryClient;
+  queryClient: QueryClient
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
@@ -77,8 +77,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   }): Promise<{ authenticationData: AuthenticationData }> => {
     const authenticationData = await queryClient.fetchQuery(
       authenticationDataQueryOptions,
-    );
-    return { authenticationData };
+    )
+    return { authenticationData }
   },
   loader: async ({ context: { queryClient } }): Promise<void> => {
     await Promise.all([
@@ -86,24 +86,24 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         ? queryClient.prefetchQuery(environmentValidationQueryOptions)
         : Promise.resolve(),
       queryClient.prefetchQuery(themeQueryOptions),
-    ]);
+    ])
   },
-  errorComponent: (props) => (
+  errorComponent: props => (
     <RootDocument>
       <DefaultCatchBoundary {...props} />
     </RootDocument>
   ),
   notFoundComponent: () => <NotFound />,
   component: RootComponent,
-});
+})
 
 function RootComponent() {
-  const { maybeEnvironmentValidation } = useEnvironmentValidation();
+  const { maybeEnvironmentValidation } = useEnvironmentValidation()
   return (
     <CookiesProvider defaultSetOptions={DEFAULT_COOKIE_OPTIONS}>
       <RootDocument>
         {match(maybeEnvironmentValidation)
-          .with({ isError: true }, (environmentValidation) => (
+          .with({ isError: true }, environmentValidation => (
             <EnvironmentError {...environmentValidation} />
           ))
           .otherwise(() => (
@@ -111,11 +111,11 @@ function RootComponent() {
           ))}
       </RootDocument>
     </CookiesProvider>
-  );
+  )
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const { theme } = useTheme();
+  const { theme } = useTheme()
   return (
     <html
       lang="en"
@@ -136,13 +136,13 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <Scripts />
       </body>
     </html>
-  );
+  )
 }
 
 function Navbar() {
   const {
     authenticationData: { isAuthenticated },
-  } = Route.useRouteContext();
+  } = Route.useRouteContext()
   return (
     <div className="flex gap-2 p-2 text-lg">
       <div className="flex flex-1 gap-2">
@@ -163,7 +163,7 @@ function Navbar() {
       </div>
       <ThemeToggle />
     </div>
-  );
+  )
 }
 
 function HomeLink() {
@@ -177,7 +177,7 @@ function HomeLink() {
     >
       Home
     </Link>
-  );
+  )
 }
 
 function SigninLink() {
@@ -191,7 +191,7 @@ function SigninLink() {
     >
       Sign In
     </Link>
-  );
+  )
 }
 
 function SignupLink() {
@@ -205,7 +205,7 @@ function SignupLink() {
     >
       Sign Up
     </Link>
-  );
+  )
 }
 function ProfileLink() {
   return (
@@ -218,5 +218,5 @@ function ProfileLink() {
     >
       Profile
     </Link>
-  );
+  )
 }

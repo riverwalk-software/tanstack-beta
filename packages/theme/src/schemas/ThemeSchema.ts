@@ -1,3 +1,3 @@
-import z from "zod";
+import z from "zod"
 
-export const ThemeSchema = z.enum(["dark", "light"]).catch("dark");
+export const ThemeSchema = z.enum(["dark", "light"]).catch("dark")

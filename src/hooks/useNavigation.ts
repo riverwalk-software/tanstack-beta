@@ -1,8 +1,8 @@
-import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router"
+import { useState } from "react"
 
 export const useNavigation = (): Return => {
-  const [isNavigating, setIsNavigating] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false)
   // const routerPending = useRouterState({
   //   select: ({ isLoading, isTransitioning, status }) =>
   //     isLoading || isTransitioning || status === "pending",
@@ -11,13 +11,13 @@ export const useNavigation = (): Return => {
   //   () => _isNavigating || routerPending,
   //   [_isNavigating, routerPending],
   // );
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  return { isNavigating, navigate, setIsNavigating };
-};
+  return { isNavigating, navigate, setIsNavigating }
+}
 
 interface Return {
-  isNavigating: boolean;
-  navigate: ReturnType<typeof useNavigate>;
-  setIsNavigating: (isNavigating: boolean) => void;
+  isNavigating: boolean
+  navigate: ReturnType<typeof useNavigate>
+  setIsNavigating: (isNavigating: boolean) => void
 }

@@ -1,12 +1,12 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { z } from "zod";
-import { HOME_ROUTE } from "@/lib/constants";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
+import { z } from "zod"
+import { HOME_ROUTE } from "@/lib/constants"
 
 const SearchParamsSchema = z
   .object({
     redirect: z.string(),
   })
-  .partial();
+  .partial()
 
 export const Route = createFileRoute("/_unauthenticated")({
   validateSearch: SearchParamsSchema,
@@ -16,11 +16,11 @@ export const Route = createFileRoute("/_unauthenticated")({
     },
     search,
   }) => {
-    if (isAuthenticated) throw redirect({ to: search.redirect ?? HOME_ROUTE });
+    if (isAuthenticated) throw redirect({ to: search.redirect ?? HOME_ROUTE })
   },
   component: UnauthenticatedPathlessLayout,
-});
+})
 
 function UnauthenticatedPathlessLayout() {
-  return <Outlet />;
+  return <Outlet />
 }

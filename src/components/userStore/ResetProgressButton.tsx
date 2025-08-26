@@ -1,9 +1,9 @@
-import { useUserStore } from "@/hooks/useUserStore";
-import type { SetUserStoreParams } from "@/lib/userStore";
-import { Button } from "../ui/button";
+import { useUserStore } from "@/hooks/useUserStore"
+import type { SetUserStoreParams } from "@/lib/userStore"
+import { Button } from "../ui/button"
 
 export function ResetProgressButton(params: SetUserStoreParams) {
-  const { setProgressMt } = useUserStore();
+  const { setProgressMt } = useUserStore()
 
   return (
     <Button
@@ -18,5 +18,5 @@ export function ResetProgressButton(params: SetUserStoreParams) {
     >
       {`Reset ${params._tag}`}
     </Button>
-  );
+  )
 }

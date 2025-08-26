@@ -5,7 +5,7 @@ export const foldLeft =
     foldable.reduce(
       (accumulator, current) => reducer(accumulator)(current),
       initial,
-    );
+    )
 
 export const foldRight =
   <A, B>(reducer: (current: A) => (accumulator: B) => B) =>
@@ -14,4 +14,4 @@ export const foldRight =
     foldable.reduceRight(
       (accumulator, current) => reducer(current)(accumulator),
       initial,
-    );
+    )

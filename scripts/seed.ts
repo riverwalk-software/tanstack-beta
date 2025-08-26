@@ -1,29 +1,29 @@
-import { promises as fs } from "node:fs";
-import path from "node:path";
-import { schema } from "@schools";
-import { drizzle } from "drizzle-orm/d1";
-import { reset, seed } from "drizzle-seed";
-import { produce } from "immer";
-import mime from "mime-types";
-import { TEST_USER } from "@/lib/constants";
-import type { UserStore } from "@/lib/userStore";
+import { promises as fs } from "node:fs"
+import path from "node:path"
+import { schema } from "@schools"
+import { drizzle } from "drizzle-orm/d1"
+import { reset, seed } from "drizzle-seed"
+import { produce } from "immer"
+import mime from "mime-types"
+import { TEST_USER } from "@/lib/constants"
+import type { UserStore } from "@/lib/userStore"
 
 async function main() {
-  const { getPlatformProxy } = await import("wrangler");
-  const proxy = await getPlatformProxy();
+  const { getPlatformProxy } = await import("wrangler")
+  const proxy = await getPlatformProxy()
   const { ATTACHMENTS_BUCKET, SCHOOL_DB, USER_STORE, AUTH_DB } =
-    proxy.env as unknown as CloudflareBindings;
-  await seedSchoolDatabase(SCHOOL_DB);
-  await seedUserStore(SCHOOL_DB, USER_STORE);
-  await seedAttachmentsBucket(ATTACHMENTS_BUCKET);
+    proxy.env as unknown as CloudflareBindings
+  await seedSchoolDatabase(SCHOOL_DB)
+  await seedUserStore(SCHOOL_DB, USER_STORE)
+  await seedAttachmentsBucket(ATTACHMENTS_BUCKET)
   // await resetAuthenticationDatabase(AUTH_DB);
   // await seedAuthenticationDatabase(AUTH_DB);
-  process.exit(0);
+  process.exit(0)
 }
 
 const seedSchoolDatabase = async (SCHOOL_DB: D1Database) => {
-  const db = drizzle(SCHOOL_DB, { casing: "snake_case" });
-  await reset(db, schema);
+  const db = drizzle(SCHOOL_DB, { casing: "snake_case" })
+  await reset(db, schema)
   await seed(db, schema, { count: 1, seed: 0 }).refine(
     ({ intPrimaryKey, timestamp, uuid, loremIpsum, valuesFromArray }) => ({
       SchoolEntity: {
@@ -142,15 +142,15 @@ const seedSchoolDatabase = async (SCHOOL_DB: D1Database) => {
         },
       },
     }),
-  );
-};
+  )
+}
 
 const seedUserStore = async (
   SCHOOL_DB: D1Database,
   USER_STORE: KVNamespace,
 ) => {
-  await resetUserStore(USER_STORE);
-  const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema });
+  await resetUserStore(USER_STORE)
+  const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema })
   const schools = await db.query.SchoolEntity.findMany({
     with: {
       courses: {
@@ -163,60 +163,60 @@ const seedUserStore = async (
         },
       },
     },
-  });
+  })
 
   const userStore: UserStore = produce(
     { schools } as UserStore,
     ({ schools }) => {
-      schools.forEach((school) => {
-        school.courses.forEach((course) => {
-          course.chapters.forEach((chapter) => {
-            chapter.lectures.forEach((lecture) => {
+      schools.forEach(school => {
+        school.courses.forEach(course => {
+          course.chapters.forEach(chapter => {
+            chapter.lectures.forEach(lecture => {
               // lecture.completed = false;
-            });
-          });
-        });
-      });
+            })
+          })
+        })
+      })
     },
-  );
+  )
 
-  await USER_STORE.put(TEST_USER.email, JSON.stringify(userStore));
-};
+  await USER_STORE.put(TEST_USER.email, JSON.stringify(userStore))
+}
 
 const resetUserStore = async (USER_STORE: KVNamespace) =>
-  USER_STORE.delete(TEST_USER.email);
+  USER_STORE.delete(TEST_USER.email)
 
 const seedAttachmentsBucket = async (ATTACHMENTS_BUCKET: R2Bucket) => {
-  await resetAttachmentsBucket(ATTACHMENTS_BUCKET);
-  const attachmentsDir = "src/db/main/attachments";
-  const files = await fs.readdir(attachmentsDir);
+  await resetAttachmentsBucket(ATTACHMENTS_BUCKET)
+  const attachmentsDir = "src/db/main/attachments"
+  const files = await fs.readdir(attachmentsDir)
   for (const filename of files) {
-    const filePath = path.join(attachmentsDir, filename);
-    const stat = await fs.stat(filePath);
-    if (!stat.isFile()) continue;
-    const fileBuffer = await fs.readFile(filePath);
+    const filePath = path.join(attachmentsDir, filename)
+    const stat = await fs.stat(filePath)
+    if (!stat.isFile()) continue
+    const fileBuffer = await fs.readFile(filePath)
     const uint8FileBuffer = new Uint8Array(
       fileBuffer.buffer,
       fileBuffer.byteOffset,
       fileBuffer.byteLength,
-    );
-    const contentType = mime.lookup(filename) || "application/octet-stream";
+    )
+    const contentType = mime.lookup(filename) || "application/octet-stream"
     await ATTACHMENTS_BUCKET.put(`attachments/${filename}`, uint8FileBuffer, {
       onlyIf: { etagDoesNotMatch: "*" },
       httpMetadata: {
         contentType,
       },
-    });
+    })
 
-    console.log(`Uploaded: ${filename} (${contentType})`);
+    console.log(`Uploaded: ${filename} (${contentType})`)
   }
-};
+}
 
 const resetAttachmentsBucket = async (ATTACHMENTS_BUCKET: R2Bucket) => {
-  const keysResult = await ATTACHMENTS_BUCKET.list();
-  const keys = keysResult.objects.map(({ key }) => key);
-  if (keys.length > 0) await ATTACHMENTS_BUCKET.delete(keys);
-};
+  const keysResult = await ATTACHMENTS_BUCKET.list()
+  const keys = keysResult.objects.map(({ key }) => key)
+  if (keys.length > 0) await ATTACHMENTS_BUCKET.delete(keys)
+}
 
 // const seedAuthenticationDatabase = async (AUTH_DB: D1Database) => {
 //   await resetAuthenticationDatabase(AUTH_DB);
@@ -229,7 +229,7 @@ const resetAuthenticationDatabase = async (AUTH_DB: D1Database) => {
     AUTH_DB.prepare("DELETE FROM account"),
     AUTH_DB.prepare("DELETE FROM session"),
     AUTH_DB.prepare("DELETE FROM user"),
-  ]);
-};
+  ])
+}
 
-main();
+main()

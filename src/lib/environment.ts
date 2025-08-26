@@ -1,15 +1,15 @@
-import { queryOptions } from "@tanstack/react-query";
-import { createMiddleware, createServerFn } from "@tanstack/react-start";
-import { Context } from "effect";
-import { z } from "zod";
+import { queryOptions } from "@tanstack/react-query"
+import { createMiddleware, createServerFn } from "@tanstack/react-start"
+import { Context } from "effect"
+import { z } from "zod"
 
 const VariablesEnvironmentSchema = z.object({
   BETTER_AUTH_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "production"]), // Repeat of `drizzle.config.ts`
   POLAR_SUCCESS_URL: z.string().url(),
-});
+})
 
-type VariablesEnvironment = z.infer<typeof VariablesEnvironmentSchema>;
+type VariablesEnvironment = z.infer<typeof VariablesEnvironmentSchema>
 
 const SecretsEnvironmentSchema = z.object({
   BETTER_AUTH_SECRET: z.string().nonempty(),
@@ -19,31 +19,31 @@ const SecretsEnvironmentSchema = z.object({
   CLOUDFLARE_DATABASE_ID: z.string().nonempty(),
   POLAR_ACCESS_TOKEN: z.string().nonempty(),
   RESEND_API_KEY: z.string().nonempty(),
-});
+})
 
-type SecretsEnvironment = z.infer<typeof SecretsEnvironmentSchema>;
+type SecretsEnvironment = z.infer<typeof SecretsEnvironmentSchema>
 
 export interface FailedEnvironmentValidation {
-  isError: true;
+  isError: true
   errors: {
-    maybeVariables?: string[];
-    maybeSecrets?: string[];
-  };
+    maybeVariables?: string[]
+    maybeSecrets?: string[]
+  }
 }
 
 interface SuccessfulEnvironmentValidation {
-  isError: false;
-  errors: null;
+  isError: false
+  errors: null
 }
 
 export type EnvironmentValidation =
   | FailedEnvironmentValidation
-  | SuccessfulEnvironmentValidation;
+  | SuccessfulEnvironmentValidation
 
 const getEnvironmentValidationFn = createServerFn().handler(
   async (): Promise<EnvironmentValidation> => {
-    const variables = VariablesEnvironmentSchema.safeParse(process.env);
-    const secrets = SecretsEnvironmentSchema.safeParse(process.env);
+    const variables = VariablesEnvironmentSchema.safeParse(process.env)
+    const secrets = SecretsEnvironmentSchema.safeParse(process.env)
     return variables.success && secrets.success
       ? ({
           isError: false,
@@ -53,15 +53,15 @@ const getEnvironmentValidationFn = createServerFn().handler(
           isError: true,
           errors: {
             maybeVariables: variables.error?.issues.map(
-              (issue) => `${String(issue.path[0])}: ${issue.message}`,
+              issue => `${String(issue.path[0])}: ${issue.message}`,
             ),
-            maybeSecrets: secrets.error?.issues.map((issue) =>
+            maybeSecrets: secrets.error?.issues.map(issue =>
               issue.path[0].toString(),
             ),
           },
-        } as const);
+        } as const)
   },
-);
+)
 
 export const environmentValidationQueryOptions = queryOptions({
   queryKey: ["environmentValidation"],
@@ -69,27 +69,27 @@ export const environmentValidationQueryOptions = queryOptions({
   staleTime: Infinity,
   gcTime: Infinity,
   subscribed: false,
-});
+})
 
 export const getEnvironmentMw = createMiddleware({ type: "function" }).server(
   async ({ next }) => {
     return next<{
-      environment: Environment;
+      environment: Environment
     }>({
       context: { environment },
-    });
+    })
   },
-);
+)
 
 interface Environment {
-  variables: VariablesEnvironment;
-  secrets: SecretsEnvironment;
+  variables: VariablesEnvironment
+  secrets: SecretsEnvironment
 }
 
 export const environment: Environment = {
   variables: process.env as VariablesEnvironment,
   secrets: process.env as SecretsEnvironment,
-};
+}
 
 export class EnvironmentService extends Context.Tag("EnvironmentService")<
   EnvironmentService,

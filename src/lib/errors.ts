@@ -1,11 +1,11 @@
-import { Data } from "effect";
+import { Data } from "effect"
 
-export const redirectDescription = "Redirecting to sign in page...";
+export const redirectDescription = "Redirecting to sign in page..."
 
 interface ClientError {
-  _tag: ClientErrorTag;
-  message: string;
-  description: string;
+  _tag: ClientErrorTag
+  message: string
+  description: string
 }
 
 const clientErrorTag = {
@@ -13,9 +13,9 @@ const clientErrorTag = {
   YOUTUBE_UNAUTHORIZED: "YOUTUBE_UNAUTHORIZED",
   UNAUTHORIZED: "UNAUTHORIZED",
   SERVICE_UNAVAILABLE: "SERVICE_UNAVAILABLE",
-} as const;
+} as const
 
-type ClientErrorTag = (typeof clientErrorTag)[keyof typeof clientErrorTag];
+type ClientErrorTag = (typeof clientErrorTag)[keyof typeof clientErrorTag]
 
 export class UNAUTHENTICATED extends Data.TaggedError(
   clientErrorTag.UNAUTHENTICATED,
@@ -27,7 +27,7 @@ export class UNAUTHENTICATED extends Data.TaggedError(
     super({
       message: message ?? "You are no longer signed in.",
       description: description ?? redirectDescription,
-    });
+    })
   }
 }
 export class YOUTUBE_UNAUTHORIZED extends Data.TaggedError(
@@ -40,7 +40,7 @@ export class YOUTUBE_UNAUTHORIZED extends Data.TaggedError(
     super({
       message: message ?? "YouTube API access is unauthorized.",
       description: description ?? "Please reauthorize your YouTube account.",
-    });
+    })
   }
 }
 
@@ -55,7 +55,7 @@ export class UNAUTHORIZED extends Data.TaggedError(
       message: message ?? "Unauthorized access.",
       description:
         description ?? "You do not have permission to access this resource.",
-    });
+    })
   }
 }
 export class SERVICE_UNAVAILABLE extends Data.TaggedError(
@@ -68,7 +68,7 @@ export class SERVICE_UNAVAILABLE extends Data.TaggedError(
     super({
       message: message ?? "This service is currently down.",
       description: description ?? "Please try again later.",
-    });
+    })
   }
 }
 
@@ -78,5 +78,5 @@ export const isClientError = (error: unknown): error is ClientError => {
     error !== null &&
     "_tag" in error &&
     Object.values(clientErrorTag).includes((error as any)._tag)
-  );
-};
+  )
+}

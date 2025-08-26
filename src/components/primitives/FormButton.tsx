@@ -1,13 +1,13 @@
-import type * as React from "react";
+import type * as React from "react"
 
-import { Button } from "../ui/button";
+import { Button } from "../ui/button"
 
 export function FormButton({
   className,
   disabled,
   ...props
 }: Omit<React.ComponentProps<"button">, "disabled" | "onClick"> & {
-  disabled: boolean;
+  disabled: boolean
 }) {
   return (
     <Button
@@ -16,5 +16,5 @@ export function FormButton({
       onClick={() => {}} // Prevent default click behavior
       {...props}
     />
-  );
+  )
 }

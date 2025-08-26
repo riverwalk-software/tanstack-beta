@@ -1,6 +1,6 @@
-import { Link } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-import { Button } from "../ui/button";
+import { Link } from "@tanstack/react-router"
+import type { ReactNode } from "react"
+import { Button } from "../ui/button"
 
 export function NotFound({ children }: { children?: ReactNode }) {
   return (
@@ -24,5 +24,5 @@ export function NotFound({ children }: { children?: ReactNode }) {
         </Link>
       </p>
     </div>
-  );
+  )
 }

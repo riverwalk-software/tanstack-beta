@@ -1,13 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
-import z from "zod";
+import { createFileRoute } from "@tanstack/react-router"
+import z from "zod"
 
 export const Route = createFileRoute("/_authenticated/profile")({
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
   // https://www.better-auth.com/docs/concepts/users-accounts
-  return <div>Hello "/_authenticated/profile"!</div>;
+  return <div>Hello "/_authenticated/profile"!</div>
 }
 const UserSchema = z.object({
   id: z.string().uuid(),
@@ -16,7 +16,7 @@ const UserSchema = z.object({
   role: z.enum(["student", "instructor", "admin"]),
   createdAt: z.date(),
   updatedAt: z.date(),
-});
+})
 
 const CourseSchema = z.object({
   id: z.string().uuid(),
@@ -28,7 +28,7 @@ const CourseSchema = z.object({
   isPublished: z.boolean().default(false),
   createdAt: z.date(),
   updatedAt: z.date(),
-});
+})
 
 const LectureSchema = z.object({
   id: z.string().uuid(),
@@ -42,7 +42,7 @@ const LectureSchema = z.object({
   isPreview: z.boolean().default(false),
   createdAt: z.date(),
   updatedAt: z.date(),
-});
+})
 
 const EnrollmentSchema = z.object({
   id: z.string().uuid(),
@@ -52,7 +52,7 @@ const EnrollmentSchema = z.object({
   completedAt: z.date().optional(),
   progress: z.number().min(0).max(100).default(0),
   lastAccessedAt: z.date().optional(),
-});
+})
 
 const LectureProgressSchema = z.object({
   id: z.string().uuid(),
@@ -62,7 +62,7 @@ const LectureProgressSchema = z.object({
   watchTime: z.number().default(0), // seconds watched
   completedAt: z.date().optional(),
   lastAccessedAt: z.date(),
-});
+})
 
 const QuizSchema = z.object({
   id: z.string().uuid(),
@@ -81,4 +81,4 @@ const QuizSchema = z.object({
   passingScore: z.number().default(70),
   createdAt: z.date(),
   updatedAt: z.date(),
-});
+})
