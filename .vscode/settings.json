@@ -66,6 +66,7 @@
     "**/*.xsl": true
   },
   "search.useIgnoreFiles": true,
+  "terminal.integrated.defaultProfile.linux": "zsh",
   "typescript.format.enable": false,
   "typescript.inlayHints.enumMemberValues.enabled": false,
   "typescript.inlayHints.functionLikeReturnTypes.enabled": true,

@@ -35,7 +35,7 @@
     }
   },
   "onCreateCommand": "git lfs install",
-  "postCreateCommand": "git lfs pull",
+  "postCreateCommand": "git lfs pull && bash ./scripts/setup-zsh.bash",
   // "postAttachCommand": "pnpm install --prefer-offline --frozen-lockfile && pnpm dev",
   "postAttachCommand": "npm run dev",
   "forwardPorts": [3000],
