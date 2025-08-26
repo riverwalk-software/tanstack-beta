@@ -1,8 +1,5 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "type": "module",
   "sideEffects": [
     "*.css",
@@ -117,7 +114,6 @@
     "vite": "^6.3.5",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4",
-    "wrangler": "^4.26.0",
-    "zod-fast-check": "^0.10.1"
+    "wrangler": "^4.26.0"
   }
 }
