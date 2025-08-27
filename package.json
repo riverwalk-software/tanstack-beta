@@ -96,7 +96,7 @@
     "drizzle-kit": "^0.31.4",
     "drizzle-seed": "^0.3.1",
     "expressive-code-fullscreen": "^1.0.0",
-    "fast-check": "^3.23.2",
+    "fast-check": "^4.2.0",
     "jsdom": "^26.1.0",
     "postcss": "^8.5.6",
     "react-email": "^4.2.4",

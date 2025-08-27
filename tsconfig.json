@@ -1,5 +1,5 @@
 {
-  "include": ["*.ts", "scripts", "src", "packages/**/src"],
+  "include": ["*.ts", "scripts", "src", "packages"],
   "compilerOptions": {
     // Paths
     "baseUrl": ".",
@@ -32,6 +32,8 @@
     "noImplicitReturns": true,
     "exactOptionalPropertyTypes": true,
     "noPropertyAccessFromIndexSignature": true,
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
 
     // Turn Off Transpilation: https://vite.dev/guide/features#transpile-only
     "noEmit": true,
