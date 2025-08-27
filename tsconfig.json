@@ -32,6 +32,7 @@
     "noImplicitReturns": true,
     "exactOptionalPropertyTypes": true,
     "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedSideEffectImports": true,
     "noUnusedParameters": false,
     "noUnusedLocals": false,
 
