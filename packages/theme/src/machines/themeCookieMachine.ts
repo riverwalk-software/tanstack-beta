@@ -12,9 +12,9 @@ export const getThemeCookie = (): Theme => {
 export const toggleThemeCookie = (): void => {
   const currentTheme = getThemeCookie()
   const newTheme = toggleTheme(currentTheme)
-  setThemeCookie(newTheme)
+  _setThemeCookie(newTheme)
 }
 
-const setThemeCookie = (theme: Theme): void => {
+export const _setThemeCookie = (theme: Theme): void => {
   cookies.set(THEME_COOKIE_NAME, theme)
 }

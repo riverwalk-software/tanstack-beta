@@ -1,23 +1,19 @@
 import { match, P } from "ts-pattern"
-import { flatten } from "../subpackages/functors/monad"
+import { flatten } from "../typeclasses/functors/Monad"
+import type { List } from "../types/lists/list"
+import type { Natural } from "../types/numbers/naturals/Natural"
 import { pipe } from "./combinators"
 
 export const replicate =
-  <A>(n: number) =>
-  (x: A): readonly A[] =>
-    match(n)
-      .returnType<readonly A[]>()
-      .when(
-        n => n >= 0,
-        () => Array.from({ length: n }, () => x),
-      )
-      .otherwise(() => [])
+  <A>(n: Natural) =>
+  (x: A): List<A> =>
+    Array.from({ length: n }, () => x)
 
 export const intersperse =
   <A>(delimiter: A) =>
-  (xs: readonly A[]): readonly A[] =>
+  (xs: List<A>): List<A> =>
     match(xs)
-      .returnType<readonly A[]>()
+      .returnType<List<A>>()
       .when(
         xs => xs.length === 0,
         () => [],
@@ -26,9 +22,9 @@ export const intersperse =
 
 const prependToAll =
   <A>(delimiter: A) =>
-  (xs: readonly A[]): readonly A[] =>
+  (xs: List<A>): List<A> =>
     match(xs)
-      .returnType<readonly A[]>()
+      .returnType<List<A>>()
       .with(
         P._,
         xs => xs.length === 0,
@@ -42,7 +38,7 @@ const prependToAll =
 
 export const intercalateList =
   <A>(delimiter: A[]) =>
-  (xss: readonly A[][]): readonly A[] =>
+  (xss: List<A>[]): List<A> =>
     pipe(xss, intersperse(delimiter), flatten)
 
 export const intercalate =

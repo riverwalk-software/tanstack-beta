@@ -6,6 +6,11 @@ export const swap =
   (a: A): C =>
     f(a)(b)
 
+export const constant =
+  <A, B>(x: A) =>
+  (_y: B): A =>
+    x
+
 type Fn<A, B> = (a: A) => B
 const _flowImpl =
   (...fns: Fn<unknown, unknown>[]) =>

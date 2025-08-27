@@ -1,7 +1,8 @@
-import { divide, mapMaybe, pipe } from "@prelude"
+import { pipe } from "@prelude"
 import { createServerFn } from "@tanstack/react-start"
 import { Context, Effect, Either } from "effect"
 import { produce } from "immer"
+import { proportionOf } from "packages/prelude/src/types/numbers/reals/BoundedPercentage"
 import { match } from "ts-pattern"
 import type { SessionData } from "@/lib/authentication"
 import { getSessionDataMw, SessionDataService } from "@/lib/authentication"
@@ -11,6 +12,7 @@ import {
   CloudflareBindingsService,
   getCloudflareBindings,
 } from "@/utils/getCloudflareBindings"
+import { type Progress, ProgressSchema } from "../types/Progress"
 import type { ProgressData } from "../types/ProgressData"
 import type {
   ChapterAndLecture,
@@ -109,24 +111,12 @@ const getChaptersAndLectures =
 
 export const calculateProgress = (
   chaptersAndLectures: ChapterAndLecture[],
-): number => {
-  const completedLectures = pipe(
+): Progress => {
+  const boundedPercentage = pipe(
     chaptersAndLectures,
-    mapMaybe(({ isComplete: maybeIsComplete }) =>
-      match(maybeIsComplete)
-        .with(true, () => ({}))
-        .otherwise(() => null),
-    ),
+    proportionOf(({ isComplete }) => isComplete === true),
   )
-  const part = completedLectures.length
-  const whole = chaptersAndLectures.length
-  const divisionResult = divide(part)(whole)
-  const quotient = match(divisionResult)
-    .returnType<number>()
-    .with({ _tag: "DIVIDE_BY_ZERO" }, () => 0)
-    .with({ _tag: "VALID" }, ({ quotient }) => quotient)
-    .exhaustive()
-  return quotient * 100
+  return ProgressSchema.parse(boundedPercentage)
 }
 
 export const setProgressFn = createServerFn({ method: "POST" })
