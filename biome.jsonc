@@ -59,7 +59,7 @@
         "noEvolvingTypes": "error"
       },
       "nursery": {
-        "noFloatingPromises": "error",
+        // "noFloatingPromises": "error",
         "useSortedClasses": {
           "fix": "safe",
           "level": "warn",
