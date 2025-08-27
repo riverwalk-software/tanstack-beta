@@ -35,6 +35,12 @@
         // }
       },
       "style": {
+        "useConsistentArrayType": {
+          "level": "error",
+          "options": {
+            "syntax": "shorthand"
+          }
+        },
         "noImplicitBoolean": "error",
         // "noImplicitCoercions": "error",
         // "useObjectSpread": "error",
