@@ -11,8 +11,8 @@ import { empty } from "./Plus"
 import { pure } from "./Pure"
 
 export const filter =
-  <A>(p: (a: A) => boolean) =>
-  (xs: List<A>): List<A> =>
+  <A>(p: (a: A) => boolean):
+  (xs: List<A>) => List<A> =>
     pipe(
       xs,
       flatMap(x => (p(x) ? pure(x) : empty())),
@@ -22,7 +22,7 @@ export const msum = <A>(xss: readonly List<A>[]): List<A> =>
   foldRight(combinePlusList)(empty<A>())(xss)
 
 export const count = // Requires foldable
-    <A>(p: (a: A) => boolean) =>
+    <A>(p: (a: A) => boolean): //TODO: CHANGE
     (xs: List<A>): Natural =>
       pipe(xs, filter(p), size, NaturalSchema.parse)
 
