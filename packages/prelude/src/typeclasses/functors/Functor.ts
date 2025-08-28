@@ -4,7 +4,7 @@ import type { Option } from "../../types/Option"
 
 export const mapList =
   <A, B>(f: (a: A) => B) =>
-  (xs: List<A>): readonly B[] =>
+  (xs: List<A>): List<B> =>
     xs.map(f)
 
 // export const mapString =

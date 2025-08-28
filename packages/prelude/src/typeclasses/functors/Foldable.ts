@@ -1,3 +1,4 @@
+import type { List } from "../../types/lists/list"
 import type { Real } from "../../types/numbers/reals/Real"
 
 export const foldLeft =

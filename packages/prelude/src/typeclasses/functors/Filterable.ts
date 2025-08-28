@@ -1,4 +1,4 @@
-// export const catMaybes = <A>(maybes: readonly Option<A>[]): List<A> =>
+// export const catMaybes = <A>(maybes: List<Option<A>>): List<A> =>
 //   maybes.filter(maybe =>
 //     match(maybe)
 //       .returnType<List<A>>()
@@ -8,5 +8,5 @@
 
 // export const mapMaybe =
 //   <A, B>(maybeF: (a: A) => Option<B>) =>
-//   (xs: List<A>): readonly B[] =>
+//   (xs: List<A>): List<B> =>
 //     pipe(xs, mapList(maybeF), catMaybes)
