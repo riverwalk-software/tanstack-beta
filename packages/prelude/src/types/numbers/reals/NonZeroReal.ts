@@ -1,7 +1,14 @@
-import type z from "zod"
-import { RealSchema } from "./Real"
+import { Brand, Schema } from "effect"
+import { flow } from "../../../logic/combinators"
+import { not } from "../../../typeclasses/lattices/BooleanLattice"
+import { areEqual } from "../../../typeclasses/lattices/Eq"
+import type { Real } from "./Real"
 
-export const NonZeroRealSchema = RealSchema.refine(n => n !== 0, {
-  message: "Number must be a non-zero real",
-}).brand("NonZeroReal")
-export type NonZeroReal = z.infer<typeof NonZeroRealSchema>
+export type NonZeroReal = Real & Brand.Brand<"NonZeroReal">
+export const NonZeroReal = Brand.refined<NonZeroReal>(
+  flow(areEqual(0), not),
+  n => Brand.error(`Expected ${n} to be a non-zero real number`),
+)
+export const NonZeroRealSchema = Schema.Number.pipe(
+  Schema.fromBrand(NonZeroReal),
+)
