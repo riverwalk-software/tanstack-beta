@@ -1,4 +1,6 @@
 import { match } from "ts-pattern"
+import type { List } from "../../types/lists/list"
+import { Natural } from "../../types/numbers/naturals/Natural"
 import type { Option } from "../../types/Option"
 import { size } from "./Foldable"
 
@@ -13,5 +15,5 @@ export const combinePlusList =
   <A>(xs: List<A>) =>
   (ys: List<A>): List<A> =>
     match(size(xs))
-      .with(0, () => ys)
+      .with(Natural(0), () => ys)
       .otherwise(() => xs)

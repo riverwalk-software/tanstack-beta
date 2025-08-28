@@ -1,4 +1,5 @@
-import { pipe } from "../../logic/combinators"
+import { Schema } from "effect"
+import { flow } from "../../logic/combinators"
 import type { List } from "../../types/lists/list"
 import {
   type Natural,
@@ -13,13 +14,13 @@ import { pure } from "./Pure"
 export const filter = <A>(p: (a: A) => boolean): ((xs: List<A>) => List<A>) =>
   flatMap(x => (p(x) ? pure(x) : empty()))
 
-export const msum = <A>(xss: List<A>[]): List<A> =>
-  foldRight(combinePlusList)(empty<A>())(xss)
+export const msum: <A>(xss: List<A>[]) => List<A> = foldRight(combinePlusList)(
+  empty(),
+)
 
 export const count = // Requires foldable
-    <A>(p: (a: A) => boolean) =>
-    (xs: List<A>): Natural =>
-      pipe(xs, filter(p), size, NaturalSchema.parse)
+  <A>(p: (a: A) => boolean): ((xs: List<A>) => Natural) =>
+    flow(filter(p), size, Schema.decodeSync(NaturalSchema))
 
 // guard
 

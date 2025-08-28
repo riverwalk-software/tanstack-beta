@@ -12,5 +12,5 @@ export const multiply =
   (multiplier: Real) =>
   (multiplicand: Real): Real =>
     multiplier * multiplicand
-export const sum = (ns: List<Real>): Real => foldLeft(add)(zero)(ns)
-export const product = (ns: List<Real>): Real => foldLeft(multiply)(one)(ns)
+export const sum: (ns: List<Real>) => Real = foldLeft(add)(zero)
+export const product: (ns: List<Real>) => Real = foldLeft(multiply)(one)

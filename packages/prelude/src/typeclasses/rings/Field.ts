@@ -9,7 +9,19 @@ export const realDivide =
   (divisor: NonZeroReal): Real =>
     dividend / divisor
 
-export const divide = (dividend: Integer, divisor: NonZeroInteger): Rational =>
+// export const rationalDivide = (
+//   dividend: Rational,
+//   divisor: Rational,
+// ): Rational =>
+//   new Rational({
+//     numerator: Integer(dividend.numerator * divisor.denominator),
+//     denominator: NonZeroInteger(dividend.denominator * divisor.numerator),
+//   }) // divide by 0 problem
+
+export const safeDivide = (
+  dividend: Integer,
+  divisor: NonZeroInteger,
+): Rational =>
   new Rational({
     numerator: dividend,
     denominator: divisor,

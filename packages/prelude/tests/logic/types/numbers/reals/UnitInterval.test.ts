@@ -10,7 +10,6 @@ import {
 } from "../../../../../src/types/numbers/reals/BoundedPercentage"
 import {
   type UnitInterval,
-  UnitIntervalSchema,
   unitIntervalBoundedPercentageBijection,
 } from "../../../../../src/types/numbers/reals/UnitInterval"
 
@@ -34,7 +33,7 @@ describe("unitIntervalBoundedPercentageBijection", () => {
         const unitInterval = unitIntervalBoundedPercentageBijection.from(
           boundedPercentage as BoundedPercentage,
         )
-        UnitIntervalSchema.parse(unitInterval)
+        UnitInterval.parse(unitInterval)
       }),
     )
   })
