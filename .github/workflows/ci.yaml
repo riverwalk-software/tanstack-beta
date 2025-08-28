@@ -25,7 +25,7 @@ jobs:
         task: [build, lint, test, typecheck]
     name: ${{ matrix.task }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
         with:
           lfs: ${{ matrix.task == 'build' }}
           persist-credentials: false
