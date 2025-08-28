@@ -43,5 +43,5 @@ export const intercalateList =
 
 export const intercalate =
   (delimiter: string) =>
-  (strings: readonly string[]): string =>
+  (strings: List<string>): string =>
     strings.join(delimiter)
