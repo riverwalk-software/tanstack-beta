@@ -1,11 +1,13 @@
-name: CI
+name: Pre-Merge CI
 
 on:
   pull_request:
+    types: [labeled, synchronize, opened, reopened]
 
 env:
   NODE_ENV: development
   CI: true
+  PRE_MERGE: true
   POLAR_SUCCESS_URL: "https://previewDomain/success?checkout_id={CHECKOUT_ID}"
 
 permissions:
@@ -17,7 +19,7 @@ concurrency:
 
 jobs:
   checks:
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'full-ci') }}
+    if: contains(github.event.pull_request.labels.*.name, 'full-ci')
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
