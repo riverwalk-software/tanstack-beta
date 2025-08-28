@@ -39,6 +39,7 @@ const rehypeExpressiveCodeOptions: RehypeExpressiveCodeOptions = {
   ],
 }
 
+// biome-ignore lint/style/noDefaultExport: Config file
 export default defineConfig({
   server: {
     port: 3000,

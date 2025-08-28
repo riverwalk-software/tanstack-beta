@@ -25,6 +25,7 @@
         // "noMisusedPromises": "error",
       },
       "complexity": {
+        "useLiteralKeys": "off",
         "noExcessiveCognitiveComplexity": {
           "level": "warn",
           "options": { "maxAllowedComplexity": 12 }
