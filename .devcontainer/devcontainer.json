@@ -29,7 +29,8 @@
         "GitHub.vscode-pull-request-github", // Needs more configuration
         "ms-vsliveshare.vsliveshare",
         "redhat.vscode-yaml",
-        "unifiedjs.vscode-mdx"
+        "unifiedjs.vscode-mdx",
+        "vitest.explorer"
         // "WallabyJs.console-ninja"
       ]
     }

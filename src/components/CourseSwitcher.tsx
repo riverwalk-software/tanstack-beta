@@ -15,9 +15,9 @@ import {
 } from "@/components/ui/sidebar"
 import { useCourseCursor } from "@/hooks/useCourseCursor"
 import { useNavigation } from "@/hooks/useNavigation"
-import type { UserStoreSlugs } from "../lib/userStore"
+import type { UserStoreIds } from "../lib/userStore"
 
-export function CourseSwitcher({ slugs }: { slugs: UserStoreSlugs }) {
+export function CourseSwitcher({ slugs }: { slugs: UserStoreIds }) {
   const { isMobile } = useSidebar()
   const { current, courses } = useCourseCursor({ slugs })
   const { isNavigating, navigate, toggleIsNavigating } = useNavigation()
@@ -25,7 +25,7 @@ export function CourseSwitcher({ slugs }: { slugs: UserStoreSlugs }) {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild={true}>
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"

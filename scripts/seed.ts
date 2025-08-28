@@ -1,18 +1,20 @@
 import { promises as fs } from "node:fs"
 import path from "node:path"
 import { schema } from "@schools"
+import type { UserStore } from "@userStore"
 import { drizzle } from "drizzle-orm/d1"
 import { reset, seed } from "drizzle-seed"
-import { produce } from "immer"
 import mime from "mime-types"
 import { TEST_USER } from "@/lib/constants"
-import type { UserStore } from "@/lib/userStore"
+import { getCloudflareBindings } from "../src/utils/getCloudflareBindings"
 
 async function main() {
-  const { getPlatformProxy } = await import("wrangler")
-  const proxy = await getPlatformProxy()
   const { ATTACHMENTS_BUCKET, SCHOOL_DB, USER_STORE, AUTH_DB } =
-    proxy.env as unknown as CloudflareBindings
+    getCloudflareBindings()
+  // const { getPlatformProxy } = await import("wrangler");
+  // const proxy = await getPlatformProxy();
+  // const { ATTACHMENTS_BUCKET, SCHOOL_DB, USER_STORE, AUTH_DB } =
+  // proxy.env as unknown as CloudflareBindings;
   await seedSchoolDatabase(SCHOOL_DB)
   await seedUserStore(SCHOOL_DB, USER_STORE)
   await seedAttachmentsBucket(ATTACHMENTS_BUCKET)
@@ -150,35 +152,34 @@ const seedUserStore = async (
   USER_STORE: KVNamespace,
 ) => {
   await resetUserStore(USER_STORE)
-  const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema })
-  const schools = await db.query.SchoolEntity.findMany({
-    with: {
-      courses: {
-        with: {
-          chapters: {
-            with: {
-              lectures: true,
-            },
-          },
-        },
-      },
-    },
-  })
+  // const db = drizzle(SCHOOL_DB, { casing: "snake_case", schema });
+  // const schools = await db.query.SchoolEntity.findMany({
+  //   with: {
+  //     courses: {
+  //       with: {
+  //         chapters: {
+  //           with: {
+  //             lectures: true,
+  //           },
+  //         },
+  //       },
+  //     },
+  //   },
+  // });
 
-  const userStore: UserStore = produce(
-    { schools } as UserStore,
-    ({ schools }) => {
-      schools.forEach(school => {
-        school.courses.forEach(course => {
-          course.chapters.forEach(chapter => {
-            chapter.lectures.forEach(lecture => {
-              // lecture.completed = false;
-            })
-          })
-        })
-      })
-    },
-  )
+  // const userStore: UserStore = produce(
+  //   { schools } as UserStore,
+  //   ({ schools }) => {
+  //     schools.forEach((school) => {
+  //       school.courses.forEach((course) => {
+  //         course.chaptersAndLectures
+  //       });
+  //     });
+  //   },
+  // );
+  const userStore: UserStore = {
+    schools: [],
+  }
 
   await USER_STORE.put(TEST_USER.email, JSON.stringify(userStore))
 }
@@ -188,7 +189,7 @@ const resetUserStore = async (USER_STORE: KVNamespace) =>
 
 const seedAttachmentsBucket = async (ATTACHMENTS_BUCKET: R2Bucket) => {
   await resetAttachmentsBucket(ATTACHMENTS_BUCKET)
-  const attachmentsDir = "src/db/main/attachments"
+  const attachmentsDir = "packages/schools/src/db/attachments"
   const files = await fs.readdir(attachmentsDir)
   for (const filename of files) {
     const filePath = path.join(attachmentsDir, filename)

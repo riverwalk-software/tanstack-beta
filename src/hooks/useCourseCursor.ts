@@ -1,14 +1,10 @@
 import { useMemo } from "react"
 import { match, P } from "ts-pattern"
 import { type Course, useCourses } from "@/lib/schools"
-import type { UserStoreSlugs } from "@/lib/userStore"
+import type { UserStoreIds } from "@/lib/userStore"
 import * as ListZipper from "@/utils/listZipper"
 
-export const useCourseCursor = ({
-  slugs,
-}: {
-  slugs: UserStoreSlugs
-}): Return => {
+export const useCourseCursor = ({ slugs }: { slugs: UserStoreIds }): Return => {
   const { schoolSlug } = slugs
   const { courses } = useCourses(slugs)
   const currentCourseIndex = useMemo(
@@ -63,7 +59,7 @@ interface Return {
 
 interface CourseAndSlugs {
   course: Course
-  slugs: Omit<UserStoreSlugs, "chapterSlug" | "lectureSlug">
+  slugs: Omit<UserStoreIds, "chapterSlug" | "lectureSlug">
 }
 
 type MaybeCourseAndSlugs = CourseAndSlugs | undefined
