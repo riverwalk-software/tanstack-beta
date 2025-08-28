@@ -1,4 +1,4 @@
-import Effect, { Brand } from "effect"
+import Effect, { Brand, Schema } from "effect"
 import { NonZeroReal } from "./NonZeroReal"
 import type { Real } from "./Real"
 
@@ -9,3 +9,6 @@ const _PositiveReal = Brand.refined<_PositiveReal>(
 )
 export const PositiveReal = Brand.all(_PositiveReal, NonZeroReal)
 export type PositiveReal = Brand.Brand.FromConstructor<typeof PositiveReal>
+export const PositiveRealSchema = Schema.Number.pipe(
+  Schema.fromBrand(PositiveReal),
+)
