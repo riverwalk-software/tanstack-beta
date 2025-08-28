@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   checks:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'full-ci') }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
