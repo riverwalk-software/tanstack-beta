@@ -1,5 +1,4 @@
-import { Schema } from "effect"
-import { flow } from "../../logic/combinators"
+import { flow, Schema } from "effect"
 import type { List } from "../../types/lists/list"
 import {
   type Natural,

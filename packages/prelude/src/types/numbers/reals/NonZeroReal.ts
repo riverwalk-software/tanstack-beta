@@ -1,5 +1,4 @@
-import { Brand, Schema } from "effect"
-import { flow } from "../../../logic/combinators"
+import { Brand, flow, Schema } from "effect"
 import { not } from "../../../typeclasses/lattices/BooleanLattice"
 import { areEqual } from "../../../typeclasses/lattices/Eq"
 import type { Real } from "./Real"

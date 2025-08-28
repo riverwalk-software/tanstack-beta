@@ -1,4 +1,4 @@
-import { flow } from "../../logic/combinators"
+import { flow } from "effect"
 import type { List } from "../../types/lists/list"
 import { mapList } from "./Functor"
 

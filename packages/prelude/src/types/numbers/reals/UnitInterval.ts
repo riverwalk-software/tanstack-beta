@@ -1,5 +1,5 @@
-import Effect, { Brand, Schema } from "effect"
-import { flow, swap } from "../../../logic/combinators"
+import Effect, { Brand, flow, Schema } from "effect"
+import { swap } from "../../../logic/combinators"
 import type { Bijection } from "../../../typeclasses/functions/Bijection"
 import { realDivide } from "../../../typeclasses/rings/Field"
 import { multiply } from "../../../typeclasses/rings/Semiring"

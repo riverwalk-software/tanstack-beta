@@ -1,4 +1,4 @@
-import { flow } from "../../logic/combinators"
+import { flow } from "effect"
 
 export type Bijection<A, B> = {
   to: (a: A) => B

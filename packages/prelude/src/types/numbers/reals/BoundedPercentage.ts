@@ -1,5 +1,4 @@
-import Effect, { Brand, Schema } from "effect"
-import { pipe } from "../../../logic/combinators"
+import Effect, { Brand, pipe, Schema } from "effect"
 import { size } from "../../../typeclasses/functors/Foldable"
 import { count } from "../../../typeclasses/functors/MonadAlternative"
 import { realDivide } from "../../../typeclasses/rings/Field"
