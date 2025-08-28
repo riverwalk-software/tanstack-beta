@@ -1,29 +1,30 @@
-import type z from "zod"
-import type { Bijection } from "../../../typeclasses/functions/Bijection"
-import { divide } from "../../../typeclasses/rings/Field"
-import { multiply } from "../../../typeclasses/rings/Semiring"
-import {
-  type BoundedPercentage,
-  BoundedPercentageSchema,
-} from "./BoundedPercentage"
-import { NonZeroRealSchema } from "./NonZeroReal"
-import { RealSchema } from "./Real"
+import Effect, { Brand, Schema } from "effect"
+import type { Real } from "./Real"
 
-export const UnitIntervalSchema = RealSchema.min(0).max(1).brand("UnitInterval")
-export type UnitInterval = z.infer<typeof UnitIntervalSchema>
+export type UnitInterval = Real & Brand.Brand<"UnitInterval">
+export const UnitInterval = Brand.refined<UnitInterval>(
+  Effect.Number.between({
+    minimum: 0,
+    maximum: 1,
+  }),
+  n => Brand.error(`Expected ${n} to be a Real in the interval [0, 100]`),
+)
+export const UnitIntervalSchema = Schema.Number.pipe(
+  Schema.fromBrand(UnitInterval),
+)
 
-export const SCALE = 100 as const
-export const unitIntervalBoundedPercentageBijection: Bijection<
-  UnitInterval,
-  BoundedPercentage
-> = {
-  to: unitInterval => {
-    const product = multiply(unitInterval)(SCALE)
-    return BoundedPercentageSchema.parse(product)
-  },
-  from: boundedPercentage => {
-    const divisor = NonZeroRealSchema.parse(SCALE)
-    const quotient = divide(boundedPercentage)(divisor)
-    return UnitIntervalSchema.parse(quotient)
-  },
-}
+// export const SCALE = 100 as const
+// export const unitIntervalBoundedPercentageBijection: Bijection<
+//   UnitInterval,
+//   BoundedPercentage
+// > = {
+//   to: unitInterval => {
+//     const product = multiply(unitInterval)(SCALE)
+//     return Schema.decodeSync(BoundedPercentage)(product)
+//   },
+//   from: boundedPercentage => {
+//     const divisor = Schema.decodeSync(NonZeroReal)(SCALE)
+//     const quotient = divide(boundedPercentage)(divisor)
+//     return Schema.decodeSync(UnitInterval)(quotient)
+//   },
+// }

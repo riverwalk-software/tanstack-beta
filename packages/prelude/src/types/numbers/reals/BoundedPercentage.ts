@@ -8,10 +8,7 @@ const _BoundedPercentage = Brand.refined<_BoundedPercentage>(
     minimum: 0,
     maximum: 100,
   }),
-  n =>
-    Brand.error(
-      `Expected ${n} to be a BoundedPercentage in the interval [0, 100]`,
-    ),
+  n => Brand.error(`Expected ${n} to be a Percentage in the interval [0, 100]`),
 )
 export const BoundedPercentage = Brand.all(_BoundedPercentage, Percentage)
 export type BoundedPercentage = Brand.Brand.FromConstructor<

@@ -7,7 +7,7 @@ import type { Real } from "./Real"
 export type NonZeroReal = Real & Brand.Brand<"NonZeroReal">
 export const NonZeroReal = Brand.refined<NonZeroReal>(
   flow(areEqual(0), not),
-  n => Brand.error(`Expected ${n} to be a non-zero real number`),
+  n => Brand.error(`Expected ${n} to be a non-zero Real`),
 )
 export const NonZeroRealSchema = Schema.Number.pipe(
   Schema.fromBrand(NonZeroReal),
