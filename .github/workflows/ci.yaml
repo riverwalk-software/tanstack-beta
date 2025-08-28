@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 env:
-  NODE_ENV: development,
+  NODE_ENV: development
   POLAR_SUCCESS_URL: "https://previewDomain/success?checkout_id={CHECKOUT_ID}"
 
 permissions:
