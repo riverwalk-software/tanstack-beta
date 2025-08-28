@@ -4,12 +4,9 @@
 import fc from "fast-check"
 
 import { describe, it } from "vitest"
+import { BoundedPercentage } from "../../../../../src/types/numbers/reals/BoundedPercentage"
 import {
-  type BoundedPercentage,
-  BoundedPercentageSchema,
-} from "../../../../../src/types/numbers/reals/BoundedPercentage"
-import {
-  type UnitInterval,
+  UnitInterval,
   unitIntervalBoundedPercentageBijection,
 } from "../../../../../src/types/numbers/reals/UnitInterval"
 
@@ -23,7 +20,7 @@ describe("unitIntervalBoundedPercentageBijection", () => {
         const boundedPercentage = unitIntervalBoundedPercentageBijection.to(
           unitInterval as UnitInterval,
         )
-        BoundedPercentageSchema.parse(boundedPercentage)
+        BoundedPercentage(boundedPercentage)
       }),
     )
   })
@@ -33,7 +30,7 @@ describe("unitIntervalBoundedPercentageBijection", () => {
         const unitInterval = unitIntervalBoundedPercentageBijection.from(
           boundedPercentage as BoundedPercentage,
         )
-        UnitInterval.parse(unitInterval)
+        UnitInterval(unitInterval)
       }),
     )
   })

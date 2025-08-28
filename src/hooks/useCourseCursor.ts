@@ -1,3 +1,4 @@
+
 import { useMemo } from "react"
 import { match, P } from "ts-pattern"
 import { type Course, useCourses } from "@/lib/schools"
@@ -50,14 +51,14 @@ export const useCourseCursor = ({ slugs }: { slugs: UserStoreIds }): Return => {
   }
 }
 
-interface Return {
-  maybePrevious: MaybeCourseAndSlugs
-  current: CourseAndSlugs
-  maybeNext: MaybeCourseAndSlugs
-  courses: Course[]
-}
+  interface Return {
+    maybePrevious: MaybeCourseAndSlugs
+    current: CourseAndSlugs
+    maybeNext: MaybeCourseAndSlugs
+    courses: Course[]
+  }
 
-interface CourseAndSlugs {
+  type CourseAndSlugs = {}
   course: Course
   slugs: Omit<UserStoreIds, "chapterSlug" | "lectureSlug">
 }

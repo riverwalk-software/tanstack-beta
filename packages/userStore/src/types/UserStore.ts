@@ -16,7 +16,8 @@ export const ChapterAndLectureSchema = z.object({
   lecture: z.object({ id: ID_SCHEMA }),
   isComplete: z.boolean().optional(),
 })
-export type ChapterAndLecture = z.infer<typeof ChapterAndLectureSchema>
+export interface ChapterAndLecture
+  extends Schema.Type<typeof ChapterAndLectureSchema> {}
 
 // export interface ChapterAndLecture {
 //   chapter: {

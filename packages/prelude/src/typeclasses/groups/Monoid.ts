@@ -1,4 +1,5 @@
 import { match } from "ts-pattern"
+import type { List } from "../../types/lists/list"
 
 export function neutral<A>(type: "list"): List<A>
 export function neutral(type: "string"): string

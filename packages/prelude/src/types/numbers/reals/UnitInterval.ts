@@ -1,4 +1,13 @@
 import Effect, { Brand, Schema } from "effect"
+import { flow, swap } from "../../../logic/combinators"
+import type { Bijection } from "../../../typeclasses/functions/Bijection"
+import { realDivide } from "../../../typeclasses/rings/Field"
+import { multiply } from "../../../typeclasses/rings/Semiring"
+import {
+  type BoundedPercentage,
+  BoundedPercentageSchema,
+} from "./BoundedPercentage"
+import { NonZeroReal } from "./NonZeroReal"
 import type { Real } from "./Real"
 
 export type UnitInterval = Real & Brand.Brand<"UnitInterval">
@@ -13,18 +22,11 @@ export const UnitIntervalSchema = Schema.Number.pipe(
   Schema.fromBrand(UnitInterval),
 )
 
-// export const SCALE = 100 as const
-// export const unitIntervalBoundedPercentageBijection: Bijection<
-//   UnitInterval,
-//   BoundedPercentage
-// > = {
-//   to: unitInterval => {
-//     const product = multiply(unitInterval)(SCALE)
-//     return Schema.decodeSync(BoundedPercentage)(product)
-//   },
-//   from: boundedPercentage => {
-//     const divisor = Schema.decodeSync(NonZeroReal)(SCALE)
-//     const quotient = divide(boundedPercentage)(divisor)
-//     return Schema.decodeSync(UnitInterval)(quotient)
-//   },
-// }
+export const SCALE = NonZeroReal(100)
+export const unitIntervalBoundedPercentageBijection: Bijection<
+  UnitInterval,
+  BoundedPercentage
+> = {
+  to: flow(multiply(SCALE), Schema.decodeSync(BoundedPercentageSchema)),
+  from: flow(swap(realDivide)(SCALE), Schema.decodeSync(UnitIntervalSchema)),
+}

@@ -1,3 +1,4 @@
+
 import { useNavigate } from "@tanstack/react-router"
 import {
   type UserStoreIds,
@@ -6,12 +7,14 @@ import {
 } from "@userStore"
 import { match, P } from "ts-pattern"
 import { TeamSwitcher } from "@/components/team-switcher"
+
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+
 import { useChapterAndLectureCursor } from "@/hooks/useChapterAndLectureCursor"
 import { useNavigation } from "@/hooks/useNavigation"
 import { CourseSwitcher } from "./CourseSwitcher"
@@ -49,6 +52,8 @@ export function AppSidebar({
       <div className="m-auto ml-25 flex w-full max-w-3xl flex-col items-center justify-center gap-4">
         <p>HELLO</p>
         {/* <div className="flex w-full items-center gap-4">
+        <p>HELLO</p>
+        {/* <div className="flex w-full items-center gap-4">
           <div className="w-[60%]">
             <Progress value={courseProgress} className="h-4 w-full" />
           </div>
@@ -83,12 +88,14 @@ export function AppSidebar({
             </span>
           </a>
         ))} */}
+        ))} */}
         {/* <ExampleMdx /> */}
       </div>
     </>
   )
 }
 
+function ResetButtons(slugs: UserStoreIds) {
 function ResetButtons(slugs: UserStoreIds) {
   return (
     <div className="flex gap-4">
@@ -97,6 +104,7 @@ function ResetButtons(slugs: UserStoreIds) {
   )
 }
 
+function LectureNavigationButtons({ slugs }: { slugs: UserStoreIds }) {
 function LectureNavigationButtons({ slugs }: { slugs: UserStoreIds }) {
   return (
     <div className="flex gap-4">
@@ -135,6 +143,12 @@ function NextLectureButton({ slugs }: { slugs: UserStoreIds }) {
   const { setProgressMt, getIsComplete } = useUserStore()
   const navigate = useNavigate()
   const isComplete = getIsComplete(slugs)
+=======
+function NextLectureButton({ slugs }: { slugs: UserStoreIds }) {
+  const { maybeNext } = useChapterAndLectureCursor({ slugs });
+  const { setProgressMt, getIsComplete } = useUserStore();
+  const navigate = useNavigate();
+  const isComplete = getIsComplete(slugs);
   return match([maybeNext, isComplete])
     .with([P.nullish, true], () => null)
     .otherwise(([next]) => (
@@ -146,6 +160,7 @@ function NextLectureButton({ slugs }: { slugs: UserStoreIds }) {
             {
               _tag: "LECTURE",
               ...slugs,
+              isComplete: true,
               isComplete: true,
             },
             {

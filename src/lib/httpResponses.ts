@@ -3,11 +3,11 @@ import { HTTPError } from "ky"
 import ms from "ms"
 import type { KyHeadersInit } from "node_modules/ky/distribution/types/options"
 import { match, P } from "ts-pattern"
-import { type ZodTypeAny, z } from "zod"
+import { z } from "zod"
 import { httpClient } from "@/lib/httpClient"
 import { s } from "../utils/time"
 
-export function strictParse<T extends ZodTypeAny>(
+export function strictParse<T extends z.ZodType>(
   schema: T,
   obj: z.input<T>,
 ): z.infer<T> {
@@ -209,7 +209,7 @@ export const concurrent = <
   arg: Arg,
 ) => Effect.all(arg, { concurrency: "inherit" })
 
-export const fetchApi = <T extends ZodTypeAny>({
+export const fetchApi = <T extends z.ZodType>({
   body: maybeBody,
   headers,
   method,

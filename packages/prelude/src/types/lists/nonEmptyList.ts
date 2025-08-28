@@ -1,5 +1,6 @@
-import Effect, { Brand, flow } from "effect"
+import Effect, { Brand } from "effect"
 import { refined } from "effect/Brand"
+import { flow } from "../../logic/combinators"
 import { size } from "../../typeclasses/functors/Foldable"
 import type { List } from "./list"
 
@@ -12,7 +13,7 @@ export const NonEmptyList = <A>() =>
   )
 
 export const isNonEmptyList = <A>(xs: List<A>): xs is NonEmptyList<A> =>
-  xs.length > 0
+  size(xs) > 0
 
 export const head = <A>(xs: NonEmptyList<A>): A => xs[0]
 export const tail = <A>(xs: NonEmptyList<A>): List<A> => xs.slice(1)

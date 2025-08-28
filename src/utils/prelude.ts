@@ -24,7 +24,8 @@ export const max =
  * ```
  */
 export const clamp =
-  (minValue: number, maxValue: number) =>
+  (minValue: number) =>
+  (maxValue: number) =>
   (value: number): number =>
     min(maxValue)(max(minValue)(value))
 

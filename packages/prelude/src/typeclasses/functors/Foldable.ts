@@ -1,9 +1,5 @@
-import { Schema } from "effect"
 import type { List } from "../../types/lists/list"
-import {
-  type Natural,
-  NaturalSchema,
-} from "../../types/numbers/naturals/Natural"
+import { Natural } from "../../types/numbers/naturals/Natural"
 
 export const foldLeft =
   <A, B>(reducer: (accumulator: B) => (current: A) => B) =>
@@ -23,8 +19,7 @@ export const foldRight =
       initial,
     )
 
-export const size = <A>(xs: List<A>): Natural =>
-  Schema.decodeSync(NaturalSchema)(xs.length)
+export const size = <A>(xs: List<A>): Natural => Natural(xs.length)
 
 // exists p
 // Conceptually: “Does any element satisfy p?” → any p via a fold.

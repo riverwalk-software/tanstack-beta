@@ -13,7 +13,8 @@
   "editor.wordWrapColumn": 80,
   "explorer.excludeGitIgnore": true,
   "explorer.fileNesting.patterns": {
-    ".gitignore": ".gitattributes"
+    ".gitignore": ".gitattributes",
+    "vite.config.ts": "vite*.ts"
   },
   "files.associations": {
     "wrangler.json": "jsonc",

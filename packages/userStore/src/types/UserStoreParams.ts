@@ -35,5 +35,7 @@ export const SetUserStoreParamsSchema = z.discriminatedUnion("_tag", [
     .merge(IsCompleteSchema),
 ])
 
-export type GetUserStoreParams = z.infer<typeof GetUserStoreParamsSchema>
-export type SetUserStoreParams = z.infer<typeof SetUserStoreParamsSchema>
+export interface GetUserStoreParams
+  extends Schema.Type<typeof GetUserStoreParamsSchema> {}
+export interface SetUserStoreParams
+  extends Schema.Type<typeof SetUserStoreParamsSchema> {}
