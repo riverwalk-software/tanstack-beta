@@ -1,25 +1,15 @@
-import { match } from "ts-pattern"
+import Effect, { Brand, flow } from "effect"
+import { refined } from "effect/Brand"
 import { size } from "../../typeclasses/functors/Foldable"
-import type { Option } from "../Option"
 import type { List } from "./list"
 
-declare const NonEmptyListBrand: unique symbol
-type NonEmptyListBrand = typeof NonEmptyListBrand
+export type NonEmptyList<A> = readonly [A, ...List<A>] &
+  Brand.Brand<"NonEmptyList">
 
-export type NonEmptyList<A> = readonly [A, ...List<A>] & {
-  readonly _brand: NonEmptyListBrand
-}
-
-// export const makeNonEmptyList =
-//   <A>(head: A) =>
-//   (tail: List<A>): NonEmptyList<A> =>
-//     [head, ...tail] as unknown as NonEmptyList<A>
-
-export const makeNonEmptyList = <A>(xs: A): Option<NonEmptyList<A>> =>
-  match(size(xs))
-    .returnType<Option<NonEmptyList<A>>>()
-    .with(0, () => ({ _tag: "None" }))
-    .otherwise(() => ({ _tag: "Some", value: xs as NonEmptyList<A> }))
+export const NonEmptyList = <A>() =>
+  refined<NonEmptyList<A>>(flow(size, Effect.Number.greaterThan(0)), n =>
+    Brand.error(`Expected ${n} to be a non-empty List`),
+  )
 
 export const isNonEmptyList = <A>(xs: List<A>): xs is NonEmptyList<A> =>
   xs.length > 0
