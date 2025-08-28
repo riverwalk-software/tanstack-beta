@@ -1,5 +1,11 @@
-import type z from "zod"
-import { RealSchema } from "./Real"
+import Effect, { Brand } from "effect"
+import { NonZeroReal } from "./NonZeroReal"
+import type { Real } from "./Real"
 
-export const PositiveRealSchema = RealSchema.positive().brand("PositiveReal")
-export type PositiveReal = z.infer<typeof PositiveRealSchema>
+type _PositiveReal = Real & Brand.Brand<"PositiveReal">
+const _PositiveReal = Brand.refined<_PositiveReal>(
+  Effect.Number.greaterThan(0),
+  n => Brand.error(`Expected ${n} to be a positive real number`),
+)
+export const PositiveReal = Brand.all(_PositiveReal, NonZeroReal)
+export type PositiveReal = Brand.Brand.FromConstructor<typeof PositiveReal>
