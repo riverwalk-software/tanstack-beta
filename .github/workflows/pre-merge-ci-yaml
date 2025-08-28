@@ -1,0 +1,39 @@
+name: Pre-Merge CI
+
+on:
+  pull_request:
+    types: [labeled, synchronize, opened, reopened]
+
+env:
+  NODE_ENV: development
+  CI: true
+  PRE_MERGE: true
+  POLAR_SUCCESS_URL: "https://previewDomain/success?checkout_id={CHECKOUT_ID}"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    if: contains(github.event.pull_request.labels.*.name, 'full-ci')
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [build, lint, test, typecheck]
+    name: ${{ matrix.task }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: ${{ matrix.task == 'build' }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run ${{ matrix.task }}
