@@ -10,7 +10,7 @@ const SearchParamsSchema = z
 
 export const Route = createFileRoute("/_unauthenticated")({
   validateSearch: SearchParamsSchema,
-  beforeLoad: async ({
+  beforeLoad: ({
     context: {
       authenticationData: { isAuthenticated },
     },

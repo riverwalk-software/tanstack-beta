@@ -3,7 +3,7 @@ import type { SessionData } from "@/lib/authentication"
 import { AUTH_CALLBACK_ROUTE } from "@/lib/constants"
 
 export const Route = createFileRoute("/_authenticated")({
-  beforeLoad: async ({
+  beforeLoad: ({
     context: {
       authenticationData: { isAuthenticated, sessionData },
     },

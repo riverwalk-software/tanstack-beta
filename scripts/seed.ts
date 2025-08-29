@@ -1,11 +1,11 @@
 import { promises as fs } from "node:fs"
 import path from "node:path"
-import { schema } from "@schools"
+import { dbSchema } from "@schools"
 import type { UserStore } from "@userStore"
 import { drizzle } from "drizzle-orm/d1"
 import { reset, seed } from "drizzle-seed"
 import mime from "mime-types"
-import { TEST_USER } from "@/lib/constants"
+import { TEST_USER } from "../src/lib/constants"
 import { getCloudflareBindings } from "../src/utils/getCloudflareBindings"
 
 async function main() {
@@ -25,8 +25,8 @@ async function main() {
 
 const seedSchoolDatabase = async (SCHOOL_DB: D1Database) => {
   const db = drizzle(SCHOOL_DB, { casing: "snake_case" })
-  await reset(db, schema)
-  await seed(db, schema, { count: 1, seed: 0 }).refine(
+  await reset(db, dbSchema)
+  await seed(db, dbSchema, { count: 1, seed: 0 }).refine(
     ({ intPrimaryKey, timestamp, uuid, loremIpsum, valuesFromArray }) => ({
       SchoolEntity: {
         count: 1,
@@ -184,7 +184,7 @@ const seedUserStore = async (
   await USER_STORE.put(TEST_USER.email, JSON.stringify(userStore))
 }
 
-const resetUserStore = async (USER_STORE: KVNamespace) =>
+const resetUserStore = (USER_STORE: KVNamespace) =>
   USER_STORE.delete(TEST_USER.email)
 
 const seedAttachmentsBucket = async (ATTACHMENTS_BUCKET: R2Bucket) => {

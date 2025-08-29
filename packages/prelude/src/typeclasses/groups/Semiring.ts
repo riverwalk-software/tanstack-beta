@@ -1,4 +1,5 @@
 import { match } from "ts-pattern"
+import type { List } from "../../types/lists/list"
 
 export function combine<A>(xs: List<A>): (ys: List<A>) => List<A>
 export function combine(xs: string): (ys: string) => string

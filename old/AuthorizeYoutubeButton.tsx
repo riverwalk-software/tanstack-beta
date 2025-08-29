@@ -3,7 +3,7 @@ import { authClient } from "@/lib/auth-client"
 import { AUTH_CALLBACK_ROUTE } from "@/lib/constants"
 import { youtubeScopes } from "@/utils/oauth/google"
 import { youtubeAuthorizationDataQueryOptions } from "@/utils/oauth/youtube"
-import { Button } from "../ui/button"
+import { Button } from "../src/components/ui/button"
 
 export function AuthorizeYoutubeButton() {
   const { authorizeYoutube, isPending } = useAuthorizeYoutube()

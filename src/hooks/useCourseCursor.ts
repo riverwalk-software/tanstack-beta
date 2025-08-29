@@ -1,11 +1,16 @@
-
+import type { List } from "@prelude"
+import { useCourses } from "@schools"
+import type { UserStoreSlugs } from "@userStore"
+import type { Course } from "packages/schools/src/types/SchemaTypes"
 import { useMemo } from "react"
 import { match, P } from "ts-pattern"
-import { type Course, useCourses } from "@/lib/schools"
-import type { UserStoreIds } from "@/lib/userStore"
 import * as ListZipper from "@/utils/listZipper"
 
-export const useCourseCursor = ({ slugs }: { slugs: UserStoreIds }): Return => {
+export const useCourseCursor = ({
+  slugs,
+}: {
+  slugs: UserStoreSlugs
+}): Return => {
   const { schoolSlug } = slugs
   const { courses } = useCourses(slugs)
   const currentCourseIndex = useMemo(
@@ -51,16 +56,16 @@ export const useCourseCursor = ({ slugs }: { slugs: UserStoreIds }): Return => {
   }
 }
 
-  interface Return {
-    maybePrevious: MaybeCourseAndSlugs
-    current: CourseAndSlugs
-    maybeNext: MaybeCourseAndSlugs
-    courses: Course[]
-  }
+interface Return {
+  maybePrevious: MaybeCourseAndSlugs
+  current: CourseAndSlugs
+  maybeNext: MaybeCourseAndSlugs
+  courses: List<Course>
+}
 
-  type CourseAndSlugs = {}
+type CourseAndSlugs = {
   course: Course
-  slugs: Omit<UserStoreIds, "chapterSlug" | "lectureSlug">
+  slugs: Omit<UserStoreSlugs, "chapterSlug" | "lectureSlug">
 }
 
 type MaybeCourseAndSlugs = CourseAndSlugs | undefined

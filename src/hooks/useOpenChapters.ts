@@ -3,9 +3,13 @@ import { useSelector } from "@xstate/store/react"
 import * as Immutable from "immutable"
 import { useCallback, useEffect } from "react"
 import { combineSlugs } from "@/utils/combineSlugs"
-import type { UserStoreIds } from "../lib/userStore"
+import type { UserStoreSlugs } from "../lib/userStore"
 
-export const useOpenChapters = ({ slugs }: { slugs: UserStoreIds }): Return => {
+export const useOpenChapters = ({
+  slugs,
+}: {
+  slugs: UserStoreSlugs
+}): Return => {
   const { lectureSlug } = slugs
   const state = useSelector(store, state => state.context.openChapters)
 

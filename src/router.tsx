@@ -12,7 +12,6 @@ import {
 } from "./lib/auth-client"
 import { isClientError, redirectDescription } from "./lib/errors"
 import { routeTree } from "./routeTree.gen"
-import { youtubeAuthorizationDataQueryOptions } from "./utils/oauth/youtube"
 
 export function createRouter() {
   const queryClient = new QueryClient({
@@ -70,11 +69,6 @@ export function createRouter() {
           match(_tag)
             .with("UNAUTHENTICATED", async () => {
               await redirectFlow()
-            })
-            .with("YOUTUBE_UNAUTHORIZED", () => {
-              queryClient.invalidateQueries({
-                queryKey: youtubeAuthorizationDataQueryOptions.queryKey,
-              })
             })
             .with("SERVICE_UNAVAILABLE", () => {})
             .with("UNAUTHORIZED", () => {})

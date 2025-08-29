@@ -18,9 +18,9 @@ import {
 import { useChapterAndLectureCursor } from "@/hooks/useChapterAndLectureCursor"
 import { useOpenChapters } from "@/hooks/useOpenChapters"
 import { useUserStore } from "@/hooks/useUserStore"
-import type { UserStoreIds } from "../lib/userStore"
+import type { UserStoreSlugs } from "../lib/userStore"
 
-export function NavMain({ slugs }: { slugs: UserStoreIds }) {
+export function NavMain({ slugs }: { slugs: UserStoreSlugs }) {
   const { current, chapters } = useChapterAndLectureCursor({ slugs })
   const openChapters = useOpenChapters({ slugs: current.slugs })
   const { getIsComplete } = useUserStore()

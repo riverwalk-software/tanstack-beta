@@ -27,7 +27,7 @@ const getCredentials = () =>
 
 // biome-ignore lint/style/noDefaultExport: Config file
 export default defineConfig({
-  schema: "./src/db/main/schema.ts",
+  schema: "./packages/schools/src/db/schema.ts",
   out: "./src/db/main/migrations/",
   dialect: "sqlite",
   casing: "snake_case",

@@ -1,4 +1,5 @@
-import Effect, { Brand, flow } from "effect"
+import * as Effect from "effect"
+import { Brand, flow } from "effect"
 import { refined } from "effect/Brand"
 import { size } from "../../typeclasses/functors/Foldable"
 import type { List } from "./list"

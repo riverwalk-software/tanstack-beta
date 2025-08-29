@@ -1,4 +1,6 @@
-import Effect, { Brand, Schema } from "effect"
+import * as Effect from "effect"
+import { Brand, Schema } from "effect"
+
 import { NonZeroReal } from "./NonZeroReal"
 import type { Real } from "./Real"
 

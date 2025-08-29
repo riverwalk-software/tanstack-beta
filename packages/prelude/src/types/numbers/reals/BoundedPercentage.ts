@@ -1,4 +1,6 @@
-import Effect, { Brand, flow, pipe, Schema } from "effect"
+import * as Effect from "effect"
+import { Brand, flow, pipe, Schema } from "effect"
+
 import { ProgressSchema } from "packages/userStore/src/types/Progress"
 import { swap } from "../../../logic/combinators"
 import { size } from "../../../typeclasses/functors/Foldable"

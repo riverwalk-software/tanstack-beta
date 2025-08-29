@@ -120,13 +120,16 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
     <html
       lang="en"
       className={theme}
-      suppressHydrationWarning // Suppress hydration because theme may differ between server and client
+      suppressHydrationWarning={true} // Suppress hydration because theme may differ between server and client
       data-theme={theme}
     >
       <head>
         <HeadContent />
       </head>
-      <body suppressHydrationWarning className="flex min-h-screen flex-col">
+      <body
+        suppressHydrationWarning={true}
+        className="flex min-h-screen flex-col"
+      >
         <Navbar />
         <hr />
         <main className="grid flex-1">{children} </main>
@@ -151,7 +154,7 @@ function Navbar() {
       <div className="ml-auto flex gap-2">
         {isAuthenticated ? (
           <>
-            <ProfileLink />
+            {/* <ProfileLink /> */}
             <SignOutButton />
           </>
         ) : (
@@ -207,16 +210,16 @@ function SignupLink() {
     </Link>
   )
 }
-function ProfileLink() {
-  return (
-    <Link
-      to="/profile"
-      activeProps={{
-        className: "font-bold",
-      }}
-      activeOptions={{ exact: true }}
-    >
-      Profile
-    </Link>
-  )
-}
+// function ProfileLink() {
+//   return (
+//     <Link
+//       to="/profile"
+//       activeProps={{
+//         className: "font-bold",
+//       }}
+//       activeOptions={{ exact: true }}
+//     >
+//       Profile
+//     </Link>
+//   )
+// }

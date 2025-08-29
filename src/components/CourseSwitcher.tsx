@@ -15,9 +15,9 @@ import {
 } from "@/components/ui/sidebar"
 import { useCourseCursor } from "@/hooks/useCourseCursor"
 import { useNavigation } from "@/hooks/useNavigation"
-import type { UserStoreIds } from "../lib/userStore"
+import type { UserStoreSlugs } from "../lib/userStore"
 
-export function CourseSwitcher({ slugs }: { slugs: UserStoreIds }) {
+export function CourseSwitcher({ slugs }: { slugs: UserStoreSlugs }) {
   const { isMobile } = useSidebar()
   const { current, courses } = useCourseCursor({ slugs })
   const { isNavigating, navigate, toggleIsNavigating } = useNavigation()

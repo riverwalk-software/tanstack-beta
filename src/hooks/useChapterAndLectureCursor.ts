@@ -1,13 +1,13 @@
 import { useMemo } from "react"
 import { match, P } from "ts-pattern"
 import { type Chapter, type Lecture, useCourse } from "@/lib/schools"
-import type { UserStoreIds } from "@/lib/userStore"
+import type { UserStoreSlugs } from "@/lib/userStore"
 import * as ListZipper from "@/utils/listZipper"
 
 export const useChapterAndLectureCursor = ({
   slugs,
 }: {
-  slugs: UserStoreIds
+  slugs: UserStoreSlugs
 }): Return => {
   const {
     course: { chapters },
@@ -136,7 +136,7 @@ interface ChapterAndLecture {
 }
 
 interface ExtendedChapterAndLecture extends ChapterAndLecture {
-  slugs: UserStoreIds
+  slugs: UserStoreSlugs
 }
 
 interface Return {

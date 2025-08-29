@@ -10,7 +10,6 @@ interface ClientError {
 
 const clientErrorTag = {
   UNAUTHENTICATED: "UNAUTHENTICATED",
-  YOUTUBE_UNAUTHORIZED: "YOUTUBE_UNAUTHORIZED",
   UNAUTHORIZED: "UNAUTHORIZED",
   SERVICE_UNAVAILABLE: "SERVICE_UNAVAILABLE",
 } as const
@@ -27,19 +26,6 @@ export class UNAUTHENTICATED extends Data.TaggedError(
     super({
       message: message ?? "You are no longer signed in.",
       description: description ?? redirectDescription,
-    })
-  }
-}
-export class YOUTUBE_UNAUTHORIZED extends Data.TaggedError(
-  clientErrorTag.YOUTUBE_UNAUTHORIZED,
-)<ClientError> {
-  constructor({
-    message,
-    description,
-  }: { message?: string; description?: string } = {}) {
-    super({
-      message: message ?? "YouTube API access is unauthorized.",
-      description: description ?? "Please reauthorize your YouTube account.",
     })
   }
 }
