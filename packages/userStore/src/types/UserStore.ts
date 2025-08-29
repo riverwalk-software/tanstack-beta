@@ -1,44 +1,42 @@
-import z from "zod"
-import { ID_SCHEMA } from "@/lib/constants"
+import { Schema } from "effect"
+import {
+  ChapterSlugSchema,
+  CourseSlugSchema,
+  LectureSlugSchema,
+  SchoolSlugSchema,
+} from "packages/schools/src/subpackages/schools/types/Slugs"
 
-export interface UserStore {
-  schools: {
-    id: number
-    courses: {
-      id: number
-      chaptersAndLectures: ChapterAndLecture[]
-    }[]
-  }[]
-}
+export class ChapterAndLecture extends Schema.Class<ChapterAndLecture>(
+  "ChapterAndLecture",
+)({
+  chapter: Schema.Struct({
+    slug: ChapterSlugSchema,
+  }),
+  lecture: Schema.Struct({
+    slug: LectureSlugSchema,
+  }),
+  isComplete: Schema.optionalWith(Schema.Boolean, { exact: true }),
+}) {}
 
-export const ChapterAndLectureSchema = z.object({
-  chapter: z.object({ id: ID_SCHEMA }),
-  lecture: z.object({ id: ID_SCHEMA }),
-  isComplete: z.boolean().optional(),
-})
-export interface ChapterAndLecture
-  extends Schema.Type<typeof ChapterAndLectureSchema> {}
+export class UserStore extends Schema.Class<UserStore>("UserStore")({
+  schools: Schema.Array(
+    Schema.Struct({
+      slug: SchoolSlugSchema,
+      courses: Schema.Array(
+        Schema.Struct({
+          slug: CourseSlugSchema,
+          chaptersAndLectures: Schema.Array(ChapterAndLecture),
+        }),
+      ),
+    }),
+  ),
+}) {}
 
-// export interface ChapterAndLecture {
-//   chapter: {
-//     id: number;
-//   };
-//   lecture: {
-//     id: number;
-//   };
-//   isComplete?: boolean;
-// }
-
-export interface UserStoreIds {
-  schoolId: number
-  courseId: number
-  chapterId: number
-  lectureId: number
-}
-
-export interface UserStoreSlugs {
-  schoolSlug: string
-  courseSlug: string
-  chapterSlug: string
-  lectureSlug: string
-}
+export class UserStoreSlugs extends Schema.Class<UserStoreSlugs>(
+  "UserStoreSlugs",
+)({
+  schoolSlug: SchoolSlugSchema,
+  courseSlug: CourseSlugSchema,
+  chapterSlug: ChapterSlugSchema,
+  lectureSlug: LectureSlugSchema,
+}) {}
