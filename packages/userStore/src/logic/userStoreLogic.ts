@@ -1,12 +1,12 @@
-import { pipe } from "@prelude"
+/** biome-ignore-all lint/style/noNonNullAssertion: Invariants */
+import type { List } from "@prelude"
 import { createServerFn } from "@tanstack/react-start"
-import { Context, Effect, Either } from "effect"
+import { Context, Effect, Match, pipe, Schema } from "effect"
 import { produce } from "immer"
 import { proportionOf } from "packages/prelude/src/types/numbers/reals/BoundedPercentage"
 import { match } from "ts-pattern"
 import type { SessionData } from "@/lib/authentication"
 import { getSessionDataMw, SessionDataService } from "@/lib/authentication"
-import { SERVICE_UNAVAILABLE } from "@/lib/errors"
 import { effectRunPromise } from "@/utils/effect"
 import {
   CloudflareBindingsService,
@@ -17,7 +17,7 @@ import type { ProgressData } from "../types/ProgressData"
 import type {
   ChapterAndLecture,
   UserStore,
-  UserStoreIds,
+  UserStoreSlugs,
 } from "../types/UserStore"
 import {
   type GetUserStoreParams,
@@ -27,51 +27,52 @@ import {
 
 export const getUserStoreFn = createServerFn()
   .middleware([getSessionDataMw])
-  .handler(async ({ context: _context }): Promise<UserStore> => {
-    const cloudflareBindings = getCloudflareBindings()
-    const context = Context.empty().pipe(
-      Context.add(CloudflareBindingsService, cloudflareBindings),
-      Context.add(SessionDataService, _context.sessionData),
-    )
-    const program = Effect.gen(function* () {
-      const { USER_STORE } = yield* CloudflareBindingsService
-      const sessionData = yield* SessionDataService
-      const maybeUserStore = yield* Effect.promise(() =>
-        getUserStore({ kv: USER_STORE, sessionData }),
+  .handler(
+    ({
+      context: _context,
+    }): Promise<Schema.Schema.Encoded<typeof UserStore>> => {
+      const cloudflareBindings = getCloudflareBindings()
+      const context = Context.empty().pipe(
+        Context.add(CloudflareBindingsService, cloudflareBindings),
+        Context.add(SessionDataService, _context.sessionData),
       )
-      return yield* Either.fromNullable(
-        maybeUserStore,
-        () => new SERVICE_UNAVAILABLE(),
-      )
-    })
-    return effectRunPromise({ context, program })
-  })
+      const program = Effect.gen(function* () {
+        const { USER_STORE } = yield* CloudflareBindingsService
+        const sessionData = yield* SessionDataService
+        const userStore = yield* Effect.promise(() =>
+          getUserStore(USER_STORE, { sessionData }),
+        )
+        if (userStore === null) throw new Error()
+        return userStore
+      })
+      return effectRunPromise({ context, program })
+    },
+  )
 
-const getUserStore = ({
-  kv,
-  sessionData,
-}: {
-  kv: KVNamespace
-  sessionData: SessionData
-}): Promise<UserStore | null> =>
-  kv.get<UserStore>(sessionData.user.email, { type: "json" })
+const getUserStore = (
+  kv: KVNamespace,
+  { sessionData }: { sessionData: SessionData },
+): Promise<UserStore | null> => kv.get(sessionData.user.email, { type: "json" })
 
 export const _getIsComplete =
-  ({ schoolId, courseId, chapterId, lectureId }: UserStoreIds) =>
+  ({ schoolSlug, courseSlug, chapterSlug, lectureSlug }: UserStoreSlugs) =>
   (userStore: UserStore): boolean =>
     userStore.schools
-      .find(school => school.id === schoolId)
-      ?.courses.find(course => course.id === courseId)
+      .find(school => school.slug === schoolSlug)
+      ?.courses.find(course => course.slug === courseSlug)
       ?.chaptersAndLectures.find(
         ({ chapter, lecture }) =>
-          chapter.id === chapterId && lecture.id === lectureId,
+          chapter.slug === chapterSlug && lecture.slug === lectureSlug,
       )?.isComplete ?? false
 
 export const _getProgress =
   (params: GetUserStoreParams) =>
   (userStore: UserStore): ProgressData => {
     const chaptersAndLectures = getChaptersAndLectures(params)(userStore)
-    const progress = calculateProgress(chaptersAndLectures)
+    const progress = calculateProgress([
+      chaptersAndLectures[0]!,
+      chaptersAndLectures.slice(1),
+    ])
     return {
       progress,
       isComplete: progress === 100,
@@ -80,49 +81,44 @@ export const _getProgress =
 
 const getChaptersAndLectures =
   (params: GetUserStoreParams) =>
-  (userStore: UserStore): ChapterAndLecture[] =>
-    match(params)
-      .returnType<ChapterAndLecture[]>()
-      .with({ _tag: "ALL" }, () =>
-        userStore.schools.flatMap(school =>
-          school.courses.flatMap(
-            ({ chaptersAndLectures }) => chaptersAndLectures,
+  (userStore: UserStore): List<ChapterAndLecture> =>
+    Match.type<GetUserStoreParams>().pipe(
+      Match.tagsExhaustive({
+        ALL: () =>
+          userStore.schools.flatMap(school =>
+            school.courses.flatMap(
+              ({ chaptersAndLectures }) => chaptersAndLectures,
+            ),
           ),
-        ),
-      )
-      .with(
-        { _tag: "SCHOOL" },
-        ({ schoolId }) =>
+        SCHOOL: ({ schoolSlug }) =>
           userStore.schools
-            .find(school => school.id === schoolId)
+            .find(school => school.slug === schoolSlug)
             ?.courses.flatMap(
               ({ chaptersAndLectures }) => chaptersAndLectures,
             ) ?? [],
-      )
-      .with(
-        { _tag: "COURSE" },
-        ({ schoolId, courseId }) =>
+        COURSE: ({ schoolSlug, courseSlug }) =>
           userStore.schools
-            .find(school => school.id === schoolId)
-            ?.courses.find(course => course.id === courseId)
+            .find(school => school.slug === schoolSlug)
+            ?.courses.find(course => course.slug === courseSlug)
             ?.chaptersAndLectures ?? [],
-      )
-      .exhaustive()
+      }),
+    )(params)
 
-export const calculateProgress = (
-  chaptersAndLectures: ChapterAndLecture[],
-): Progress => {
+export const calculateProgress = ([head, tail]: [
+  ChapterAndLecture,
+  List<ChapterAndLecture>,
+]): Progress => {
   const boundedPercentage = pipe(
-    chaptersAndLectures,
+    [head, ...tail],
     proportionOf(({ isComplete }) => isComplete === true),
   )
-  return ProgressSchema.parse(boundedPercentage)
+  return Schema.decodeSync(ProgressSchema)(boundedPercentage)
 }
 
 export const setProgressFn = createServerFn({ method: "POST" })
-  .validator(SetUserStoreParamsSchema)
+  .validator(Schema.decodeUnknownSync(SetUserStoreParamsSchema))
   .middleware([getSessionDataMw])
-  .handler(async ({ context: _context, data: params }): Promise<void> => {
+  .handler(({ context: _context, data: params }): Promise<void> => {
     const cloudflareBindings = getCloudflareBindings()
     const context = Context.empty().pipe(
       Context.add(CloudflareBindingsService, cloudflareBindings),
@@ -131,13 +127,10 @@ export const setProgressFn = createServerFn({ method: "POST" })
     const program = Effect.gen(function* () {
       const { USER_STORE } = yield* CloudflareBindingsService
       const sessionData = yield* SessionDataService
-      const maybeUserStore = yield* Effect.promise(() =>
-        getUserStore({ kv: USER_STORE, sessionData }),
+      const userStore = yield* Effect.promise(() =>
+        getUserStore(USER_STORE, { sessionData }),
       )
-      const userStore = yield* Either.fromNullable(
-        maybeUserStore,
-        () => new SERVICE_UNAVAILABLE(),
-      )
+      if (userStore === null) throw new Error()
       const updatedUserStore = yield* Effect.sync(() =>
         updateUserStoreProgress(params)(userStore),
       )
@@ -164,20 +157,20 @@ const updateUserStoreProgress =
                 .with({ _tag: "ALL" }, () => true)
                 .with(
                   { _tag: "SCHOOL" },
-                  ({ schoolId }) => school.id === schoolId,
+                  ({ schoolSlug }) => school.slug === schoolSlug,
                 )
                 .with(
                   { _tag: "COURSE" },
-                  ({ schoolId, courseId }) =>
-                    school.id === schoolId && course.id === courseId,
+                  ({ schoolSlug, courseSlug }) =>
+                    school.slug === schoolSlug && course.slug === courseSlug,
                 )
                 .with(
                   { _tag: "LECTURE" },
-                  ({ schoolId, courseId, chapterId, lectureId }) =>
-                    school.id === schoolId &&
-                    course.id === courseId &&
-                    chapter.id === chapterId &&
-                    lecture.id === lectureId,
+                  ({ schoolSlug, courseSlug, chapterSlug, lectureSlug }) =>
+                    school.slug === schoolSlug &&
+                    course.slug === courseSlug &&
+                    chapter.slug === chapterSlug &&
+                    lecture.slug === lectureSlug,
                 )
                 .exhaustive()
               if (isUpdatable) isComplete = params.isComplete
