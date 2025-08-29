@@ -13,9 +13,7 @@ import { GetSchoolsSchema } from "../types/GetSchools"
 
 // TODO: Paginate
 export const getSchoolsFn = createServerFn()
-  .validator((data: unknown) =>
-    Schema.decodeUnknownSync(GetSchoolsSchema)(data),
-  )
+  .validator(Schema.decodeUnknownSync(GetSchoolsSchema))
   .handler(
     ({ data: { schoolSlugs: missableSchoolSlugs } }): Promise<List<School>> => {
       const cloudflareBindings = getCloudflareBindings()
