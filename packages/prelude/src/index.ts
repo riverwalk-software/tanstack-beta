@@ -6,3 +6,4 @@ export {
 export { mapList } from "./typeclasses/functors/Functor"
 export { not } from "./typeclasses/lattices/BooleanLattice"
 export { realDivide } from "./typeclasses/rings/Field"
+export type { List } from "./types/lists/list"
