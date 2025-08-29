@@ -6,17 +6,21 @@ export const ThemeSchema = Schema.Literal("dark", "light").pipe(
 )
 export type Theme = typeof ThemeSchema.Type
 
-export const ThemeFromBoolean = Schema.transform(Schema.Boolean, ThemeSchema, {
-  strict: true,
-  decode: bool => (bool ? "light" : "dark"),
-  encode: theme => theme === "light",
-})
+export const ThemeFromBooleanSchema = Schema.transform(
+  Schema.Boolean,
+  ThemeSchema,
+  {
+    strict: true,
+    decode: bool => (bool ? "light" : "dark"),
+    encode: theme => theme === "light",
+  },
+)
 
 export const conjugateThemeFromBoolean = (
   f: (b: boolean) => boolean,
 ): ((theme: Theme) => Theme) =>
   flow(
-    Schema.encodeSync(ThemeFromBoolean),
+    Schema.encodeSync(ThemeFromBooleanSchema),
     f,
-    Schema.decodeSync(ThemeFromBoolean),
+    Schema.decodeSync(ThemeFromBooleanSchema),
   )
