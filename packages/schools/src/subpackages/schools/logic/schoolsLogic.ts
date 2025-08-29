@@ -25,20 +25,21 @@ export const getSchoolsFn = createServerFn()
         const db = yield* Effect.sync(() => createDb(SCHOOL_DB))
         const maybeSchoolSlugs = Option.fromNullable(missableSchoolSlugs)
         return yield* Effect.promise(() =>
-          getSchools({ db, schoolSlugs: maybeSchoolSlugs }),
+          getSchools(db, { schoolSlugs: maybeSchoolSlugs }),
         )
       })
       return effectRunPromise({ context, program })
     },
   )
 
-const getSchools = ({
-  db,
-  schoolSlugs: maybeSchoolSlugs,
-}: {
-  db: ReturnType<typeof createDb>
-  schoolSlugs: Option.Option<List<string>>
-}) =>
+const getSchools = (
+  db: ReturnType<typeof createDb>,
+  {
+    schoolSlugs: maybeSchoolSlugs,
+  }: {
+    schoolSlugs: Option.Option<List<string>>
+  },
+) =>
   Option.match(maybeSchoolSlugs, {
     onNone: () =>
       db.query.SchoolEntity.findMany({

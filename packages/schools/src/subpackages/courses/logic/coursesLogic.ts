@@ -1,9 +1,8 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: Invariants */
+import type { List } from "@prelude"
 import { createServerFn } from "@tanstack/react-start"
 import { eq } from "drizzle-orm"
-import { Context, Effect, Either } from "effect"
-import z from "zod"
-import { SLUG_SCHEMA } from "@/lib/constants"
-import { SERVICE_UNAVAILABLE } from "@/lib/errors"
+import { Context, Effect, Schema } from "effect"
 import { effectRunPromise } from "@/utils/effect"
 import {
   CloudflareBindingsService,
@@ -17,17 +16,15 @@ import type {
 } from "../../../types/SchemaTypes"
 import { createDb } from "../../../utils/createDb"
 import { getSchool } from "../../../utils/getSchool"
+import { type GetCourses, GetCoursesSchema } from "../types/GetCourses"
 
-const GetCoursesParams = z.object({
-  schoolSlug: SLUG_SCHEMA,
-})
 // TODO: Paginate
 export const getCoursesFn = createServerFn()
-  .validator(GetCoursesParams)
+  .validator(Schema.decodeUnknownSync(GetCoursesSchema))
   .handler(
-    async ({
+    ({
       data: { schoolSlug },
-    }): Promise<CourseWithFirstChapterAndLecture[]> => {
+    }): Promise<List<CourseWithFirstChapterAndLecture>> => {
       const cloudflareBindings = getCloudflareBindings()
       const context = Context.empty().pipe(
         Context.add(CloudflareBindingsService, cloudflareBindings),
@@ -35,40 +32,42 @@ export const getCoursesFn = createServerFn()
       const program = Effect.gen(function* () {
         const { SCHOOL_DB } = yield* CloudflareBindingsService
         const db = yield* Effect.sync(() => createDb(SCHOOL_DB))
-        const maybeSchool = yield* Effect.promise(() =>
+        const school = yield* Effect.promise(() =>
           getSchool({ db, schoolSlug }),
         )
-        const school = yield* Either.fromNullable(
-          maybeSchool,
-          () => new SERVICE_UNAVAILABLE(),
+        if (school === undefined) throw new Error()
+        const schoolData = yield* Effect.promise(() =>
+          getCourses(db, { schoolSlug: school.slug }),
         )
-        const courses = yield* Effect.promise(() =>
-          getCourses({ db, schoolId: school.id }),
+        if (schoolData === undefined) throw new Error()
+        return yield* Effect.sync(() =>
+          extractFirstChapterAndLecture(schoolData.courses),
         )
-        return yield* Effect.sync(() => extractFirstChapterAndLecture(courses))
       })
       return effectRunPromise({ context, program })
     },
   )
 
-const getCourses = ({
-  db,
-  schoolId,
-}: {
-  db: ReturnType<typeof createDb>
-  schoolId: number
-}) =>
-  db.query.CourseEntity.findMany({
-    where: course => eq(course.schoolId, schoolId),
-    orderBy: course => course.title,
+const getCourses = (
+  db: ReturnType<typeof createDb>,
+  { schoolSlug }: GetCourses,
+) =>
+  db.query.SchoolEntity.findFirst({
+    where: school => eq(school.slug, schoolSlug),
     with: {
-      chapters: {
+      courses: {
         limit: 1,
-        orderBy: chapter => chapter.ordinal,
+        orderBy: course => course.title,
         with: {
-          lectures: {
+          chapters: {
             limit: 1,
-            orderBy: lecture => lecture.ordinal,
+            orderBy: chapter => chapter.ordinal,
+            with: {
+              lectures: {
+                limit: 1,
+                orderBy: lecture => lecture.ordinal,
+              },
+            },
           },
         },
       },
@@ -76,14 +75,16 @@ const getCourses = ({
   })
 
 const extractFirstChapterAndLecture = (
-  courses: (Course & {
-    chapters: (Chapter & { lectures: Lecture[] })[]
-  })[],
-) =>
+  courses: List<
+    Course & {
+      chapters: List<Chapter & { lectures: List<Lecture> }>
+    }
+  >,
+): List<CourseWithFirstChapterAndLecture> =>
   courses.map(({ chapters, ...course }) => ({
     ...course,
     chapter: {
-      ...chapters[0],
-      lecture: chapters[0].lectures[0],
+      ...chapters[0]!,
+      lecture: chapters[0]!.lectures[0]!,
     },
   }))
