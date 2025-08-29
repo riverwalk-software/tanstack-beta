@@ -10,6 +10,7 @@ import {
 import type { Course } from "../../../types/SchemaTypes"
 import { createDb } from "../../../utils/createDb"
 import { getSchool } from "../../../utils/getSchool"
+import { SchoolSlugSchema } from "../../schools/types/Slugs"
 import { type GetCourse, GetCourseSchema } from "../types/GetCourse"
 
 // TODO: Paginate
@@ -26,7 +27,10 @@ export const getCourseFn = createServerFn()
       const school = yield* Effect.promise(() => getSchool({ db, schoolSlug }))
       if (school === undefined) throw new Error()
       const schoolData = yield* Effect.promise(() =>
-        getCourse(db, { schoolSlug: school.slug, courseSlug }),
+        getCourse(db, {
+          schoolSlug: SchoolSlugSchema.make(school.slug),
+          courseSlug,
+        }),
       )
       if (schoolData === undefined) throw new Error()
       return schoolData.courses[0]!

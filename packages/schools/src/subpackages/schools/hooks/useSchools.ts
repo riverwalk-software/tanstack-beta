@@ -9,7 +9,7 @@ import type { GetSchools } from "../types/GetSchools"
  * React hook to fetch a list of schools, optionally filtered by school slugs.
  * *
  * @param {Object} [params] - Optional parameters.
- * @param {string[] | undefined} [params.schoolSlugs] - Optional list of school slugs to filter the schools.
+ * @param {SchoolSlug[] | undefined} [params.schoolSlugs] - Optional list of school slugs to filter the schools.
  * @returns {{ schools: List<School> }} An object containing the list of schools.
  *
  * @example

@@ -10,7 +10,7 @@ import type { GetCourses } from "../types/GetCourses"
  * Returns a list of courses, each including its first chapter and lecture.
  *
  * @param {Object} params - Parameters for fetching courses.
- * @param {string} params.schoolSlug - The slug of the school to fetch courses for.
+ * @param {SchoolSlug} params.schoolSlug - The slug of the school to fetch courses for.
  * @returns {{ courses: List<CourseWithFirstChapterAndLecture> }} An object containing the list of courses.
  *
  * @example

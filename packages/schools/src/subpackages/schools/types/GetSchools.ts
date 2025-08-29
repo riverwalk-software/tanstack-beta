@@ -1,8 +1,8 @@
 import { Schema } from "effect"
-import { SLUG_SCHEMA } from "@/lib/constants"
+import { SchoolSlugSchema } from "./Slugs"
 
 export const GetSchoolsSchema = Schema.Struct({
-  schoolSlugs: Schema.optionalWith(Schema.Array(SLUG_SCHEMA), {
+  schoolSlugs: Schema.optionalWith(Schema.Array(SchoolSlugSchema), {
     exact: true,
   }),
 })

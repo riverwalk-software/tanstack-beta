@@ -3,11 +3,12 @@ import { queryOptions } from "@tanstack/react-query"
 import { Option, Order, pipe } from "effect"
 import { sort } from "effect/Array"
 import { getSchoolsFn } from "../logic/schoolsLogic"
+import type { SchoolSlug } from "../types/Slugs"
 
 export const schoolsQueryOptions = ({
   schoolSlugs: maybeSchoolSlugs,
 }: {
-  schoolSlugs: Option.Option<List<string>>
+  schoolSlugs: Option.Option<List<SchoolSlug>>
 }) => {
   const maybeSortedSchoolSlugs = pipe(
     maybeSchoolSlugs,

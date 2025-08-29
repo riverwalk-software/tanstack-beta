@@ -1,9 +1,9 @@
 import { Schema } from "effect"
-import { SLUG_SCHEMA } from "@/lib/constants"
+import { CourseSlugSchema, SchoolSlugSchema } from "../../schools/types/Slugs"
 
 export const GetCourseSchema = Schema.Struct({
-  schoolSlug: SLUG_SCHEMA,
-  courseSlug: SLUG_SCHEMA,
+  schoolSlug: SchoolSlugSchema,
+  courseSlug: CourseSlugSchema,
 })
 
 export type GetCourse = typeof GetCourseSchema.Type

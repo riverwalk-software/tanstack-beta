@@ -9,8 +9,8 @@ import type { GetCourse } from "../types/GetCourse"
  * Returns the course object for the specified school and course.
  *
  * @param {Object} params - Parameters for fetching the course.
- * @param {string} params.schoolSlug - The slug of the school.
- * @param {string} params.courseSlug - The slug of the course.
+ * @param {SchoolSlug} params.schoolSlug - The slug of the school.
+ * @param {CourseSlug} params.courseSlug - The slug of the course.
  * @returns {{ course: Course }} An object containing the course.
  *
  * @example

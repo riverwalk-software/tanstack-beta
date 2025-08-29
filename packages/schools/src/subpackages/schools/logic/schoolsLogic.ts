@@ -10,6 +10,7 @@ import {
 import type { School } from "../../../types/SchemaTypes"
 import { createDb } from "../../../utils/createDb"
 import { GetSchoolsSchema } from "../types/GetSchools"
+import type { SchoolSlug } from "../types/Slugs"
 
 // TODO: Paginate
 export const getSchoolsFn = createServerFn()
@@ -37,7 +38,7 @@ const getSchools = (
   {
     schoolSlugs: maybeSchoolSlugs,
   }: {
-    schoolSlugs: Option.Option<List<string>>
+    schoolSlugs: Option.Option<List<SchoolSlug>>
   },
 ) =>
   Option.match(maybeSchoolSlugs, {
