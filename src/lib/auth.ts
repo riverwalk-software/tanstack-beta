@@ -11,13 +11,13 @@ import {
   AUTH_COOKIE_PREFIX,
   EVENTUAL_CONSISTENCY_DELAY_S,
   PASSWORD_LENGTH,
-  PRODUCT_SLUG,
+  TEST_PRODUCT_SLUG,
 } from "@/lib/constants"
 import { environment } from "@/lib/environment"
 import { getCloudflareBindings } from "@/utils/getCloudflareBindings"
 
 const polarClient = new Polar({
-  accessToken: process.env.POLAR_ACCESS_TOKEN,
+  accessToken: process.env["POLAR_ACCESS_TOKEN"],
   server: "sandbox",
 })
 
@@ -118,7 +118,7 @@ export const auth = betterAuth({
           products: [
             {
               productId: "06ef753e-cecf-478e-b107-2422241a29ed",
-              slug: PRODUCT_SLUG,
+              slug: TEST_PRODUCT_SLUG,
             },
           ],
           successUrl: process.env.POLAR_SUCCESS_URL,

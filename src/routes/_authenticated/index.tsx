@@ -4,7 +4,7 @@ import { getWebRequest } from "@tanstack/react-start/server"
 import { CenteredContainer } from "../../components/containers/CenteredContainer"
 import { Button } from "../../components/ui/button"
 import { auth } from "../../lib/auth"
-import { PRODUCT_SLUG as TEST_PRODUCT_SLUG } from "../../lib/constants"
+import { TEST_PRODUCT_SLUG } from "../../lib/constants"
 
 export const Route = createFileRoute("/_authenticated/")({
   component: Home,

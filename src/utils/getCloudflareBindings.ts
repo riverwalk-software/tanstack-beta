@@ -3,7 +3,7 @@ import { Context } from "effect"
 const isDev =
   typeof import.meta.env !== "undefined"
     ? import.meta.env.DEV
-    : process.env.NODE_ENV === "development"
+    : process.env["NODE_ENV"] === "development"
 let cachedEnv: CloudflareBindings | null = null
 
 const initDevEnv = async () => {

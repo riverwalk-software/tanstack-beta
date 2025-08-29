@@ -48,7 +48,7 @@ const getAuthenticationDataMw = createMiddleware({
 export const getSessionDataMw = createMiddleware({ type: "function" })
   .middleware([getAuthenticationDataMw])
   .server(
-    async ({
+    ({
       next,
       context: {
         authenticationData: { isAuthenticated, sessionData },

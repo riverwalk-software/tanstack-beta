@@ -1,4 +1,4 @@
-import z from "zod"
+import { Schema } from "effect"
 import type { FileRouteTypes } from "@/routeTree.gen.ts"
 
 export const EVENTUAL_CONSISTENCY_DELAY_S = 60 * 1
@@ -34,9 +34,8 @@ export const HOME_ROUTE: RouteType = "/" as const
 export const AUTH_CALLBACK_ROUTE: RouteType = "/signin" as const
 type RouteType = FileRouteTypes["fullPaths"]
 export const VIDEO_LIBRARY_ID = 478043 as const
-export const PRODUCT_SLUG = "Test-Product" as const
-export const ID_SCHEMA = z.number().int().positive()
-export const SLUG_SCHEMA = z
-  .string()
-  .min(SLUG_LENGTH.MINIMUM)
-  .max(SLUG_LENGTH.MAXIMUM)
+export const TEST_PRODUCT_SLUG = "Test-Product" as const
+export const SLUG_SCHEMA = Schema.String.pipe(
+  Schema.minLength(SLUG_LENGTH.MINIMUM),
+  Schema.maxLength(SLUG_LENGTH.MAXIMUM),
+)
