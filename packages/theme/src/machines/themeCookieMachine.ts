@@ -1,20 +1,20 @@
-import { cookies } from "@cookies"
+import { getCookie, setCookie } from "@cookies"
+import { flow, Option, Schema } from "effect"
 import { THEME_COOKIE_NAME } from "../constants/THEME_COOKIE_NAME"
 import { toggleTheme } from "../logic/themeLogic"
-import { ThemeSchema } from "../schemas/ThemeSchema"
-import type { Theme } from "../types/Theme"
+import { type Theme, ThemeSchema } from "../types/Theme"
 
-export const getThemeCookie = (): Theme => {
-  const value = cookies.get(THEME_COOKIE_NAME)
-  return ThemeSchema.parse(value)
-}
+export const getThemeCookie: () => Theme = flow(
+  () => getCookie(THEME_COOKIE_NAME),
+  Option.flatMap(Schema.decodeUnknownOption(ThemeSchema)),
+  Option.getOrElse(() => ThemeSchema.make("dark")),
+)
 
-export const toggleThemeCookie = (): void => {
-  const currentTheme = getThemeCookie()
-  const newTheme = toggleTheme(currentTheme)
-  _setThemeCookie(newTheme)
-}
+export const _setThemeCookie: (theme: Theme) => void =
+  setCookie(THEME_COOKIE_NAME)
 
-export const _setThemeCookie = (theme: Theme): void => {
-  cookies.set(THEME_COOKIE_NAME, theme)
-}
+export const toggleThemeCookie: () => void = flow(
+  getThemeCookie,
+  toggleTheme,
+  _setThemeCookie,
+)

@@ -11,15 +11,21 @@ import {
 import type { Theme } from "../types/Theme"
 
 /**
- * Custom React hook to access and toggle the current theme.
+ * React hook to access and mutate the current theme.
  *
- * This hook provides the current theme value and a function to toggle between themes.
- * It uses TanStack Query's `useSuspenseQuery` to retrieve the theme and `useMutation`
- * to handle theme toggling, ensuring state is kept in sync with the query client.
+ * This hook provides the current theme value and a mutation object
+ * for toggling the theme.
  *
- * @returns An object containing:
- * - `theme`: The current theme value.
- * - `toggleThemeMt`: A function to toggle the theme.
+ * @returns {Object} An object containing:
+ *   - theme: The current theme value (`Theme`).
+ *   - toggleThemeMt: A mutation object for toggling the theme.
+ *
+ * @example
+ * const { theme, toggleThemeMt } = useTheme()
+ * // To toggle theme:
+ * toggleThemeMt.mutate()
+ * // To disable button:
+ * toggleThemeMt.isPending
  */
 export const useTheme = (): {
   theme: Theme

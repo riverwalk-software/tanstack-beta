@@ -1,6 +1,6 @@
-import fc from "fast-check"
+import { configureGlobal } from "effect/FastCheck"
 
 const isCi = process.env["CI"] === "true"
-fc.configureGlobal({
+configureGlobal({
   numRuns: isCi ? 5000 : 200,
 })

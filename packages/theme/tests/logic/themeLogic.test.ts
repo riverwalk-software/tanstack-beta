@@ -1,34 +1,31 @@
 /**
  * @vitest-environment node
  */
-import * as fc from "fast-check"
+
+import { Arbitrary, pipe, Schema } from "effect"
+import { assert, property } from "effect/FastCheck"
 import { describe, expect, it } from "vitest"
 import { toggleTheme } from "../../src/logic/themeLogic"
-import { ThemeSchema } from "../../src/schemas/ThemeSchema"
-import type { Theme } from "../../src/types/Theme"
-
-// const ThemeArbitrary = ZodFastCheck().inputOf(ThemeSchema);
-const ThemeArbitrary = fc.constantFrom<Theme>("dark", "light")
+import { ThemeSchema } from "../../src/types/Theme"
 
 describe("toggleTheme", () => {
   describe("purity", () => {
     it("totality", () => {
-      fc.assert(
-        fc.property(ThemeArbitrary, theme => {
-          const result = toggleTheme(theme)
-          ThemeSchema.parse(result)
+      assert(
+        property(ThemeArbitrary, theme => {
+          pipe(theme, toggleTheme, Schema.decodeSync(ThemeSchema))
         }),
       )
     })
 
     it("determinism", () => {
-      fc.assert(
-        fc.property(ThemeArbitrary, theme => {
-          const result = toggleTheme(theme)
-          const result2 = toggleTheme(theme)
-          expect(result).toEqual(result2)
+      assert(
+        property(ThemeArbitrary, theme => {
+          expect(toggleTheme(theme)).toEqual(toggleTheme(theme))
         }),
       )
     })
   })
 })
+
+const ThemeArbitrary = Arbitrary.make(ThemeSchema)
