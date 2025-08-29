@@ -1,6 +1,5 @@
 import * as Effect from "effect"
 import { Brand, Schema } from "effect"
-
 import type { Real } from "./Real"
 
 export type UnitInterval = Real & Brand.Brand<"UnitInterval">
