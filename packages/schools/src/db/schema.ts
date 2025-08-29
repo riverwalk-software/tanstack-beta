@@ -24,10 +24,6 @@ export const SchoolEntity = table("schools", {
       length: 500,
     })
     .notNull(),
-  // status: d
-  //   .text({ enum: ["active", "inactive"] })
-  //   .notNull()
-  //   .default("active"),
 })
 
 export const SchoolRelationships = relations(SchoolEntity, ({ many }) => ({
@@ -50,10 +46,6 @@ export const CourseEntity = table(
         length: 500,
       })
       .notNull(),
-    // status: d
-    //   .text({ enum: ["archived", "active"] })
-    //   .notNull()
-    //   .default("active"),
     schoolId: d
       .integer()
       .notNull()

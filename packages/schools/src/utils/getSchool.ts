@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm"
-import type { createDb } from "../src/utils/createDb"
+import type { createDb } from "./createDb"
 
 export const getSchool = ({
   db,

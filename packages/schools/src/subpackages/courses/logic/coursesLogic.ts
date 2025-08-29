@@ -9,7 +9,6 @@ import {
   CloudflareBindingsService,
   getCloudflareBindings,
 } from "@/utils/getCloudflareBindings"
-import { getSchool } from "../../../../logic/utilityLogic"
 import type {
   Chapter,
   Course,
@@ -17,6 +16,7 @@ import type {
   Lecture,
 } from "../../../types/SchemaTypes"
 import { createDb } from "../../../utils/createDb"
+import { getSchool } from "../../../utils/getSchool"
 
 const GetCoursesParams = z.object({
   schoolSlug: SLUG_SCHEMA,

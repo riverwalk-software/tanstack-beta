@@ -1,17 +1,24 @@
+import type { List } from "@prelude"
 import { queryOptions } from "@tanstack/react-query"
-import { match, P } from "ts-pattern"
+import { Option, Order, pipe } from "effect"
+import { sort } from "effect/Array"
 import { getSchoolsFn } from "../logic/schoolsLogic"
 
 export const schoolsQueryOptions = ({
   schoolSlugs: maybeSchoolSlugs,
 }: {
-  schoolSlugs?: string[]
+  schoolSlugs: Option.Option<List<string>>
 }) => {
-  const sortedSchoolSlugs = match(maybeSchoolSlugs)
-    .with(P.nullish, () => undefined)
-    .otherwise(schoolSlugs => [...schoolSlugs.sort()])
+  const maybeSortedSchoolSlugs = pipe(
+    maybeSchoolSlugs,
+    Option.map(schoolSlugs => sort(Order.string)(schoolSlugs)),
+  )
   return queryOptions({
-    queryKey: ["schools", { schoolSlugs: sortedSchoolSlugs }],
-    queryFn: () => getSchoolsFn({ data: { schoolSlugs: sortedSchoolSlugs } }),
+    queryKey: ["schools", { schoolSlugs: maybeSortedSchoolSlugs }],
+    queryFn: () =>
+      Option.match(maybeSortedSchoolSlugs, {
+        onNone: () => getSchoolsFn({ data: {} }),
+        onSome: schoolSlugs => getSchoolsFn({ data: { schoolSlugs } }),
+      }),
   })
 }

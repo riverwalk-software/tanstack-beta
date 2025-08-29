@@ -1,9 +1,7 @@
+import type { List } from "@prelude"
 import { createServerFn } from "@tanstack/react-start"
 import { inArray } from "drizzle-orm"
-import { Context, Effect } from "effect"
-import { match, P } from "ts-pattern"
-import z from "zod"
-import { SLUG_SCHEMA } from "@/lib/constants"
+import { Context, Effect, Option, Schema } from "effect"
 import { effectRunPromise } from "@/utils/effect"
 import {
   CloudflareBindingsService,
@@ -11,42 +9,46 @@ import {
 } from "@/utils/getCloudflareBindings"
 import type { School } from "../../../types/SchemaTypes"
 import { createDb } from "../../../utils/createDb"
+import { GetSchoolsSchema } from "../types/GetSchools"
 
-const GetSchoolsParams = z.object({
-  schoolSlugs: z.array(SLUG_SCHEMA).optional(),
-})
 // TODO: Paginate
 export const getSchoolsFn = createServerFn()
-  .validator(GetSchoolsParams)
-  .handler(async ({ data: { schoolSlugs } }): Promise<School[]> => {
-    const cloudflareBindings = getCloudflareBindings()
-    const context = Context.empty().pipe(
-      Context.add(CloudflareBindingsService, cloudflareBindings),
-    )
-    const program = Effect.gen(function* () {
-      const { SCHOOL_DB } = yield* CloudflareBindingsService
-      const db = yield* Effect.sync(() => createDb(SCHOOL_DB))
-      return yield* Effect.promise(() => getSchools({ db, schoolSlugs }))
-    })
-    return effectRunPromise({ context, program })
-  })
+  .validator((data: unknown) =>
+    Schema.decodeUnknownSync(GetSchoolsSchema)(data),
+  )
+  .handler(
+    ({ data: { schoolSlugs: missableSchoolSlugs } }): Promise<List<School>> => {
+      const cloudflareBindings = getCloudflareBindings()
+      const context = Context.empty().pipe(
+        Context.add(CloudflareBindingsService, cloudflareBindings),
+      )
+      const program = Effect.gen(function* () {
+        const { SCHOOL_DB } = yield* CloudflareBindingsService
+        const db = yield* Effect.sync(() => createDb(SCHOOL_DB))
+        const maybeSchoolSlugs = Option.fromNullable(missableSchoolSlugs)
+        return yield* Effect.promise(() =>
+          getSchools({ db, schoolSlugs: maybeSchoolSlugs }),
+        )
+      })
+      return effectRunPromise({ context, program })
+    },
+  )
 
 const getSchools = ({
   db,
   schoolSlugs: maybeSchoolSlugs,
 }: {
   db: ReturnType<typeof createDb>
-  schoolSlugs?: string[]
+  schoolSlugs: Option.Option<List<string>>
 }) =>
-  match(maybeSchoolSlugs)
-    .with(P.nullish, () =>
+  Option.match(maybeSchoolSlugs, {
+    onNone: () =>
       db.query.SchoolEntity.findMany({
         orderBy: school => school.name,
       }),
-    )
-    .otherwise(schoolSlugs =>
+    onSome: schoolSlugs =>
       db.query.SchoolEntity.findMany({
         where: school => inArray(school.slug, schoolSlugs),
         orderBy: school => school.name,
       }),
-    )
+  })
