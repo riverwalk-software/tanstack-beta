@@ -7,7 +7,7 @@
     "*.scss"
   ],
   "scripts": {
-    "dev": "npm run typecheck -- --watch && vite dev",
+    "dev": "npm run typecheck -- --watch && vite",
     "build": "vite build",
     "typegen": "wrangler types --env-interface CloudflareBindings",
     "typecheck": "npm run typegen && tsc --noEmit",
@@ -35,7 +35,6 @@
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@react-email/components": "^0.1.1",
-    "@rimbu/core": "^2.0.4",
     "@tanstack/query-core": "^5.85.3",
     "@tanstack/react-query": "^5.85.3",
     "@tanstack/react-router": "^1.131.16",
@@ -65,7 +64,6 @@
     "shadcn-prose": "^1.1.0",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
-    "ts-pattern": "^5.8.0",
     "xstate": "^5.20.2"
   },
   "devDependencies": {
@@ -108,9 +106,9 @@
     "tsx": "^4.20.3",
     "tw-animate-css": "^1.3.5",
     "typescript": "^5.9.2",
-    "vite": "^6.3.5",
+    "vite": "^7.1.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4",
-    "wrangler": "^4.26.0"
+    "wrangler": "^4.33.1"
   }
 }

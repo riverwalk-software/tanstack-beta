@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authenticated")({
         },
       })
 
-    return { sessionData }
+    return Promise.resolve({ sessionData })
   },
   component: AuthenticatedPathlessLayout,
 })

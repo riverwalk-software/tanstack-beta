@@ -1,5 +1,6 @@
 import { useCourses } from "@schools"
 import { createFileRoute } from "@tanstack/react-router"
+import { SchoolSlugSchema } from "packages/schools/src/subpackages/schools/types/Slugs"
 import { CourseCard } from "@/components/CourseCard"
 
 export const Route = createFileRoute("/_authenticated/schools/$schoolSlug/")({
@@ -8,7 +9,9 @@ export const Route = createFileRoute("/_authenticated/schools/$schoolSlug/")({
 
 function RouteComponent() {
   const { schoolSlug } = Route.useParams()
-  const { courses } = useCourses({ schoolSlug })
+  const { courses } = useCourses({
+    schoolSlug: SchoolSlugSchema.make(schoolSlug),
+  })
   return (
     <div>
       <h1>Courses</h1>

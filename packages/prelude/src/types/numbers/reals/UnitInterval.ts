@@ -9,7 +9,7 @@ export const UnitInterval = Brand.refined<UnitInterval>(
     minimum: 0,
     maximum: 1,
   }),
-  n => Brand.error(`Expected ${n} to be a Real in the interval [0, 100]`),
+  n => Brand.error(`Expected ${n} to be a Real in the interval [0, 1]`),
 )
 export const UnitIntervalSchema = Schema.Number.pipe(
   Schema.fromBrand(UnitInterval),

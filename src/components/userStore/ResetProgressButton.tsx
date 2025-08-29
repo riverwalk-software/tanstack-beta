@@ -1,5 +1,4 @@
-import { useUserStore } from "@/hooks/useUserStore"
-import type { SetUserStoreParams } from "@/lib/userStore"
+import { useUserStore } from "@userStore"
 import { Button } from "../ui/button"
 
 export function ResetProgressButton(params: SetUserStoreParams) {

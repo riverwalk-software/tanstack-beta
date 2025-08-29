@@ -3,29 +3,56 @@
  */
 
 import { Arbitrary, pipe, Schema } from "effect"
-import { assert, property } from "effect/FastCheck"
+import * as fc from "effect/FastCheck"
 import { describe, expect, it } from "vitest"
 import { toggleTheme } from "../../src/logic/themeLogic"
 import { ThemeSchema } from "../../src/types/Theme"
 
-describe("toggleTheme", () => {
-  describe("purity", () => {
-    it("totality", () => {
-      assert(
-        property(ThemeArbitrary, theme => {
-          pipe(theme, toggleTheme, Schema.decodeSync(ThemeSchema))
-        }),
-      )
-    })
+export const testPurity =
+  <A, B>(f: (a: A) => B) =>
+  (name: string) =>
+  (arbitrary: fc.Arbitrary<A>) =>
+  (schema: Schema.Schema<A>) => {
+    return describe(name, () => {
+      describe("purity", () => {
+        it("totality", () => {
+          fc.assert(
+            fc.property(arbitrary, x => {
+              pipe(x, f, Schema.decodeUnknownSync(schema))
+            }),
+          )
+        })
 
-    it("determinism", () => {
-      assert(
-        property(ThemeArbitrary, theme => {
-          expect(toggleTheme(theme)).toEqual(toggleTheme(theme))
-        }),
-      )
+        it("determinism", () => {
+          fc.assert(
+            fc.property(arbitrary, x => {
+              expect(f(x)).toEqual(f(x))
+            }),
+          )
+        })
+      })
     })
-  })
-})
+  }
 
 const ThemeArbitrary = Arbitrary.make(ThemeSchema)
+testPurity(toggleTheme)("toggleTheme")(ThemeArbitrary)(ThemeSchema)
+
+// describe("toggleTheme", () => {
+//   describe("purity", () => {
+//     it("totality", () => {
+//       fc.assert(
+//         fc.property(ThemeArbitrary, theme => {
+//           pipe(theme, toggleTheme, Schema.decodeSync(ThemeSchema))
+//         }),
+//       )
+//     })
+
+//     it("determinism", () => {
+//       fc.assert(
+//         fc.property(ThemeArbitrary, theme => {
+//           expect(toggleTheme(theme)).toEqual(toggleTheme(theme))
+//         }),
+//       )
+//     })
+//   })
+// })

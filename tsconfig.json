@@ -20,7 +20,7 @@
     // Base
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "allowJs": true, // MDX: https://www.npmjs.com/package/vite-tsconfig-paths
+    "allowJs": true, // MDX: https://github.com/aleclarson/vite-tsconfig-paths#%EF%B8%8F-non-typescript-modules-need-special-configuration
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true, // Vite: https://vite.dev/guide/features.html#typescript-compiler-options
