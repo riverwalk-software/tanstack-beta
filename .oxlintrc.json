@@ -1,0 +1,47 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "rules": {
+    "max-params": ["deny", { "max": 1 }],
+    "no-magic-numbers": [
+      "deny",
+      {
+        "ignore": [0, 1],
+        "ignoreArrayIndexes": true,
+        "ignoreDefaultValues": true,
+        "ignoreClassFieldInitialValues": true,
+        "enforceConst": true,
+        "detectObjects": true,
+        "ignoreNumericLiteralTypes": true,
+        "ignoreReadonlyClassProperties": true,
+        "ignoreTypeIndexes": true
+      }
+    ],
+    "no-unused-vars": "warn",
+    "sort-imports": "allow",
+    "sort-keys": "allow",
+    "sort-vars": "allow",
+    "yoda": ["error", "never", { "onlyEquality": true }]
+  },
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "react",
+    "react-perf",
+    "oxc",
+    "import",
+    "jsdoc",
+    "jsx-a11y",
+    "node",
+    "promise",
+    "vitest"
+  ],
+  "categories": {
+    "correctness": "deny",
+    "perf": "deny",
+    "restriction": "deny",
+    "suspicious": "deny",
+    "pedantic": "deny",
+    "style": "deny",
+    "nursery": "allow"
+  }
+}
