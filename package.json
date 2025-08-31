@@ -4,8 +4,10 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "typecheck": "tsc -b tsconfig.json",
-    "lint": "eslint \"**/{src,test,examples,scripts,dtslint}/**/*.{ts,mjs}\"",
-    "lint-fix": "pnpm lint --fix",
+    "format:ci": "biome ci --reporter=github",
+    "format:fix": "biome format --write",
+    "lint:ci": "oxlint --format=github",
+    "lint:fix": "oxlint --fix",
     "test": "vitest",
     "test:coverage": "vitest --coverage"
   },
