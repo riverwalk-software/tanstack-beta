@@ -18,11 +18,12 @@
       "extensions": [
         "-dbaeumer.vscode-eslint",
         "adpyke.codesnap",
-        "biomejs.biome", // Needs more configuration
+        "biomejs.biome",
         "bradlc.vscode-tailwindcss", // Needs more configuration
         "christian-kohler.npm-intellisense",
         "christian-kohler.path-intellisense",
         "EditorConfig.EditorConfig",
+        "effectful-tech.effect-vscode",
         "formulahendry.auto-close-tag",
         "GitHub.copilot", // Needs more configuration
         "github.vscode-github-actions",
@@ -44,7 +45,6 @@
   "portsAttributes": {
     "3000": {
       "label": "Application"
-      // "onAutoForward": "openBrowserOnce" // Does not open 'localhost" as expected
     }
   }
 }

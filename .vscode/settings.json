@@ -99,6 +99,8 @@
   //// Extensions
   // adpyke.codesnap
   "codesnap.shutterAction": "copy",
+  // biomejs.biome
+  "editor.defaultFormatter": "biomejs.biome",
   // bradlc.vscode-tailwindcss
   "editor.quickSuggestions": {
     "strings": "on"
@@ -111,8 +113,6 @@
   // EditorConfig.EditorConfig
   "editorconfig.generateAuto": false,
   "editorconfig.showMenuEntry": false,
-  // esbenp.prettier-vscode
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   // formulahendry.auto-close-tag
   "auto-close-tag.activationOnLanguage": ["mdx"],
   // ms-vsliveshare.vsliveshare
