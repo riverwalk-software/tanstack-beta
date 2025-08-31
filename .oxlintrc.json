@@ -10,12 +10,13 @@
         "ignoreDefaultValues": true,
         "ignoreClassFieldInitialValues": true,
         "enforceConst": true,
-        "detectObjects": true,
+        "detectObjects": false,
         "ignoreNumericLiteralTypes": true,
         "ignoreReadonlyClassProperties": true,
         "ignoreTypeIndexes": true
       }
     ],
+    "no-ternary": "allow",
     "no-unused-vars": "warn",
     "sort-imports": "allow",
     "sort-keys": "allow",

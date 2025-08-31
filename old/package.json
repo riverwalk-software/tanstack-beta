@@ -1,19 +1,10 @@
 {
-  "private": true,
-  "type": "module",
-  "sideEffects": false,
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "typegen": "wrangler types --env-interface CloudflareBindings",
-    "typecheck": "npm run typegen && tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx ./scripts/seed.ts",
-    "email": "email dev --dir src/components/emails",
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "email": "email dev --dir src/components/emails"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -93,12 +84,7 @@
     "remark-math": "^6.0.0",
     "shadcn": "^3.0.0",
     "tailwindcss": "^4.1.12",
-    "tsx": "^4.20.5",
     "tw-animate-css": "^1.3.7",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.3",
-    "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4",
     "wrangler": "^4.33.1"
   }
 }
