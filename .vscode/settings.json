@@ -101,6 +101,10 @@
   "codesnap.shutterAction": "copy",
   // biomejs.biome
   "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.removeUnusedImports": "explicit"
+  },
   // bradlc.vscode-tailwindcss
   "editor.quickSuggestions": {
     "strings": "on"

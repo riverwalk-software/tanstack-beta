@@ -1,5 +1,5 @@
-import * as effectEslint from "@effect/eslint-plugin"
 import { fixupPluginRules } from "@eslint/compat"
+import * as effectEslint from "@effect/eslint-plugin"
 import { FlatCompat } from "@eslint/eslintrc"
 import js from "@eslint/js"
 import tsParser from "@typescript-eslint/parser"
