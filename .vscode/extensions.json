@@ -6,6 +6,7 @@
     "christian-kohler.npm-intellisense",
     "christian-kohler.path-intellisense",
     "EditorConfig.EditorConfig",
+    "effectful-tech.effect-vscode",
     "formulahendry.auto-close-tag",
     "GitHub.codespaces",
     "GitHub.copilot",
