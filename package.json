@@ -1,9 +1,6 @@
 {
+  "private": true,
   "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "<PLACEHOLDER>"
-  },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "codegen": "build-utils prepare-v2",
