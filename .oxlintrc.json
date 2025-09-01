@@ -3,6 +3,7 @@
   "rules": {
     "id-length": "allow",
     "max-params": ["deny", { "max": 1 }],
+    "no-empty-file": "warn",
     "no-magic-numbers": [
       "deny",
       {
@@ -25,6 +26,7 @@
     "sort-imports": "allow",
     "sort-keys": "allow",
     "sort-vars": "allow",
+    "unambiguous": "warn",
     "yoda": ["deny", "never", { "onlyEquality": true }]
   },
   "plugins": [
