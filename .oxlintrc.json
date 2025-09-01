@@ -19,10 +19,13 @@
     ],
     "no-ternary": "allow",
     "no-unused-vars": "warn",
+    "prefer-default-export": "allow",
+    "react/jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
+    "react/react-in-jsx-scope": "allow",
     "sort-imports": "allow",
     "sort-keys": "allow",
     "sort-vars": "allow",
-    "yoda": ["error", "never", { "onlyEquality": true }]
+    "yoda": ["deny", "never", { "onlyEquality": true }]
   },
   "plugins": [
     "typescript",
