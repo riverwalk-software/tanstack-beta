@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "rules": {
+    "id-length": ["deny", { "min": 1, "max": 15 }],
     "max-params": ["deny", { "max": 1 }],
     "no-magic-numbers": [
       "deny",
