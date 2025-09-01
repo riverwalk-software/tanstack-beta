@@ -12,28 +12,10 @@
   "editor.wordWrap": "off",
   "editor.wordWrapColumn": 80,
   "explorer.excludeGitIgnore": true,
-  "explorer.fileNesting.patterns": {
-    ".gitignore": ".gitattributes",
-    "vite.config.ts": "vite*.ts",
-    "package.json": ".nvmrc, .npmrc, pnpm-lock.yaml"
-  },
-  "files.associations": {
-    "wrangler.json": "jsonc",
-    "*.css": "tailwindcss"
-  },
   "files.autoSave": "off",
   "files.encoding": "utf8",
   "files.eol": "\n",
   "files.insertFinalNewline": true,
-  "files.readonlyInclude": {
-    "**/.editorconfig": true,
-    "**/.gitattributes": true,
-    "**/.gitignore": true,
-    "**/{,*-,*.}{lock,lockfile}{,-*,.*}": true,
-    "**/{,*-,*.}{gen,generated}{,-*,.*}": true,
-    "**/{CHANGELOG,LICENSE,LEGAL}{,.*}": true,
-    "**/*.svg": true
-  },
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "git.autofetch": true,
@@ -57,16 +39,6 @@
   "notebook.insertFinalNewline": true,
   "notebook.output.wordWrap": true,
   "scm.defaultViewMode": "tree",
-  "search.exclude": {
-    "**/.editorconfig": true,
-    "**/.gitattributes": true,
-    "**/.gitignore": true,
-    "**/{,*-,*.}{lock,lockfile}{,-*,.*}": true,
-    "**/{,*-,*.}{gen,generated}{,-*,.*}": true,
-    "**/{CHANGELOG,LICENSE,LEGAL}{,.*}": true,
-    "**/*.svg": true,
-    "**/*.xsl": true
-  },
   "search.useIgnoreFiles": true,
   "terminal.integrated.defaultProfile.linux": "zsh",
   "typescript.enablePromptUseWorkspaceTsdk": true,
@@ -83,6 +55,39 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.validate.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit", // biomejs.biome
+    "source.fixAll.oxc": "explicit", // oxc.oxc-vscode
+    "source.removeUnusedImports": "explicit"
+  },
+  "explorer.fileNesting.patterns": {
+    ".gitignore": ".gitattributes",
+    "vite.config.ts": "vite*.ts",
+    "package.json": ".nvmrc, .npmrc, pnpm-lock.yaml"
+  },
+  "files.associations": {
+    "wrangler.json": "jsonc",
+    "*.css": "tailwindcss"
+  },
+  "files.readonlyInclude": {
+    "**/.editorconfig": true,
+    "**/.gitattributes": true,
+    "**/.gitignore": true,
+    "**/{,*-,*.}{lock,lockfile}{,-*,.*}": true,
+    "**/{,*-,*.}{gen,generated}{,-*,.*}": true,
+    "**/{CHANGELOG,LICENSE,LEGAL}{,.*}": true,
+    "**/*.svg": true
+  },
+  "search.exclude": {
+    "**/.editorconfig": true,
+    "**/.gitattributes": true,
+    "**/.gitignore": true,
+    "**/{,*-,*.}{lock,lockfile}{,-*,.*}": true,
+    "**/{,*-,*.}{gen,generated}{,-*,.*}": true,
+    "**/{CHANGELOG,LICENSE,LEGAL}{,.*}": true,
+    "**/*.svg": true,
+    "**/*.xsl": true
+  },
   //// Language-Specific
   "[markdown]": {
     "editor.tabSize": 4,
@@ -101,11 +106,6 @@
   "codesnap.shutterAction": "copy",
   // biomejs.biome
   "editor.defaultFormatter": "biomejs.biome",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.biome": "explicit",
-    "source.organizeImports.biome": "explicit",
-    "source.removeUnusedImports": "explicit"
-  },
   // bradlc.vscode-tailwindcss
   "editor.quickSuggestions": {
     "strings": "on"
@@ -128,6 +128,10 @@
   "liveshare.launcherClient": "visualStudioCode",
   "liveshare.notebooks.allowGuestExecuteCells": true,
   "liveshare.publishWorkspaceInfo": true,
+  // oxc.oxc-vscode
+  "oxc.lint.run": "onType",
+  "oxc.requireConfig": true,
+  "oxc.unusedDisableDirectives": "deny",
   // redhat.vscode-yaml
   "redhat.telemetry.enabled": false,
   "yaml.extension.recommendations": false,

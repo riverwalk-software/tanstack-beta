@@ -1,9 +1,28 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "rules": {
+    "consistent-type-specifier-style": "allow",
+    "error-message": "warn",
+    "func-names": "allow", // Conflicts with Effect generators
     "id-length": "allow",
+    "max-dependencies": "allow",
     "max-params": ["deny", { "max": 1 }],
+    "new-cap": "allow", // Conflicts wtih Effect functions
+    "no-async-await": "allow",
+    "no-empty": "warn",
     "no-empty-file": "warn",
+    "no-null": "allow",
+    "no-ternary": "allow",
+    "no-unused-vars": "warn",
+    "prefer-default-export": "allow",
+    "react/jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
+    "react/react-in-jsx-scope": "allow",
+    "sort-imports": "allow",
+    "sort-keys": "allow",
+    "sort-vars": "allow",
+    "unambiguous": "warn",
+    "yoda": ["deny", "never", { "onlyEquality": true }],
+    "consistent-type-imports": "allow",
     "no-magic-numbers": [
       "deny",
       {
@@ -17,17 +36,7 @@
         "ignoreReadonlyClassProperties": true,
         "ignoreTypeIndexes": true
       }
-    ],
-    "no-ternary": "allow",
-    "no-unused-vars": "warn",
-    "prefer-default-export": "allow",
-    "react/jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
-    "react/react-in-jsx-scope": "allow",
-    "sort-imports": "allow",
-    "sort-keys": "allow",
-    "sort-vars": "allow",
-    "unambiguous": "warn",
-    "yoda": ["deny", "never", { "onlyEquality": true }]
+    ]
   },
   "plugins": [
     "typescript",

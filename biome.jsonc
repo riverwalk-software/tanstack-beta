@@ -27,7 +27,10 @@
     "enabled": true,
     "actions": {
       "source": {
-        "recommended": true
+        "recommended": true,
+        "organizeImports": "on",
+        "useSortedAttributes": "on",
+        "useSortedProperties": "on"
       }
     }
   }
