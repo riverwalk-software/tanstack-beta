@@ -1,6 +1,18 @@
+import { tanstackStart } from "@tanstack/react-start/plugin/vite"
+import viteReact from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import tsConfigPaths from "vite-tsconfig-paths"
 
+export default defineConfig({
+  server: {
+    port: 3000,
+  },
+  plugins: [
+    tsConfigPaths(),
+    tanstackStart({ customViteReactPlugin: true }),
+    viteReact(),
+  ],
+})
 // const rehypeExpressiveCodeOptions: RehypeExpressiveCodeOptions = {
 //   themes: ["github-light-default", "github-dark-default"],
 //   customizeTheme: theme => {
@@ -27,29 +39,23 @@ import tsConfigPaths from "vite-tsconfig-paths"
 //   ],
 // }
 
-export default defineConfig({
-  server: {
-    port: 3000,
-  },
-  plugins: [
-    // {
-    //   enforce: "pre",
-    //   ...mdx({
-    //     remarkPlugins: [remarkGfm, remarkMath],
-    //     rehypePlugins: [
-    //       // rehypeMermaid, // Must come before rehypeExpressiveCode
-    //       rehypeKatex, // Must come before rehypeExpressiveCode
-    //       [rehypeExpressiveCode, rehypeExpressiveCodeOptions],
-    //     ],
-    //   }),
-    // },
-    tsConfigPaths({
-      projects: ["./tsconfig.json"],
-    }),
-    // tanstackStart({
-    //   target: "cloudflare-module",
-    //   customViteReactPlugin: true,
-    // }),
-    // viteReact({ include: /\.(jsx|js|mdx|md|tsx|ts)$/ }),
-  ],
-})
+// export default defineConfig({
+//   plugins: [
+// {
+//   enforce: "pre",
+//   ...mdx({
+//     remarkPlugins: [remarkGfm, remarkMath],
+//     rehypePlugins: [
+//       // rehypeMermaid, // Must come before rehypeExpressiveCode
+//       rehypeKatex, // Must come before rehypeExpressiveCode
+//       [rehypeExpressiveCode, rehypeExpressiveCodeOptions],
+//     ],
+//   }),
+// },
+// tanstackStart({
+//   target: "cloudflare-module",
+//   customViteReactPlugin: true,
+// }),
+// viteReact({ include: /\.(jsx|js|mdx|md|tsx|ts)$/ }),
+//   ],
+// })

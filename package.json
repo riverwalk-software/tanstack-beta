@@ -4,7 +4,7 @@
   "sideEffects": false,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "vite",
+    "dev": "vite dev",
     "build": "vite build",
     "typegen": "wrangler types --env-interface CloudflareBindings",
     "typecheck": "npm run typegen && tsc",
@@ -18,13 +18,20 @@
   "dependencies": {
     "@effect/experimental": "0.54.6",
     "@effect/platform-node": "0.96.0",
-    "effect": "^3.17.7"
+    "@tanstack/react-router": "^1.131.31",
+    "@tanstack/react-start": "^1.131.31",
+    "effect": "^3.17.7",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.2",
     "@effect/language-service": "latest",
     "@effect/vitest": "^0.25.1",
     "@types/node": "^22.5.2",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.2",
     "only-allow": "^1.2.1",
     "oxlint": "1.14.0",
     "tsx": "^4.17.0",
