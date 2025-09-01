@@ -36,9 +36,9 @@
 
     // Tanstack Start: https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
     "jsx": "react-jsx",
-    "moduleResolution": "Bundler",
-    "module": "ESNext",
-    "target": "ES2022",
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "target": "es2022",
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "verbatimModuleSyntax": false
   }
