@@ -4,8 +4,7 @@
     // Paths
     "baseUrl": ".",
     "paths": {
-      "@components": ["src/components/index.ts"],
-      "@styles": ["src/styles"]
+      "@components": ["src/components/index.ts"]
     },
 
     // Types
