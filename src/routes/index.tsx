@@ -1,9 +1,10 @@
+import { Button } from "@components"
 import { FileSystem } from "@effect/platform"
 import { NodeContext } from "@effect/platform-node"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { Effect, Number, Option, pipe, Schema } from "effect"
-import { type ReactElement, useCallback, useState } from "react"
+import { useCallback, useState } from "react"
 
 const FILE_PATH = "count.txt" as const
 
@@ -45,7 +46,7 @@ const incrementByFn = createServerFn({ method: "POST" })
   .validator(Schema.decodeUnknownSync(Schema.Number))
   .handler(({ data: augend }) => incrementBy(augend))
 
-const Home = (): ReactElement => {
+const Home = () => {
   const router = useRouter()
   const state = Route.useLoaderData()
   const [isPending, setIsPending] = useState(false)
@@ -59,9 +60,9 @@ const Home = (): ReactElement => {
     }
   }, [router])
   return (
-    <button disabled={isPending} onClick={onClickMemo} type="button">
+    <Button disabled={isPending} onClick={onClickMemo} type="button">
       Add 1 to {state}?
-    </button>
+    </Button>
   )
 }
 
