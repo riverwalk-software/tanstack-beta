@@ -5,18 +5,17 @@
     "error-message": "warn",
     "func-names": "allow", // Conflicts with Effect generators
     "id-length": "allow",
+    "jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
     "max-dependencies": "allow",
     "max-params": ["deny", { "max": 1 }],
     "new-cap": "allow", // Conflicts wtih Effect functions
     "no-async-await": "allow",
-    "no-empty": "warn",
     "no-empty-file": "warn",
-    "no-null": "allow",
+    "no-empty": "warn",
     "no-ternary": "allow",
     "no-unused-vars": "warn",
     "prefer-default-export": "allow",
-    "react/jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
-    "react/react-in-jsx-scope": "allow",
+    "react-in-jsx-scope": "allow",
     "sort-imports": "allow",
     "sort-keys": "allow",
     "sort-vars": "allow",
@@ -50,6 +49,12 @@
     "node",
     "promise",
     "vitest"
+  ],
+  "overrides": [
+    {
+      "files": ["*.config.*"],
+      "rules": { "no-default-export": "off" }
+    }
   ],
   "categories": {
     "correctness": "deny",
