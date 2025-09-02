@@ -1,17 +1,22 @@
 import { DefaultCatchBoundary, NotFound } from "@components"
-import globalsCss from "@styles/globals.css?url"
 import type { QueryClient } from "@tanstack/react-query"
 import {
   createRootRouteWithContext,
   HeadContent,
-  Link,
   Outlet,
   Scripts,
 } from "@tanstack/react-router"
 import { ReactNode } from "react"
+import globalsCss from "src/styles/globals.css?url"
 import { seo } from "src/utils/seo"
 
-export default createRootRouteWithContext<{
+const RootComponent = () => (
+  <RootDocument>
+    <Outlet />
+  </RootDocument>
+)
+
+export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
 }>()({
   head: () => ({
@@ -61,12 +66,6 @@ export default createRootRouteWithContext<{
   component: RootComponent,
 })
 
-const RootComponent = () => (
-  <RootDocument>
-    <Outlet />
-  </RootDocument>
-)
-
 const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => (
   <html>
     <head>
@@ -77,7 +76,7 @@ const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => (
       <HeadContent />
     </head>
     <body>
-      <div className="p-2 flex gap-2 text-lg">
+      {/* <div className="p-2 flex gap-2 text-lg">
         <Link
           activeOptions={{ exact: true }}
           activeProps={{
@@ -128,7 +127,7 @@ const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => (
         >
           This Route Does Not Exist
         </Link>
-      </div>
+      </div> */}
       <hr />
       {children}
       {/* <TanStackRouterDevtools position="bottom-right" />
