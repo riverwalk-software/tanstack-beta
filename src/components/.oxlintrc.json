@@ -1,0 +1,12 @@
+{
+  "extends": ["../../.oxlintrc.json"],
+  "overrides": [
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "no-default-export": "allow",
+        "prefer-default-export": "deny"
+      }
+    }
+  ]
+}

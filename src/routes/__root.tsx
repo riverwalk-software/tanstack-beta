@@ -8,13 +8,6 @@ import {
 } from "@tanstack/react-router"
 import { ReactNode } from "react"
 import globalsCss from "src/styles/globals.css?url"
-import { seo } from "src/utils/seo"
-
-const RootComponent = () => (
-  <RootDocument>
-    <Outlet />
-  </RootDocument>
-)
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -66,17 +59,26 @@ export const Route = createRootRouteWithContext<{
   component: RootComponent,
 })
 
-const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => (
-  <html>
-    <head>
-      <script
-        crossOrigin="anonymous"
-        src="//unpkg.com/react-scan/dist/auto.global.js"
-      />
-      <HeadContent />
-    </head>
-    <body>
-      {/* <div className="p-2 flex gap-2 text-lg">
+function RootComponent() {
+  return (
+    <RootDocument>
+      <Outlet />
+    </RootDocument>
+  )
+}
+
+function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  return (
+    <html lang="en">
+      <head>
+        <script
+          crossOrigin="anonymous"
+          src="//unpkg.com/react-scan/dist/auto.global.js"
+        />
+        <HeadContent />
+      </head>
+      <body>
+        {/* <div className="p-2 flex gap-2 text-lg">
         <Link
           activeOptions={{ exact: true }}
           activeProps={{
@@ -128,11 +130,43 @@ const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => (
           This Route Does Not Exist
         </Link>
       </div> */}
-      <hr />
-      {children}
-      {/* <TanStackRouterDevtools position="bottom-right" />
+        <hr />
+        {children}
+        {/* <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" /> */}
-      <Scripts />
-    </body>
-  </html>
-)
+        <Scripts />
+      </body>
+    </html>
+  )
+}
+
+// oxlint-disable-next-line func-style
+const seo = ({
+  title,
+  description,
+  keywords,
+  image,
+}: {
+  title: string
+  description?: string
+  image?: string
+  keywords?: string
+}) => [
+  { title },
+  { name: "description", content: description },
+  { name: "keywords", content: keywords },
+  { name: "twitter:title", content: title },
+  { name: "twitter:description", content: description },
+  { name: "twitter:creator", content: "@tannerlinsley" },
+  { name: "twitter:site", content: "@tannerlinsley" },
+  { name: "og:type", content: "website" },
+  { name: "og:title", content: title },
+  { name: "og:description", content: description },
+  ...(image
+    ? [
+        { name: "twitter:image", content: image },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "og:image", content: image },
+      ]
+    : []),
+]

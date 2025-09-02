@@ -53,19 +53,11 @@
   ],
   "overrides": [
     {
-      "files": ["*.tsx"],
-      "rules": {
-        "exports-last": "allow",
-        "max-lines-per-function": "allow",
-        "no-default-export": "allow",
-        "prefer-default-export": "deny"
-      }
-    },
-    {
       "files": ["*.config.*", "router.tsx"],
       "rules": {
         "explicit-module-boundary-types": "allow",
-        "no-default-export": "allow"
+        "no-default-export": "allow",
+        "prefer-default-export": "allow"
       }
     }
   ],
