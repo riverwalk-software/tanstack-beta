@@ -3,6 +3,7 @@
   "rules": {
     "consistent-type-specifier-style": "allow",
     "error-message": "warn",
+    "explicit-function-return-type": "allow", // 'explicit-module-boundary-types' is more appropriate
     "func-names": "allow", // Conflicts with Effect generators
     "id-length": "allow",
     "jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
@@ -52,8 +53,20 @@
   ],
   "overrides": [
     {
-      "files": ["*.config.*"],
-      "rules": { "no-default-export": "off" }
+      "files": ["*.tsx"],
+      "rules": {
+        "exports-last": "allow",
+        "max-lines-per-function": "allow",
+        "no-default-export": "allow",
+        "prefer-default-export": "deny"
+      }
+    },
+    {
+      "files": ["*.config.*", "router.tsx"],
+      "rules": {
+        "explicit-module-boundary-types": "allow",
+        "no-default-export": "allow"
+      }
     }
   ],
   "categories": {
