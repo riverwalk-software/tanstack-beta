@@ -4,9 +4,9 @@
     {
       "files": ["*.tsx"],
       "rules": {
-        "explicit-module-boundary-types": "allow",
-        "no-default-export": "allow",
-        "prefer-default-export": "deny"
+        "import/no-default-export": "allow",
+        "import/prefer-default-export": "deny",
+        "typescript/explicit-module-boundary-types": "allow"
       }
     }
   ]

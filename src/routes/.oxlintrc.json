@@ -3,11 +3,7 @@
   "overrides": [
     {
       "files": ["*.tsx"],
-      "rules": {
-        "exports-last": "allow", // Breaks Tanstack Start routes
-        "func-style": ["deny", "declaration"], // Allows for hoisting component code
-        "max-lines-per-function": "allow" // Too strict for components
-      }
+      "rules": {}
     }
   ]
 }

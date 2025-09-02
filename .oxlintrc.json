@@ -1,29 +1,28 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "rules": {
-    "consistent-type-specifier-style": "allow",
-    "error-message": "warn",
-    "explicit-function-return-type": "allow", // 'explicit-module-boundary-types' is more appropriate
-    "func-names": "allow", // Conflicts with Effect generators
-    "id-length": "allow",
-    "jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
-    "max-dependencies": "allow",
-    "max-params": ["deny", { "max": 1 }],
-    "new-cap": "allow", // Conflicts wtih Effect functions
-    "no-async-await": "allow",
-    "no-empty-file": "warn",
-    "no-empty": "warn",
-    "no-ternary": "allow",
-    "no-unused-vars": "warn",
-    "prefer-default-export": "allow",
-    "react-in-jsx-scope": "allow",
-    "sort-imports": "allow",
-    "sort-keys": "allow",
-    "sort-vars": "allow",
-    "unambiguous": "warn",
-    "yoda": ["deny", "never", { "onlyEquality": true }],
-    "consistent-type-imports": "allow",
-    "no-magic-numbers": [
+    "eslint/func-names": "allow", // Conflicts with Effect generators
+    "eslint/id-length": "allow",
+    "eslint/max-params": ["deny", { "max": 1 }],
+    "eslint/new-cap": "allow", // Conflicts wtih Effect functions
+    "eslint/no-empty": "warn",
+    "eslint/no-ternary": "allow",
+    "eslint/no-unused-vars": "warn",
+    "eslint/sort-imports": "allow", // Formatting rule
+    "eslint/sort-keys": "allow", // Formatting rule
+    "eslint/sort-vars": "allow", // Formatting rule
+    "eslint/yoda": ["deny", "never", { "onlyEquality": true }],
+    "import/consistent-type-specifier-style": "allow",
+    "import/max-dependencies": "allow",
+    "import/prefer-default-export": "allow",
+    "import/unambiguous": "warn",
+    "react/jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
+    "react/react-in-jsx-scope": "allow",
+    "typescript/consistent-type-imports": "allow",
+    "typescript/explicit-function-return-type": "allow", // 'typescript/explicit-module-boundary-types' is more appropriate
+    "unicorn/error-message": "warn",
+    "unicorn/no-empty-file": "warn",
+    "eslint/no-magic-numbers": [
       "deny",
       {
         "ignore": [0, 1],
@@ -53,11 +52,22 @@
   ],
   "overrides": [
     {
+      "files": ["*.tsx"],
+      "rules": {
+        "eslint/func-style": ["deny", "declaration"],
+        "eslint/max-lines-per-function": "allow",
+        "import/exports-last": "allow"
+      }
+    },
+    {
       "files": ["*.config.*", "router.tsx"],
       "rules": {
-        "explicit-module-boundary-types": "allow",
-        "no-default-export": "allow",
-        "prefer-default-export": "allow"
+        "eslint/func-style": "allow",
+        "eslint/max-lines-per-function": "allow",
+        "import/exports-last": "allow",
+        "import/no-default-export": "allow",
+        "import/prefer-default-export": "allow",
+        "typescript/explicit-module-boundary-types": "allow"
       }
     }
   ],
