@@ -8,8 +8,8 @@ export const createRouter = () => {
   const queryClient = new QueryClient()
   const router = createTanStackRouter({
     routeTree,
-    scrollRestoration: true,
     context: { queryClient },
+    scrollRestoration: true,
     defaultPreload: "intent",
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,

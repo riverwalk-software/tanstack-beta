@@ -65,6 +65,7 @@
         "eslint/func-style": "allow",
         "eslint/max-lines-per-function": "allow",
         "import/exports-last": "allow",
+        "import/no-anonymous-default-export": "allow",
         "import/no-default-export": "allow",
         "import/prefer-default-export": "allow",
         "typescript/explicit-module-boundary-types": "allow"

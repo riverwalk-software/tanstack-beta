@@ -71,8 +71,8 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
       <head>
-        <ReactScanScript />
         <HeadContent />
+        <ReactScanScript />
       </head>
       <body>
         {/* <div className="p-2 flex gap-2 text-lg">
