@@ -3,7 +3,9 @@
  */
 
 import { Arbitrary, Option } from "effect"
+import { equals } from "effect/Equal"
 import { assert, property } from "effect/FastCheck"
+import { constant, pipe } from "effect/Function"
 import { CookieDomain } from "packages/cookies/src/domain/cookie-domain"
 import { getCookie, setCookie } from "packages/cookies/src/state/cookie-state"
 import { describe, it } from "vitest"
@@ -15,11 +17,13 @@ describe("cookieState", () => {
     assert(
       property(CookieDomainArbitrary, ({ name, value }) => {
         setCookie({ name, value })
-        const stored = getCookie(name)
-        return Option.match(stored, {
-          onNone: () => false,
-          onSome: v => v === value,
-        })
+        return pipe(
+          getCookie(name),
+          Option.match({
+            onNone: constant(false),
+            onSome: equals(value),
+          }),
+        )
       }),
     )
   })

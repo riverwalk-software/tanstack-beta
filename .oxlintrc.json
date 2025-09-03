@@ -80,5 +80,12 @@
     "pedantic": "deny",
     "style": "deny",
     "nursery": "allow"
+  },
+  "settings": {
+    "jsdoc": {
+      "tagNamePreference": {
+        "customTagName": "vitest-environment"
+      }
+    }
   }
 }
