@@ -15,5 +15,7 @@ const COOKIE = {
       /^"?[\u0021\u0023-\u002B\u002D-\u003A\u003C-\u005B\u005D-\u007E]*"?$/,
   },
 } as const
+const RESERVED_COOKIE_NAMES =
+  /^(?:valueOf|toString|constructor|__proto__|hasOwnProperty|isPrototypeOf|propertyIsEnumerable)$/
 
-export { DEFAULT_COOKIE_OPTIONS, COOKIE }
+export { DEFAULT_COOKIE_OPTIONS, COOKIE, RESERVED_COOKIE_NAMES }
