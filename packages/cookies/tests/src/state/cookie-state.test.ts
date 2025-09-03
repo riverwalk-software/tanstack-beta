@@ -3,28 +3,25 @@
  */
 
 import { Arbitrary, Option } from "effect"
-import { equals } from "effect/Equal"
 import { assert, property } from "effect/FastCheck"
 import { constant, pipe } from "effect/Function"
-import { CookieDomain } from "packages/cookies/src/domain/cookie-domain"
+import { Cookie } from "packages/cookies/src/core/cookie-core"
 import { getCookie, setCookie } from "packages/cookies/src/state/cookie-state"
 import { describe, it } from "vitest"
 
-const CookieDomainArbitrary = Arbitrary.make(CookieDomain)
+const CookieArbitrary = Arbitrary.make(Cookie)
 
 describe("cookieState", () => {
   it("consistency", () => {
     assert(
-      property(CookieDomainArbitrary, ({ name, value }) => {
-        setCookie({ name, value })
-        return pipe(
-          getCookie(name),
-          Option.match({
-            onNone: constant(false),
-            onSome: equals(value),
-          }),
-        )
-      }),
+      property(CookieArbitrary, ({ name, value }) =>
+        pipe(
+          setCookie({ name, value }),
+          constant(name),
+          getCookie,
+          Option.contains(value),
+        ),
+      ),
     )
   })
 })
