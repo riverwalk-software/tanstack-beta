@@ -6,7 +6,8 @@
     "paths": {
       "@components": ["src/components/index.ts"],
       "@theme": ["packages/theme/src/index.ts"],
-      "@lib": ["src/lib"]
+      "@lib": ["src/lib"],
+      "@prelude": ["packages/prelude/src/index.ts"]
     },
 
     // Types
