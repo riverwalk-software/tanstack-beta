@@ -14,6 +14,7 @@ import {
 import { Input } from "src/components/ui/input"
 import { Label } from "src/components/ui/label"
 import NotFound from "src/components/ui/not-found"
+import { Switch } from "src/components/ui/switch"
 
 export {
   Button,
@@ -22,6 +23,7 @@ export {
   DefaultCatchBoundary,
   Form,
   Input,
+  Switch,
   FormControl,
   FormDescription,
   FormField,

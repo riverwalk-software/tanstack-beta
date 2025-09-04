@@ -1,5 +1,4 @@
 import { LoginForm } from "@authentication"
-import { CenteredContainer } from "@components"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/")({
@@ -8,10 +7,10 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   return (
-    <CenteredContainer>
-      <div className="grid w-full max-w-sm items-center gap-3">
+    <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <div className="w-full max-w-sm">
         <LoginForm />
       </div>
-    </CenteredContainer>
+    </div>
   )
 }

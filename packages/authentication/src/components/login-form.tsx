@@ -2,62 +2,81 @@ import {
   Button,
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
   Input,
+  Switch,
 } from "@components"
-import { PRIVACY_POLICY_URL, TERMS_OF_USE_URL, WEBSITE_NAME } from "@constants"
+import {
+  PRIVACY_POLICY_URL,
+  TERMS_OF_USE_URL,
+  TEST_USER,
+  WEBSITE_NAME,
+} from "@constants"
 import { effectTsResolver } from "@hookform/resolvers/effect-ts"
-import { Schema } from "effect"
+import { Link } from "@tanstack/react-router"
+import { pipe, Schema } from "effect"
 import { GalleryVerticalEnd } from "lucide-react"
-import { useForm } from "react-hook-form"
+import {
+  EMAIL_REGEX,
+  LENGTHS,
+  passesEmailStructureChecks,
+} from "packages/authentication/src/utils/filters"
+import { ComponentProps } from "react"
+import { UseFormReturn, useForm } from "react-hook-form"
 import { cn } from "@/lib/shadcn"
 
-const handleClick = () => alert("Clicked!")
-
-const FormSchema = Schema.Struct({
-  userName: Schema.String.pipe(Schema.minLength(2), Schema.maxLength(50)),
+const LoginFormSchema = Schema.Struct({
+  email: pipe(
+    Schema.NonEmptyTrimmedString,
+    Schema.minLength(LENGTHS.EMAIL.MINIMUM),
+    Schema.maxLength(LENGTHS.EMAIL.MAXIMUM),
+    Schema.pattern(EMAIL_REGEX, {
+      message: () => "Invalid email address",
+    }),
+    Schema.filter(passesEmailStructureChecks, {
+      message: () => "Invalid email address",
+    }),
+    // Schema.transform(email => {
+    //   const [local, domain] = email.split("@")
+    //   return `${local}@${domain.toLowerCase()}`
+    // }, {}),
+  ),
+  password: pipe(
+    Schema.NonEmptyString,
+    Schema.minLength(LENGTHS.PASSWORD.MINIMUM),
+    Schema.maxLength(LENGTHS.PASSWORD.MAXIMUM),
+    // (Optional) add a strength check or a zxcvbn-style estimator server-side
+  ),
+  rememberMe: Schema.Boolean,
 })
-// z.object({
-//   username: z.string().min(2).max(50),
-// })
+type LoginForm = typeof LoginFormSchema.Type
 
 export default function LoginForm({
   className,
   ...props
-}: React.ComponentProps<"div">) {
-  const form = useForm<typeof FormSchema.Type>({
-    resolver: effectTsResolver(FormSchema),
+}: ComponentProps<"div">) {
+  const form = useForm<LoginForm>({
+    resolver: effectTsResolver(LoginFormSchema),
     defaultValues: {
-      userName: "Bob",
+      email: TEST_USER.email,
+      password: TEST_USER.password,
+      rememberMe: false,
     },
   })
   return (
-    <Form {...form}>
-      <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-6">
-            <div className="flex flex-col items-center gap-2">
-              <div className="flex flex-col items-center gap-2 font-medium">
-                <div className="flex size-8 items-center justify-center rounded-md">
-                  <GalleryVerticalEnd className="size-6" />
-                </div>
-                <span className="sr-only">{WEBSITE_NAME}</span>
-              </div>
-              <h1 className="text-xl font-bold">Welcome to {WEBSITE_NAME}</h1>
-              <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <a className="underline underline-offset-4" href="#">
-                  Sign up
-                </a>
-              </div>
-            </div>
+            <FormHeader />
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <UserNameInput form={form} />
+                <EmailInput form={form} />
+                <PasswordInput form={form} />
+                <RememberMeSwitch form={form} />
               </div>
               <LoginButton />
             </div>
@@ -72,46 +91,87 @@ export default function LoginForm({
             </div>
           </div>
         </form>
-        <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-          By clicking continue, you agree to our{" "}
-          <a href={TERMS_OF_USE_URL} target="_blank">
-            Terms of Use
-          </a>{" "}
-          and{" "}
-          <a href={PRIVACY_POLICY_URL} target="_blank">
-            Privacy Policy
-          </a>
-          .
-        </div>
-      </div>
-    </Form>
+        <FormFooter />
+      </Form>
+    </div>
   )
 }
 
-function UserNameInput({
-  form,
-}: {
-  form: ReturnType<typeof useForm<typeof FormSchema.Type>>
-}) {
+function EmailInput({ form }: { form: UseFormReturn<LoginForm> }) {
   return (
     <FormField
       control={form.control}
-      name="userName"
+      name="email"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>User Name</FormLabel>
+          <FormLabel>Email</FormLabel>
           <FormControl>
-            <Input placeholder="shadcn" {...field} />
+            <Input type="email" {...field} />
           </FormControl>
-          <FormDescription>This is your public display name.</FormDescription>
           <FormMessage />
         </FormItem>
       )}
     />
-    // <>
-    //   <Label htmlFor="email">Email</Label>
-    //   <Input id="email" placeholder="m@example.com" required type="email" />
-    // </>
+  )
+}
+
+function PasswordInput({ form }: { form: UseFormReturn<LoginForm> }) {
+  return (
+    <FormField
+      control={form.control}
+      name="password"
+      render={({ field }) => (
+        <FormItem>
+          <div className="flex items-center justify-between">
+            <FormLabel>Password</FormLabel>
+            <Link className="underline underline-offset-4 text-sm" to="/">
+              Forgot password?
+            </Link>
+          </div>
+          <FormControl>
+            <Input type="password" {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  )
+}
+
+function RememberMeSwitch({ form }: { form: UseFormReturn<LoginForm> }) {
+  return (
+    <FormField
+      control={form.control}
+      name="rememberMe"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Remember Me</FormLabel>
+          <FormControl>
+            <Switch checked={field.value} onCheckedChange={field.onChange} />
+          </FormControl>
+        </FormItem>
+      )}
+    />
+  )
+}
+
+function FormHeader() {
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-2 font-medium">
+        <div className="flex size-8 items-center justify-center rounded-md">
+          <GalleryVerticalEnd className="size-6" />
+        </div>
+        <span className="sr-only">{WEBSITE_NAME}</span>
+      </div>
+      <h1 className="text-xl font-bold">Welcome to {WEBSITE_NAME}</h1>
+      <div className="text-center text-sm">
+        Don&apos;t have an account?{" "}
+        <a className="underline underline-offset-4" href="#">
+          Sign up
+        </a>
+      </div>
+    </div>
   )
 }
 
@@ -123,10 +183,20 @@ function LoginButton() {
   )
 }
 
-function onSubmit(values: typeof FormSchema.Type) {
-  // Do something with the form values.
-  // ✅ This will be type-safe and validated.
-  alert(values)
+function onSubmit(values: LoginForm) {
+  // const queryClient = useQueryClient()
+  // const router = useRouter()
+  // const { mutate: signInWithEmail, isPending } = useMutation({
+  //   mutationKey: ["signInWithEmail"],
+  //   mutationFn: (formData: SignInFormTransformed) =>
+  //     authClient.signIn.email(formData),
+  //   onSuccess: async () => {
+  //     await queryClient.invalidateQueries({
+  //       queryKey: authenticationDataQueryOptions.queryKey,
+  //     })
+  //     await router.invalidate({ sync: true })
+  //   },
+  // })
 }
 
 function AppleLoginButton() {
@@ -154,5 +224,21 @@ function GoogleLoginButton() {
       </svg>
       Continue with Google
     </Button>
+  )
+}
+
+function FormFooter() {
+  return (
+    <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
+      By clicking continue, you agree to our{" "}
+      <a href={TERMS_OF_USE_URL} target="_blank">
+        Terms of Use
+      </a>{" "}
+      and{" "}
+      <a href={PRIVACY_POLICY_URL} target="_blank">
+        Privacy Policy
+      </a>
+      .
+    </div>
   )
 }
