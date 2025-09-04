@@ -1,3 +1,5 @@
+import { Context, Effect } from "effect"
+
 let cachedEnv: CloudflareBindings | null
 
 // This gets called once at startup when running locally
@@ -12,10 +14,10 @@ if (import.meta.env.DEV) {
 }
 
 /**
- * Will only work when being accessed on the server. Obviously, CF bindings are not available in the browser.
+ * Will only work when being accessed on the server. CF bindings are not available in the browser.
  * @returns
  */
-export function getCloudflareBindings(): CloudflareBindings {
+function getCloudflareBindings(): CloudflareBindings {
   if (import.meta.env.DEV) {
     if (!cachedEnv) {
       throw new Error(
@@ -27,3 +29,14 @@ export function getCloudflareBindings(): CloudflareBindings {
 
   return process.env as unknown as CloudflareBindings
 }
+
+class Cloudflare extends Context.Tag("CloudflareService")<
+  Cloudflare,
+  { readonly bindings: Effect.Effect<CloudflareBindings> }
+>() {}
+
+const CloudflareLive = Effect.provideService(Cloudflare, {
+  bindings: Effect.sync(getCloudflareBindings),
+})
+
+export { Cloudflare, CloudflareLive }

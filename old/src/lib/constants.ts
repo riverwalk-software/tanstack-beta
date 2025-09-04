@@ -5,7 +5,6 @@ export const SLUG_LENGTH = {
   MINIMUM: 1,
   MAXIMUM: 100,
 }
-export const AUTH_COOKIE_PREFIX = "auth" as const
 export const AUTH_COOKIE_NAMES = [
   "session_token",
   "session_data",
