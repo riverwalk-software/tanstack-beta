@@ -11,7 +11,10 @@ export default defineConfig({
   plugins: [
     devtools(), // Must come first
     tsConfigPaths(),
-    tanstackStart({ customViteReactPlugin: true }),
+    tanstackStart({
+      customViteReactPlugin: true,
+      target: "cloudflare-module",
+    }),
     react(),
   ],
 })

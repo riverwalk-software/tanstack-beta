@@ -44,6 +44,5 @@
     "rehype-mermaid": "^3.0.0",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
-    "wrangler": "^4.33.1"
   }
 }

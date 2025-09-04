@@ -1,8 +1,7 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "tanstack-beta",
+  "$schema": "./node_modules/wrangler/config-schema.json",
   "main": "./.output/server/index.mjs",
-  "compatibility_date": "2025-06-08",
+  "compatibility_date": "2025-09-04",
   "observability": {
     "enabled": true
   },
