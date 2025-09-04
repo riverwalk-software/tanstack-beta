@@ -1,6 +1,15 @@
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import { cn } from "src/lib/shadcn"
+import { Loader2Icon } from "lucide-react"
+import {
+  ButtonHTMLAttributes,
+  ComponentProps,
+  MouseEvent,
+  ReactNode,
+  useCallback,
+  useState,
+} from "react"
+import { cn } from "@/lib/shadcn"
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
@@ -33,24 +42,86 @@ const buttonVariants = cva(
   },
 )
 
+type ButtonBaseProps = Omit<ComponentProps<"button">, "onClick"> & {
+  children?: ReactNode
+}
+
+type ButtonProps = ButtonBaseProps &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean
+    onClick: (event: MouseEvent<HTMLButtonElement>) => void | Promise<void>
+    lockWhileAsync?: boolean
+    loadingText?: string
+    type?: ButtonHTMLAttributes<HTMLButtonElement>["type"]
+  }
+
 function Button({
   className,
   variant,
   size,
   asChild = false,
+  disabled,
+  onClick,
+  lockWhileAsync = true,
+  loadingText = "Loading...",
+  type,
+  children,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
+}: ButtonProps) {
   const Comp = asChild ? Slot : "button"
-
+  const [isPending, setIsPending] = useState(false)
+  const isDisabled = disabled || (lockWhileAsync && isPending)
+  const handleClick = useCallback(
+    async (event: MouseEvent<HTMLButtonElement>) => {
+      if (isDisabled) {
+        event.preventDefault()
+        event.stopPropagation()
+        return
+      }
+      const result = onClick(event)
+      if (
+        lockWhileAsync &&
+        result &&
+        typeof (result as any).then === "function"
+      ) {
+        try {
+          setIsPending(true)
+          await result
+        } finally {
+          setIsPending(false)
+        }
+      }
+    },
+    [isDisabled, onClick, lockWhileAsync],
+  )
   return (
     <Comp
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        asChild && isDisabled ? "pointer-events-none" : undefined,
+      )}
+      data-disabled={isDisabled || undefined}
+      data-pending={isPending || undefined}
       data-slot="button"
+      {...(!asChild ? { disabled: isDisabled, type: type ?? "button" } : {})}
+      {...(asChild
+        ? {
+            "aria-disabled": isDisabled || undefined,
+            tabIndex: isDisabled ? -1 : undefined,
+          }
+        : {})}
+      onClick={handleClick}
       {...props}
-    />
+    >
+      {isPending ? (
+        <span className="inline-flex items-center gap-2">
+          <Loader2Icon aria-hidden="true" className="h-4 w-4 animate-spin" />
+          <span>{loadingText}</span>
+        </span>
+      ) : (
+        children
+      )}
+    </Comp>
   )
 }
 

@@ -1,7 +1,3 @@
-/**
- * @vitest-environment jsdom
- */
-
 import { Arbitrary, Effect, Equivalence, Option } from "effect"
 import { assert, property } from "effect/FastCheck"
 import { constant, pipe } from "effect/Function"

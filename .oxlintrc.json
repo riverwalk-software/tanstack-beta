@@ -5,6 +5,7 @@
     "eslint/id-length": "allow",
     "eslint/max-params": ["deny", { "max": 1 }],
     "eslint/new-cap": "allow", // Conflicts wtih Effect functions
+    "eslint/no-empty-function": "warn",
     "eslint/no-empty": "warn",
     "eslint/no-ternary": "allow",
     "eslint/no-unused-vars": "warn",
