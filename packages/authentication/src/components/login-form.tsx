@@ -16,10 +16,11 @@ import {
   WEBSITE_NAME,
 } from "@constants"
 import { effectTsResolver } from "@hookform/resolvers/effect-ts"
-import { Unit } from "@prelude"
-import { Link } from "@tanstack/react-router"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Link, useRouter } from "@tanstack/react-router"
 import { pipe, Schema } from "effect"
 import { GalleryVerticalEnd } from "lucide-react"
+import { authenticationDataQueryOptions } from "packages/authentication/src/utils/authentication"
 import {
   EMAIL_REGEX,
   LENGTHS,
@@ -27,6 +28,8 @@ import {
 } from "packages/authentication/src/utils/filters"
 import { ComponentProps } from "react"
 import { UseFormReturn, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { authClient } from "@/lib/auth-client"
 import { cn } from "@/lib/shadcn"
 
 const FormDataSchema = Schema.Struct({
@@ -77,10 +80,47 @@ export default function LoginForm({
       rememberMe: false,
     },
   })
+  const queryClient = useQueryClient()
+  const router = useRouter()
+  const { mutate: signInWithEmail } = useMutation({
+    mutationKey: ["signInWithEmail"],
+    mutationFn: (data: FormData) => authClient.signIn.email(data),
+    onError: error => {
+      toast.error(error.message || "Failed to sign in")
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: authenticationDataQueryOptions.queryKey,
+      })
+      await router.invalidate({ sync: true })
+    },
+  })
+  const { mutate: signUpWithEmail } = useMutation({
+    mutationKey: ["signUpWithEmail"],
+    mutationFn: () =>
+      authClient.signUp.email({
+        email: TEST_USER.email,
+        password: TEST_USER.password,
+        name: TEST_USER.name,
+      }),
+    onError: error => {
+      toast.error(error.message || "Failed to sign up")
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: authenticationDataQueryOptions.queryKey,
+      })
+      await router.invalidate({ sync: true })
+    },
+  })
+  //   const onSubmit =  (data: FormData) => {
+  //   const formData = SignUpFormTransformedSchema.parse(data)
+  //   signUpWithEmail(formData)
+  // }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(data => signInWithEmail(data))}>
           <div className="flex flex-col gap-6">
             <FormHeader />
             <div className="flex flex-col gap-6">
@@ -99,6 +139,7 @@ export default function LoginForm({
             <div className="grid gap-4 sm:grid-cols-2">
               <AppleLoginButton />
               <GoogleLoginButton />
+              <Button onClick={() => signUpWithEmail()}>Sign Up</Button>
             </div>
           </div>
         </form>
@@ -192,22 +233,6 @@ function LoginButton() {
       Login
     </Button>
   )
-}
-
-const onSubmit = (data: FormData): Unit => {
-  // const queryClient = useQueryClient()
-  // const router = useRouter()
-  // const { mutate: signInWithEmail, isPending } = useMutation({
-  //   mutationKey: ["signInWithEmail"],
-  //   mutationFn: (formData: SignInFormTransformed) =>
-  //     authClient.signIn.email(formData),
-  //   onSuccess: async () => {
-  //     await queryClient.invalidateQueries({
-  //       queryKey: authenticationDataQueryOptions.queryKey,
-  //     })
-  //     await router.invalidate({ sync: true })
-  //   },
-  // })
 }
 
 function AppleLoginButton() {

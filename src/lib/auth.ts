@@ -19,8 +19,12 @@ import { Cloudflare, CloudflareLive } from "@/lib/cloudflare"
 // } from "@/lib/constants"
 // import { environment } from "@/lib/environment"
 
-import { LENGTHS } from "@authentication"
-import { AUTH_COOKIE_PREFIX, EVENTUAL_CONSISTENCY_DELAY } from "@constants"
+// import { LENGTHS } from "@authentication"
+import {
+  AUTH_COOKIE_PREFIX,
+  EVENTUAL_CONSISTENCY_DELAY,
+  IS_DEV,
+} from "@constants"
 import { Duration, Effect, pipe } from "effect"
 
 // const polarClient = new Polar({
@@ -33,7 +37,6 @@ import { Duration, Effect, pipe } from "effect"
 // const { RESEND_API_KEY } = environment.secrets
 // const resend = new Resend(RESEND_API_KEY)
 // const emailSender = "info@riverwalk.dev"
-const isDev = import.meta.env.DEV || process.env["NODE_ENV"] === "development"
 const getAuth = () => {
   const program = Effect.gen(function* () {
     const cloudflare = yield* Cloudflare
@@ -42,11 +45,11 @@ const getAuth = () => {
       betterAuth({
         emailAndPassword: {
           enabled: true,
-          autoSignIn: isDev,
-          requireEmailVerification: !isDev,
+          autoSignIn: IS_DEV,
+          requireEmailVerification: !IS_DEV,
           revokeSessionsOnPasswordReset: true,
-          minPasswordLength: LENGTHS.PASSWORD.MINIMUM,
-          maxPasswordLength: LENGTHS.PASSWORD.MAXIMUM,
+          minPasswordLength: 16,
+          maxPasswordLength: 64,
           // sendResetPassword: async ({ user, url }) => {
           //   await resend.emails.send({
           //     from: emailSender,

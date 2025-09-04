@@ -1,3 +1,7 @@
+import {
+  AuthenticationData,
+  authenticationDataQueryOptions,
+} from "@authentication"
 import { DefaultCatchBoundary, NotFound } from "@components"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { QueryClient } from "@tanstack/react-query"
@@ -15,6 +19,22 @@ import globalsCss from "src/styles/globals.css?url"
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
 }>()({
+  beforeLoad: async ({
+    context: { queryClient },
+  }): Promise<{ authenticationData: AuthenticationData }> => {
+    const authenticationData = await queryClient.fetchQuery(
+      authenticationDataQueryOptions,
+    )
+    return { authenticationData }
+  },
+  // loader: async ({ context: { queryClient } }): Promise<void> => {
+  //   await Promise.all([
+  //     import.meta.env.DEV
+  //       ? queryClient.prefetchQuery(environmentValidationQueryOptions)
+  //       : Promise.resolve(),
+  //     queryClient.prefetchQuery(themeQueryOptions),
+  //   ])
+  // },
   head: () => ({
     meta: [
       {

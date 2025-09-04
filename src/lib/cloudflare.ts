@@ -1,3 +1,4 @@
+import { IS_DEV } from "@constants"
 import { Context, Effect } from "effect"
 
 let cachedEnv: CloudflareBindings | null
@@ -9,7 +10,7 @@ const initDevEnv = async () => {
   cachedEnv = proxy.env as unknown as CloudflareBindings
 }
 
-if (import.meta.env.DEV) {
+if (IS_DEV) {
   await initDevEnv()
 }
 
@@ -18,7 +19,7 @@ if (import.meta.env.DEV) {
  * @returns
  */
 function getCloudflareBindings(): CloudflareBindings {
-  if (import.meta.env.DEV) {
+  if (IS_DEV) {
     if (!cachedEnv) {
       throw new Error(
         "Dev bindings not initialized yet. Call initDevEnv() first.",

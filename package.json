@@ -4,7 +4,7 @@
   "sideEffects": false,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "pnpm run typegen && vite dev",
+    "dev": "pnpm run --silent typegen > /dev/null && vite dev",
     "build": "pnpm run typegen && vite build",
     "typegen": "wrangler types --env-interface CloudflareBindings",
     "typecheck": "pnpm run typegen && tsc",
@@ -39,6 +39,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.62.0",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {

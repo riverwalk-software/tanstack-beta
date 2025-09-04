@@ -1,8 +1,8 @@
 import { createMiddleware } from "@tanstack/react-start"
 import { Match, Schema } from "effect"
+import { getSessionDataMw } from "../../../packages/authentication/src/utils/authentication"
 import { getCustomerStateFn } from "../routes/_authenticated"
 import { auth } from "./auth"
-import { getSessionDataMw } from "./authentication"
 import { UNAUTHORIZED } from "./errors"
 
 const AuthorizationRole = Schema.Literal(
