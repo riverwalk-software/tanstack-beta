@@ -1,8 +1,6 @@
 import { Schema } from "effect"
 import type { FileRouteTypes } from "@/routeTree.gen.ts"
 
-export const EVENTUAL_CONSISTENCY_DELAY_S = 60 * 1
-// export const IMGGEN_URL = "https://imggen.andrei-023.workers.dev";
 export const PASSWORD_LENGTH = {
   MINIMUM: 16,
   MAXIMUM: 64,
@@ -33,7 +31,7 @@ export const TEST_USER = {
 export const HOME_ROUTE: RouteType = "/" as const
 export const AUTH_CALLBACK_ROUTE: RouteType = "/signin" as const
 type RouteType = FileRouteTypes["fullPaths"]
-export const VIDEO_LIBRARY_ID = 478043 as const
+export const VIDEO_LIBRARY_ID = 478_043 as const
 export const TEST_PRODUCT_SLUG = "Test-Product" as const
 export const SLUG_SCHEMA = Schema.String.pipe(
   Schema.minLength(SLUG_LENGTH.MINIMUM),

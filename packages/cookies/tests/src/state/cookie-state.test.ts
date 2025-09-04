@@ -2,16 +2,32 @@
  * @vitest-environment jsdom
  */
 
-import { Arbitrary, Equivalence, Option } from "effect"
+import { Arbitrary, Effect, Equivalence, Option } from "effect"
 import { assert, property } from "effect/FastCheck"
 import { constant, pipe } from "effect/Function"
 import { Cookie } from "packages/cookies/src/core/cookie-core"
-import { getCookie, setCookie } from "packages/cookies/src/state/cookie-state"
-import { describe, it } from "vitest"
+import {
+  CookieJar,
+  cookieContext,
+  getCookie,
+  setCookie,
+} from "packages/cookies/src/state/cookie-state"
+import { beforeEach, describe, it } from "vitest"
 
 const CookieArbitrary = Arbitrary.make(Cookie)
 
 describe("cookieState", () => {
+  // (Property frameworks may run examples sequentially inside a single test invocation,
+  // but we also isolate between vitest test cases.)
+  beforeEach(() => {
+    const program = Effect.gen(function* () {
+      const cookieJar = yield* CookieJar
+      return yield* cookieJar.clear()
+    })
+    const runnable = Effect.provide(program, cookieContext)
+    Effect.runSync(runnable)
+  })
+
   it("absence", () => {
     assert(
       property(CookieArbitrary, ({ name }) =>

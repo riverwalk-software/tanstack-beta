@@ -10,18 +10,25 @@ import {
 
 const cookies = Cookies.withAttributes(DEFAULT_COOKIE_OPTIONS)
 
-class CookieJar extends Context.Tag("CookieJarService")<
+export class CookieJar extends Context.Tag("CookieJarService")<
   CookieJar,
   {
     readonly get: (name: String) => Effect.Effect<String | undefined>
     readonly set: (name: String, value: String) => Effect.Effect<Unit>
+    readonly clear: () => Effect.Effect<Unit>
   }
 >() {}
 
-const context = Context.empty().pipe(
+export const cookieContext = Context.empty().pipe(
   Context.add(CookieJar, {
     get: name => Effect.sync(() => cookies.get(name)),
     set: (name, value) => Effect.sync(() => cookies.set(name, value)),
+    clear: () =>
+      Effect.sync(() => {
+        for (const name of Object.keys(cookies.get())) {
+          cookies.remove(name)
+        }
+      }),
   }),
 )
 
@@ -33,7 +40,7 @@ const getCookie = (name: CookieName): Option.Option<CookieValue> => {
       Option.map(Schema.decodeSync(CookieValue)),
     )
   })
-  const runnable = Effect.provide(program, context)
+  const runnable = Effect.provide(program, cookieContext)
   return Effect.runSync(runnable)
 }
 
@@ -42,7 +49,7 @@ const setCookie = ({ name, value }: Cookie): Unit => {
     const cookieJar = yield* CookieJar
     return yield* cookieJar.set(name, value)
   })
-  const runnable = Effect.provide(program, context)
+  const runnable = Effect.provide(program, cookieContext)
   Effect.runSync(runnable)
 }
 
