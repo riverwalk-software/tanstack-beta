@@ -16,6 +16,7 @@ import {
   WEBSITE_NAME,
 } from "@constants"
 import { effectTsResolver } from "@hookform/resolvers/effect-ts"
+import { Unit } from "@prelude"
 import { Link } from "@tanstack/react-router"
 import { pipe, Schema } from "effect"
 import { GalleryVerticalEnd } from "lucide-react"
@@ -28,11 +29,21 @@ import { ComponentProps } from "react"
 import { UseFormReturn, useForm } from "react-hook-form"
 import { cn } from "@/lib/shadcn"
 
-const LoginFormSchema = Schema.Struct({
+const FormDataSchema = Schema.Struct({
   email: pipe(
-    Schema.NonEmptyTrimmedString,
-    Schema.minLength(LENGTHS.EMAIL.MINIMUM),
-    Schema.maxLength(LENGTHS.EMAIL.MAXIMUM),
+    Schema.String,
+    Schema.nonEmptyString({ message: () => "Email is required" }),
+    Schema.trimmed({
+      message: () => "Email must not have leading or trailing spaces",
+    }),
+    Schema.minLength(LENGTHS.EMAIL.MINIMUM, {
+      message: () =>
+        `Email must be at least ${LENGTHS.EMAIL.MINIMUM} characters`,
+    }),
+    Schema.maxLength(LENGTHS.EMAIL.MAXIMUM, {
+      message: () =>
+        `Email must be at most ${LENGTHS.EMAIL.MAXIMUM} characters`,
+    }),
     Schema.pattern(EMAIL_REGEX, {
       message: () => "Invalid email address",
     }),
@@ -52,14 +63,14 @@ const LoginFormSchema = Schema.Struct({
   ),
   rememberMe: Schema.Boolean,
 })
-type LoginForm = typeof LoginFormSchema.Type
+type FormData = typeof FormDataSchema.Type
 
 export default function LoginForm({
   className,
   ...props
 }: ComponentProps<"div">) {
-  const form = useForm<LoginForm>({
-    resolver: effectTsResolver(LoginFormSchema),
+  const form = useForm<FormData>({
+    resolver: effectTsResolver(FormDataSchema),
     defaultValues: {
       email: TEST_USER.email,
       password: TEST_USER.password,
@@ -97,7 +108,7 @@ export default function LoginForm({
   )
 }
 
-function EmailInput({ form }: { form: UseFormReturn<LoginForm> }) {
+function EmailInput({ form }: { form: UseFormReturn<FormData> }) {
   return (
     <FormField
       control={form.control}
@@ -115,7 +126,7 @@ function EmailInput({ form }: { form: UseFormReturn<LoginForm> }) {
   )
 }
 
-function PasswordInput({ form }: { form: UseFormReturn<LoginForm> }) {
+function PasswordInput({ form }: { form: UseFormReturn<FormData> }) {
   return (
     <FormField
       control={form.control}
@@ -138,7 +149,7 @@ function PasswordInput({ form }: { form: UseFormReturn<LoginForm> }) {
   )
 }
 
-function RememberMeSwitch({ form }: { form: UseFormReturn<LoginForm> }) {
+function RememberMeSwitch({ form }: { form: UseFormReturn<FormData> }) {
   return (
     <FormField
       control={form.control}
@@ -183,7 +194,7 @@ function LoginButton() {
   )
 }
 
-function onSubmit(values: LoginForm) {
+const onSubmit = (data: FormData): Unit => {
   // const queryClient = useQueryClient()
   // const router = useRouter()
   // const { mutate: signInWithEmail, isPending } = useMutation({
