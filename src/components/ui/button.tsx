@@ -49,7 +49,7 @@ type ButtonBaseProps = Omit<ComponentProps<"button">, "onClick"> & {
 type ButtonProps = ButtonBaseProps &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
-    onClick: (event: MouseEvent<HTMLButtonElement>) => void | Promise<void>
+    onClick?: (event: MouseEvent<HTMLButtonElement>) => void | Promise<void>
     lockWhileAsync?: boolean
     loadingText?: string
     type?: ButtonHTMLAttributes<HTMLButtonElement>["type"]
@@ -70,7 +70,10 @@ function Button({
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button"
   const [isPending, setIsPending] = useState(false)
-  const isDisabled = disabled || (lockWhileAsync && isPending)
+  const isDisabled =
+    disabled ||
+    (type !== "submit" && onClick === undefined) ||
+    (lockWhileAsync && isPending)
   const handleClick = useCallback(
     async (event: MouseEvent<HTMLButtonElement>) => {
       if (isDisabled) {

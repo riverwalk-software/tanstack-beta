@@ -4,6 +4,7 @@
     // Paths
     "baseUrl": ".",
     "paths": {
+      "@authentication": ["packages/authentication/src/index.ts"],
       "@components": ["src/components/index.ts"],
       "@constants": ["src/constants/index.ts"],
       "@theme": ["packages/theme/src/index.ts"],
