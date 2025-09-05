@@ -2,9 +2,9 @@
  * @vitest-environment node
  */
 
+import { describe, expect, it } from "@effect/vitest"
 import { Arbitrary, pipe, Schema } from "effect"
 import * as fc from "effect/FastCheck"
-import { describe, expect, it } from "vitest"
 import { toggleTheme } from "../../src/logic/themeLogic"
 import { ThemeSchema } from "../../src/types/Theme"
 

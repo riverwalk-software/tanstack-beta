@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 
+import { describe, expect, it } from "@effect/vitest"
 import { Arbitrary } from "effect"
 import { assert, property } from "effect/FastCheck"
-import { describe, expect, it } from "vitest"
 import {
   _setThemeCookie,
   getThemeCookie,

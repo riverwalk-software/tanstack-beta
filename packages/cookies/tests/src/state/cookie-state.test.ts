@@ -1,3 +1,4 @@
+import { beforeEach, describe, it } from "@effect/vitest"
 import { Arbitrary, Effect, Equivalence, Option } from "effect"
 import { assert, property } from "effect/FastCheck"
 import { constant, pipe } from "effect/Function"
@@ -8,7 +9,6 @@ import {
   getCookie,
   setCookie,
 } from "packages/cookies/src/state/cookie-state"
-import { beforeEach, describe, it } from "vitest"
 
 const CookieArbitrary = Arbitrary.make(Cookie)
 

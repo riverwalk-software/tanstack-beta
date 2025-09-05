@@ -2,9 +2,9 @@
  * @vitest-environment node
  */
 
+import { describe, it } from "@effect/vitest"
 import { Arbitrary, Schema } from "effect"
 import { assert, property } from "effect/FastCheck"
-import { describe, it } from "vitest"
 import { proportionOf } from "../../../../../src/types/numbers/reals/BoundedPercentage"
 
 describe("proportionOf", () => {
