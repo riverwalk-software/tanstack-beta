@@ -1,10 +1,10 @@
 import { Context } from "effect"
 
-const isDev =
-  typeof import.meta.env !== "undefined"
-    ? import.meta.env.DEV
-    : process.env["NODE_ENV"] === "development"
-let cachedEnv: CloudflareBindings | null = null
+// const isDev =
+//   typeof import.meta.env !== "undefined"
+//     ? import.meta.env.DEV
+//     : process.env["NODE_ENV"] === "development"
+let cachedEnv: CloudflareBindings | null
 
 const initDevEnv = async () => {
   const { getPlatformProxy } = await import("wrangler")

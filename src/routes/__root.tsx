@@ -33,7 +33,7 @@ export const Route = createRootRouteWithContext<{
   },
   // loader: async ({ context: { queryClient } }): Promise<void> => {
   //   await Promise.all([
-  //     import.meta.env.DEV
+  //     IS_DEV
   //       ? queryClient.prefetchQuery(environmentValidationQueryOptions)
   //       : Promise.resolve(),
   //     queryClient.prefetchQuery(themeQueryOptions),

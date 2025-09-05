@@ -16,7 +16,7 @@ export const ServerRoute = createServerFileRoute("/api/attachments/$key")
           () => new Response("Object Not Found", { status: 404 }),
         )
         .otherwise(async object => {
-          const Headers_ = import.meta.env.DEV // https://github.com/cloudflare/workers-sdk/issues/6047
+          const Headers_ = IS_DEV // https://github.com/cloudflare/workers-sdk/issues/6047
             ? (await import("miniflare")).Headers
             : Headers
           // biome-ignore lint/suspicious/noExplicitAny: https://github.com/cloudflare/workers-sdk/issues/6047
