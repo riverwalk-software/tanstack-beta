@@ -1,6 +1,15 @@
-import CenteredContainer from "src/components/containers/centered-container"
-import { Button, buttonVariants } from "src/components/ui/button"
-import DefaultCatchBoundary from "src/components/ui/default-catch-boundary"
+import CenteredContainer from "./containers/centered-container"
+import { Button, buttonVariants } from "./ui/button"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card"
+import DefaultCatchBoundary from "./ui/default-catch-boundary"
 import {
   Form,
   FormControl,
@@ -10,11 +19,11 @@ import {
   FormLabel,
   FormMessage,
   useFormField,
-} from "src/components/ui/form"
-import { Input } from "src/components/ui/input"
-import { Label } from "src/components/ui/label"
-import NotFound from "src/components/ui/not-found"
-import { Switch } from "src/components/ui/switch"
+} from "./ui/form"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
+import NotFound from "./ui/not-found"
+import { Switch } from "./ui/switch"
 
 export {
   Button,
@@ -33,4 +42,11 @@ export {
   Label,
   NotFound,
   useFormField,
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardAction,
+  CardDescription,
+  CardContent,
 }

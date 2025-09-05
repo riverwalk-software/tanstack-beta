@@ -1,12 +1,20 @@
-import LoginForm from "packages/authentication/src/components/login-form"
+import ChangeEmailForm from "./components/change-email-form"
+import ChangePasswordForm from "./components/change-password-form"
+import CreateOrganizationForm from "./components/create-organization-form"
+import SignInForm from "./components/sign-in-form"
+import SignUpForm from "./components/sign-up-form"
 import {
   type AuthenticationData,
   authenticationDataQueryOptions,
-} from "packages/authentication/src/utils/authentication"
-import { LENGTHS } from "packages/authentication/src/utils/filters"
+} from "./utils/authentication"
+import { LENGTHS } from "./utils/filters"
 
 export {
-  LoginForm,
+  SignInForm,
+  SignUpForm,
+  ChangeEmailForm,
+  ChangePasswordForm,
+  CreateOrganizationForm,
   LENGTHS,
   authenticationDataQueryOptions,
   type AuthenticationData,

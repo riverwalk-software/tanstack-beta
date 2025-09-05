@@ -3,13 +3,13 @@ import {
   EVENTUAL_CONSISTENCY_DELAY,
   IS_DEV,
   RANDOM_SEED,
-} from "src/constants/configuration"
-import { TEST_USER } from "src/constants/fake"
+} from "./configuration"
+import { TEST_USER } from "./fake"
 import {
   PRIVACY_POLICY_URL,
   TERMS_OF_USE_URL,
   WEBSITE_NAME,
-} from "src/constants/information"
+} from "./information"
 
 export {
   RANDOM_SEED,

@@ -68,7 +68,7 @@ const FormDataSchema = Schema.Struct({
 })
 type FormData = typeof FormDataSchema.Type
 
-export default function LoginForm({
+export default function SignInForm({
   className,
   ...props
 }: ComponentProps<"div">) {
@@ -84,7 +84,13 @@ export default function LoginForm({
   const router = useRouter()
   const { mutate: signInWithEmail } = useMutation({
     mutationKey: ["signInWithEmail"],
-    mutationFn: (data: FormData) => authClient.signIn.email(data),
+    mutationFn: async (data: FormData) => {
+      const result = await authClient.signIn.email(data)
+      if (result.error) {
+        throw new Error(result.error.message)
+      }
+      return result
+    },
     onError: error => {
       toast.error(error.message || "Failed to sign in")
     },
@@ -93,30 +99,9 @@ export default function LoginForm({
         queryKey: authenticationDataQueryOptions.queryKey,
       })
       await router.invalidate({ sync: true })
+      // toast.success("Signed in") // (optional)
     },
   })
-  const { mutate: signUpWithEmail } = useMutation({
-    mutationKey: ["signUpWithEmail"],
-    mutationFn: () =>
-      authClient.signUp.email({
-        email: TEST_USER.email,
-        password: TEST_USER.password,
-        name: TEST_USER.name,
-      }),
-    onError: error => {
-      toast.error(error.message || "Failed to sign up")
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: authenticationDataQueryOptions.queryKey,
-      })
-      await router.invalidate({ sync: true })
-    },
-  })
-  //   const onSubmit =  (data: FormData) => {
-  //   const formData = SignUpFormTransformedSchema.parse(data)
-  //   signUpWithEmail(formData)
-  // }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Form {...form}>
@@ -129,7 +114,7 @@ export default function LoginForm({
                 <PasswordInput form={form} />
                 <RememberMeSwitch form={form} />
               </div>
-              <LoginButton />
+              <SignInButton />
             </div>
             <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
               <span className="bg-background text-muted-foreground relative z-10 px-2">
@@ -137,9 +122,8 @@ export default function LoginForm({
               </span>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <AppleLoginButton />
-              <GoogleLoginButton />
-              <Button onClick={() => signUpWithEmail()}>Sign Up</Button>
+              <AppleSignInButton />
+              <GoogleSignInButton />
             </div>
           </div>
         </form>
@@ -219,23 +203,23 @@ function FormHeader() {
       <h1 className="text-xl font-bold">Welcome to {WEBSITE_NAME}</h1>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}
-        <a className="underline underline-offset-4" href="#">
+        <Link className="underline underline-offset-4" to="/sign-up">
           Sign up
-        </a>
+        </Link>
       </div>
     </div>
   )
 }
 
-function LoginButton() {
+function SignInButton() {
   return (
     <Button className="w-full" type="submit">
-      Login
+      Sign In
     </Button>
   )
 }
 
-function AppleLoginButton() {
+function AppleSignInButton() {
   return (
     <Button className="w-full" type="button" variant="outline">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -249,7 +233,7 @@ function AppleLoginButton() {
   )
 }
 
-function GoogleLoginButton() {
+function GoogleSignInButton() {
   return (
     <Button className="w-full" type="button" variant="outline">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

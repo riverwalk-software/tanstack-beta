@@ -10,8 +10,24 @@ const initDevEnv = async () => {
   cachedEnv = proxy.env as unknown as CloudflareBindings
 }
 
-if (IS_DEV) {
-  await initDevEnv()
+// Detect if we're already in a Workers/Miniflare runtime (wrangler dev, production worker, etc.).
+// In those environments, bindings are injected automatically and we MUST NOT call getPlatformProxy().
+const isWorkersLikeRuntime = (): boolean => {
+  // WebSocketPair is a good heuristic; also check Miniflare global markers
+  return (
+    typeof (globalThis as any).WebSocketPair !== "undefined" ||
+    (globalThis as any).MINIFLARE === true ||
+    (globalThis as any).__MINIFLARE_ENV__ === true
+  )
+}
+
+if (IS_DEV && !isWorkersLikeRuntime()) {
+  try {
+    await initDevEnv()
+  } catch {
+    // Swallow: during build/CLI tools (e.g. better-auth codegen) wrangler proxy isn't available.
+    // We'll fall back to process.env (may not have bindings, but avoids crash).
+  }
 }
 
 /**
@@ -20,14 +36,16 @@ if (IS_DEV) {
  */
 function getCloudflareBindings(): CloudflareBindings {
   if (IS_DEV) {
-    if (!cachedEnv) {
-      throw new Error(
-        "Dev bindings not initialized yet. Call initDevEnv() first.",
-      )
+    // In a workers-like runtime just use process.env (wrangler/miniflare injects bindings there via nodejs_compat)
+    if (isWorkersLikeRuntime()) {
+      return process.env as unknown as CloudflareBindings
     }
-    return cachedEnv
+    if (cachedEnv) {
+      return cachedEnv
+    }
+    // Last resort fallback so libraries importing at build time don't throw hard.
+    return process.env as unknown as CloudflareBindings
   }
-
   return process.env as unknown as CloudflareBindings
 }
 
@@ -40,4 +58,4 @@ const CloudflareLive = Effect.provideService(Cloudflare, {
   bindings: Effect.sync(getCloudflareBindings),
 })
 
-export { Cloudflare, CloudflareLive }
+export { Cloudflare, CloudflareLive, getCloudflareBindings }

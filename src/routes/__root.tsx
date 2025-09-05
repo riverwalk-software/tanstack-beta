@@ -2,19 +2,23 @@ import {
   AuthenticationData,
   authenticationDataQueryOptions,
 } from "@authentication"
-import { DefaultCatchBoundary, NotFound } from "@components"
+import { Button, DefaultCatchBoundary, NotFound } from "@components"
 import { TanStackDevtools } from "@tanstack/react-devtools"
-import type { QueryClient } from "@tanstack/react-query"
+import { type QueryClient, useQueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
 import {
   createRootRouteWithContext,
   HeadContent,
+  Link,
   Outlet,
   Scripts,
+  useRouter,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { ReactNode } from "react"
+import { Toaster } from "sonner"
 import globalsCss from "src/styles/globals.css?url"
+import { authClient } from "@/lib/auth-client"
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -22,10 +26,10 @@ export const Route = createRootRouteWithContext<{
   beforeLoad: async ({
     context: { queryClient },
   }): Promise<{ authenticationData: AuthenticationData }> => {
-    const authenticationData = await queryClient.fetchQuery(
+    const maybeAuthenticationData = await queryClient.fetchQuery(
       authenticationDataQueryOptions,
     )
-    return { authenticationData }
+    return { authenticationData: maybeAuthenticationData }
   },
   // loader: async ({ context: { queryClient } }): Promise<void> => {
   //   await Promise.all([
@@ -150,6 +154,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           This Route Does Not Exist
         </Link>
       </div> */}
+        <Navbar />
         <hr />
         {children}
         <TanStackDevtools
@@ -164,9 +169,103 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             },
           ]}
         />
+        <Toaster />
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function Navbar() {
+  const { authenticationData } = Route.useRouteContext()
+  const isAuthenticated = authenticationData !== null
+  const router = useRouter()
+  const queryClient = useQueryClient()
+  return (
+    <div className="flex gap-2 p-2 text-lg">
+      <div className="flex flex-1 gap-2">{isAuthenticated && <HomeLink />}</div>
+      <div className="ml-auto flex gap-2">
+        {isAuthenticated ? (
+          <>
+            <ProfileLink />
+            {/* <SignOutButton /> */}
+            <Button
+              onClick={async () => {
+                await authClient.signOut()
+                await queryClient.invalidateQueries({
+                  queryKey: authenticationDataQueryOptions.queryKey,
+                })
+                await router.invalidate({ sync: true })
+              }}
+            >
+              Sign Out
+            </Button>
+          </>
+        ) : (
+          <>
+            <SigninLink />
+            <SignupLink />
+          </>
+        )}
+      </div>
+      {/* <ThemeToggle /> */}
+    </div>
+  )
+}
+
+function HomeLink() {
+  return (
+    <Link
+      activeOptions={{ exact: true }}
+      activeProps={{
+        className: "font-bold",
+      }}
+      to="/"
+    >
+      Home
+    </Link>
+  )
+}
+
+function SigninLink() {
+  return (
+    <Link
+      activeOptions={{ exact: true }}
+      activeProps={{
+        className: "font-bold",
+      }}
+      to="/sign-in"
+    >
+      Sign In
+    </Link>
+  )
+}
+
+function SignupLink() {
+  return (
+    <Link
+      activeOptions={{ exact: true }}
+      activeProps={{
+        className: "font-bold",
+      }}
+      to="/sign-up"
+    >
+      Sign Up
+    </Link>
+  )
+}
+
+function ProfileLink() {
+  return (
+    <Link
+      activeOptions={{ exact: true }}
+      activeProps={{
+        className: "font-bold",
+      }}
+      to="/profile"
+    >
+      Profile
+    </Link>
   )
 }
 
