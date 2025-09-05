@@ -45,6 +45,14 @@
     "module": "esnext",
     "target": "es2022",
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+
+    // Plugins
+    "plugins": [
+      // Must be last
+      {
+        "name": "@effect/language-service"
+      }
+    ]
   }
 }
