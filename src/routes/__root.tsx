@@ -15,6 +15,7 @@ import {
   useRouter,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
+import { ThemeProvider, ThemeToggle, useTheme } from "@theme"
 import { ReactNode } from "react"
 import { Toaster } from "sonner"
 import globalsCss from "src/styles/globals.css?url"
@@ -88,15 +89,18 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
   return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
+    <ThemeProvider>
+      <RootDocument>
+        <Outlet />
+      </RootDocument>
+    </ThemeProvider>
   )
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  const { theme } = useTheme()
   return (
-    <html lang="en">
+    <html className={theme} data-theme={theme} lang="en">
       <head>
         <HeadContent />
         <ReactScanScript />
@@ -208,7 +212,7 @@ function Navbar() {
           </>
         )}
       </div>
-      {/* <ThemeToggle /> */}
+      <ThemeToggle />
     </div>
   )
 }

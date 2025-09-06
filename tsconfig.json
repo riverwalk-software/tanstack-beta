@@ -4,12 +4,12 @@
     // Paths
     "baseUrl": ".",
     "paths": {
+      "@/lib/*": ["src/lib/*"],
       "@authentication": ["packages/authentication/src/index.ts"],
       "@components": ["src/components/index.ts"],
       "@constants": ["src/constants/index.ts"],
-      "@theme": ["packages/theme/src/index.ts"],
-      "@/lib/*": ["src/lib/*"],
-      "@prelude": ["packages/prelude/src/index.ts"]
+      "@prelude": ["packages/prelude/src/index.ts"],
+      "@theme": ["packages/theme/src/index.ts"]
     },
 
     // Types

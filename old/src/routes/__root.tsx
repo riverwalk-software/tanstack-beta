@@ -31,11 +31,4 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <Navbar />
         <hr />
         <main className="grid flex-1">{children} </main>
-        <Toaster richColors />
-        <TanStackRouterDevtools position="bottom-right" />
-        <ReactQueryDevtools buttonPosition="bottom-left" />
-        <Scripts />
-      </body>
-    </html>
-  )
 }
