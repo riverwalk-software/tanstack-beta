@@ -9,6 +9,7 @@ import { proportionOf } from "../../../../../src/types/numbers/reals/BoundedPerc
 
 describe("proportionOf", () => {
   describe("purity", () => {
+    // it("type safety", () => {
     it("totality", () => {
       assert(
         property(NonEmptyListArbitrary, ([head, ...tail]) => {
