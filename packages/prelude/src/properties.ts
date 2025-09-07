@@ -122,6 +122,9 @@ const determinism =
     return orR(notR(inEq))(outEq) // implication
   }
 
+// inverse
+// involution f => inverse f f
+
 // const involution = <A>(f: (a: A) => A): ((a: A) => boolean) =>
 //   liftA2(equals)(flow(f, f), identity)
 
