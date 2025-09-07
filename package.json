@@ -35,7 +35,7 @@
     "better-sqlite3": "^12.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "effect": "^3.17.7",
+    "effect": "^3.17.13",
     "immutable": "^5.1.3",
     "js-cookie": "^3.0.5",
     "kysely": "^0.28.5",

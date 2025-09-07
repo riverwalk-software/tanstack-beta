@@ -5,9 +5,6 @@ import { defineConfig } from "vite"
 import tsConfigPaths from "vite-tsconfig-paths"
 
 export default defineConfig({
-  server: {
-    port: 3000,
-  },
   plugins: [
     devtools(), // Must come first
     tsConfigPaths(),
@@ -21,6 +18,12 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    port: 3000,
+  },
+  test: {
+    setupFiles: ["./vitest.setup.ts"],
+  },
 })
 // const rehypeExpressiveCodeOptions: RehypeExpressiveCodeOptions = {
 //   themes: ["github-light-default", "github-dark-default"],
