@@ -15,7 +15,11 @@ export default defineConfig({
       customViteReactPlugin: true,
       target: "cloudflare-module",
     }),
-    react(),
+    react({
+      babel: {
+        plugins: ["babel-plugin-react-compiler"],
+      },
+    }),
   ],
 })
 // const rehypeExpressiveCodeOptions: RehypeExpressiveCodeOptions = {
