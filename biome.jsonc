@@ -33,5 +33,15 @@
         "useSortedProperties": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [".oxlintrc.json"],
+      "json": {
+        "parser": {
+          "allowComments": true
+        }
+      }
+    }
+  ]
 }
