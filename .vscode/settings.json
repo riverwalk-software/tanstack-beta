@@ -56,6 +56,7 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.validate.enable": true,
   "editor.codeActionsOnSave": {
+    "source.addMissingImports.ts": "explicit",
     "source.fixAll.biome": "explicit", // biomejs.biome
     "source.fixAll.oxc": "explicit", // oxc.oxc-vscode
     "source.removeUnusedImports": "explicit"
