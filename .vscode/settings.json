@@ -55,9 +55,6 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.validate.enable": true,
-  // "typescript.preferences.includePackageJsonAutoImports": ,
-  // "typescript.suggest.autoImports": true,
-  "typescript.preferences.includePackageJsonAutoImports": "off",
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit", // biomejs.biome
     "source.fixAll.oxc": "explicit", // oxc.oxc-vscode
@@ -110,15 +107,9 @@
   // biomejs.biome
   "editor.defaultFormatter": "biomejs.biome",
   // bradlc.vscode-tailwindcss
-  // "editor.quickSuggestions": {
-  // "strings": "on"
-  // },
-  // "editor.quickSuggestions": {
-  //   "other": "off",
-  //   "comments": "off",
-  //   "strings": "off"
-  // },
-  // "editor.wordBasedSuggestions": "allDocuments",
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
   // christian-kohler.path-intellisense
   "javascript.suggest.paths": false,
   "path-intellisense.autoSlashAfterDirectory": true,
