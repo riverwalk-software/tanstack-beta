@@ -3,7 +3,7 @@
 //
 
 import { flow } from "effect"
-import { constant } from "effect/Function"
+import { constant, identity } from "effect/Function"
 
 // import { apply } from "effect/Function"
 
@@ -124,6 +124,27 @@ const determinism =
 
 // inverse
 // involution f => inverse f f
+// commutative
+// idempotent
+// associative
+// bounded
+// metaproperty: diagram commutativity/equational laws / confluence
+
+interface Semigroup<A> {
+  combine: (x: A) => (y: A) => A
+}
+
+interface Monoid<A> extends Semigroup<A> {
+  unit: A
+}
+
+interface Group<A> extends Monoid<A> {
+  inverse: (x: A) => A
+}
+
+const meme = flow(5, n => n + 1, identity)
+
+type List<A> = A[]
 
 // const involution = <A>(f: (a: A) => A): ((a: A) => boolean) =>
 //   liftA2(equals)(flow(f, f), identity)

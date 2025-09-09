@@ -1,33 +1,33 @@
 import { flow } from "effect"
 
-type Isomorphic<A, B> = {
+interface Isomorphism<A, B> {
   to: (a: A) => B
   from: (b: B) => A
 }
 
 const conjugate =
-  <A, B>({ to, from }: Isomorphic<A, B>) =>
+  <A, B>({ to, from }: Isomorphism<A, B>) =>
   (f: (b: B) => B): ((a: A) => A) =>
     flow(to, f, from)
 
 const mapTo =
-  <A, B, C>({ from }: Isomorphic<A, B>) =>
+  <A, B, C>({ from }: Isomorphism<A, B>) =>
   (f: (a: A) => C): ((b: B) => C) =>
     flow(from, f)
 
 const mapFrom =
-  <A, B, C>({ from }: Isomorphic<A, B>) =>
+  <A, B, C>({ from }: Isomorphism<A, B>) =>
   (f: (c: C) => B): ((c: C) => A) =>
     flow(f, from)
 
 const compose =
-  <A, B, C>(ab: Isomorphic<A, B>) =>
-  (bc: Isomorphic<B, C>): Isomorphic<A, C> => ({
+  <A, B, C>(ab: Isomorphism<A, B>) =>
+  (bc: Isomorphism<B, C>): Isomorphism<A, C> => ({
     to: flow(ab.to, bc.to),
     from: flow(bc.from, ab.from),
   })
 
-const myMap = <A, B, C>(ab: Isomorphic<A, B>) => map
+const myMap = <A, B, C>(ab: Isomorphism<A, B>) => map
 // export interface Bijective<A, B> {
 //   to: (a: A) => B
 //   from: (b: B) => A
