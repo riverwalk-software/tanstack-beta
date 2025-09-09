@@ -18,7 +18,7 @@
     "typescript": "^5.9.2"
   },
   "packageManager": "pnpm@10.11.1",
-  "engines  ": {
+  "engines": {
     "node": "22.x",
     "pnpm": "10.x"
   }
