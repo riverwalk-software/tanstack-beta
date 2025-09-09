@@ -33,6 +33,7 @@
         "oxc.oxc-vscode",
         "redhat.vscode-yaml",
         "unifiedjs.vscode-mdx",
+        "Vercel.turbo-vsc",
         "vitest.explorer"
         // "WallabyJs.console-ninja"
       ]
@@ -43,10 +44,13 @@
   "postCreateCommand": "bash .devcontainer/scripts/postCreateCommand.bash",
   "postStartCommand": "bash .devcontainer/scripts/postStartCommand.bash",
   "postAttachCommand": "bash .devcontainer/scripts/postAttachCommand.bash",
-  "forwardPorts": [3000],
+  "forwardPorts": [3000, 4321],
   "portsAttributes": {
     "3000": {
       "label": "Application"
+    },
+    "4321": {
+      "label": "Documentation"
     }
   }
 }
