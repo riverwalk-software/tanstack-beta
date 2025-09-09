@@ -26,17 +26,12 @@ importers:
       '@astrojs/starlight':
         specifier: ^0.35.2
         version: 0.35.2(astro@5.13.6(@types/node@24.3.1)(rollup@4.50.1)(tsx@4.20.5)(typescript@5.9.2))
-      '@repo/meme':
-        specifier: workspace:*
-        version: link:../../packages/meme
       astro:
         specifier: ^5.6.1
         version: 5.13.6(@types/node@24.3.1)(rollup@4.50.1)(tsx@4.20.5)(typescript@5.9.2)
       sharp:
         specifier: ^0.34.2
         version: 0.34.3
-
-  packages/meme: {}
 
 packages:
 
