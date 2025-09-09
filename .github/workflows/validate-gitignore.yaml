@@ -41,6 +41,7 @@ jobs:
           set -euo pipefail
           OUT="$RUNNER_TEMP/.gitignore"
           curl -Ls "https://www.toptal.com/developers/gitignore/api/${GITIGNORE_TEMPLATES}" > "$OUT"
+          curl -Ls "https://raw.githubusercontent.com/andreilgeorgescu/store/refs/heads/main/.gitignore.pnpm" >> "$OUT"
           curl -Ls "https://raw.githubusercontent.com/andreilgeorgescu/store/refs/heads/main/.gitignore.tanstack" >> "$OUT"
           curl -Ls "https://raw.githubusercontent.com/andreilgeorgescu/store/refs/heads/main/.gitignore.cloudflare" >> "$OUT"
           echo "path=$OUT" >>"$GITHUB_OUTPUT"
