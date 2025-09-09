@@ -1,26 +1,30 @@
 {
-  "$schema": "https://turborepo.com/schema.json",
+  "$schema": "./node_modules/turbo/schema.json",
   "ui": "tui",
   "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+    "typegen": {
+      "outputs": [".astro/types.d.ts"]
     },
-    "check-types": {
-      "dependsOn": ["^check-types"]
+    "typecheck": {
+      "dependsOn": ["typegen", "^typecheck"]
+    },
+    "build": {
+      "dependsOn": ["typecheck", "^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["dist/**"]
     },
     "dev": {
-      "cache": false,
-      "persistent": true
+      "dependsOn": ["typecheck", "^dev"],
+      "persistent": true,
+      "cache": false
+    },
+    "//#format": {
+      "cache": false
     },
     "//#format:ci": {},
-    "//#format:fix": {
+    "//#lint": {
       "cache": false
     },
-    "//#lint:ci": {},
-    "//#lint:fix": {
-      "cache": false
-    }
+    "//#lint:ci": {}
   }
 }
