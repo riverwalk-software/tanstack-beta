@@ -1,0 +1,19 @@
+{
+  "name": "website",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "astro build",
+    "dev": "astro dev",
+    "typecheck": "astro check",
+    "typegen": "astro sync"
+  },
+  "dependencies": {
+    "astro": "catalog:",
+    "sharp": "catalog:"
+  },
+  "devDependencies": {
+    "@astrojs/check": "catalog:"
+  }
+}
