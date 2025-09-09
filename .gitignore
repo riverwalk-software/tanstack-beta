@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,git,zsh,dotenv,visualstudiocode,node
-# Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,git,zsh,dotenv,visualstudiocode,node
+# Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,git,zsh,dotenv,turbo,visualstudiocode,node
+# Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,git,zsh,dotenv,turbo,visualstudiocode,node
 
 ### dotenv ###
 .env
@@ -205,6 +205,10 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
+### Turbo ###
+# Turborepo task cache
+.turbo
+
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
@@ -286,7 +290,7 @@ zsdoc/data
 /tests/_output/*
 !/tests/_output/.gitkeep
 
-# End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,git,zsh,dotenv,visualstudiocode,node
+# End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,git,zsh,dotenv,turbo,visualstudiocode,node
 ### Tanstack ###
 # generated
 .nitro/
