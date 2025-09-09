@@ -4,6 +4,18 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@astrojs/starlight':
+      specifier: ^0.35.2
+      version: 0.35.2
+    astro:
+      specifier: ^5.6.1
+      version: 5.13.6
+    sharp:
+      specifier: ^0.34.2
+      version: 0.34.3
+
 importers:
 
   .:
@@ -30,13 +42,13 @@ importers:
   apps/docs:
     dependencies:
       '@astrojs/starlight':
-        specifier: ^0.35.2
+        specifier: 'catalog:'
         version: 0.35.2(astro@5.13.6(@types/node@24.3.1)(rollup@4.50.1)(tsx@4.20.5)(typescript@5.9.2))
       astro:
-        specifier: ^5.6.1
+        specifier: 'catalog:'
         version: 5.13.6(@types/node@24.3.1)(rollup@4.50.1)(tsx@4.20.5)(typescript@5.9.2)
       sharp:
-        specifier: ^0.34.2
+        specifier: 'catalog:'
         version: 0.34.3
 
 packages:
@@ -2754,7 +2766,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 24.3.1
 
   '@types/unist@2.0.11': {}
 

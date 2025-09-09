@@ -29,9 +29,13 @@ jobs:
         with:
           lfs: ${{ matrix.task == 'build' }}
           persist-credentials: false
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        # with:
+        #   version: 10
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run ${{ matrix.task }}
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run ${{ matrix.task }}
