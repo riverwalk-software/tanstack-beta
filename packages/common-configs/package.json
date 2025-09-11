@@ -1,0 +1,6 @@
+{
+  "name": "@repo/common-configs",
+  "private": true,
+  "type": "module",
+  "sideEffects": false
+}

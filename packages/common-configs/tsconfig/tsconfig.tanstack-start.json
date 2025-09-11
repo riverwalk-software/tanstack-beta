@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.vite.json",
+  "compilerOptions": {
+    // Tanstack Start: https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "target": "es2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "verbatimModuleSyntax": false,
+
+    // Plugins
+    "plugins": [
+      // Must be last
+      {
+        "name": "@effect/language-service"
+      }
+    ]
+  }
+}

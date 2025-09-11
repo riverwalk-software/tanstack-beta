@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    // Disable global types
+    "types": [],
+
+    // Strictness
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedSideEffectImports": true,
+
+    // Covered by linting
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+
+    // Options
+    "target": "es2022",
+    "lib": ["ES2022"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowJs": true, // MDX: https://github.com/aleclarson/vite-tsconfig-paths#%EF%B8%8F-non-typescript-modules-need-special-configuration
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+
+    // Typecheck Only: https://vite.dev/guide/features#transpile-only
+    "module": "preserve",
+    "noEmit": true
+  }
+}

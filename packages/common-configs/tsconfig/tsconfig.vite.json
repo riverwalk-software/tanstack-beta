@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    // Types
+    "types": [
+      "vite/client" // https://vite.dev/guide/features.html#client-types
+    ],
+
+    // Options
+    "isolatedModules": true, // https://vite.dev/guide/features.html#typescript-compiler-options
+
+    // Typecheck Only: https://vite.dev/guide/features#transpile-only
+    "module": "preserve",
+    "noEmit": true
+  }
+}
