@@ -11,7 +11,6 @@
     "typegen": "astro sync"
   },
   "dependencies": {
-    "@repo/helloworld": "workspace:*",
     "astro": "catalog:",
     "sharp": "catalog:"
   },
