@@ -92,6 +92,12 @@ importers:
         specifier: 'catalog:'
         version: 0.9.4(typescript@5.9.2)
 
+  apps/platform:
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+
   packages/prologue:
     devDependencies:
       '@repo/typescript-config':
