@@ -304,7 +304,7 @@ bun.lockb
 .nitro/
 .output/
 .tanstack/
-*/routeTree.gen.ts
+routeTree.gen.ts
 
 ### Cloudflare ###
 # env
