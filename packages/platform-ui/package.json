@@ -12,14 +12,18 @@
     "@radix-ui/react-switch": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
+    "lucide-react": "catalog:",
     "tailwind-merge": "catalog:"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "catalog:",
+    "@types/react": "catalog:",
     "postcss": "catalog:",
     "shadcn": "catalog:",
-    "shadcn-prose": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "*"
   }
 }
