@@ -3,6 +3,7 @@
   "rules": {
     "eslint/func-names": "allow", // Conflicts with Effect generators
     "eslint/id-length": "allow",
+    "eslint/max-lines": "allow",
     "eslint/max-params": ["deny", { "max": 1 }],
     "eslint/new-cap": "allow", // Conflicts wtih Effect functions
     "eslint/no-empty-function": "warn",

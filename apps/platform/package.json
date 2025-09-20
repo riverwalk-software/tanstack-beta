@@ -19,6 +19,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@repo/platform-ui": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tanstack/devtools-vite": "catalog:",
     "@tanstack/react-devtools": "catalog:",

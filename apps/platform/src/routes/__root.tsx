@@ -3,6 +3,10 @@
 //   authenticationDataQueryOptions,
 // } from "@authentication"
 // import { Button, DefaultCatchBoundary, NotFound } from "@components"
+
+// import { Toaster } from "sonner"
+// import globalsCss from "@repo/platform-ui/src/styles/globals.css?url"
+import stylesCss from "@repo/platform-ui/styles.css?url"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
@@ -15,8 +19,6 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 // import { ThemeProvider, ThemeToggle, useTheme } from "@theme"
 import { ReactNode } from "react"
-// import { Toaster } from "sonner"
-// import globalsCss from "src/styles/globals.css?url"
 // import { authClient } from "@/lib/auth-client"
 
 export const Route = createRootRouteWithContext<{
@@ -54,7 +56,7 @@ export const Route = createRootRouteWithContext<{
       }),
     ],
     links: [
-      // { rel: "stylesheet", href: globalsCss },
+      { rel: "stylesheet", href: stylesCss },
       {
         rel: "apple-touch-icon",
         sizes: "180x180",

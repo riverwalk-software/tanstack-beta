@@ -2,9 +2,26 @@
   "name": "@repo/platform-ui",
   "private": true,
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.css"
+  ],
   "imports": {
     "#*": "./src/*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/index.css"
+  },
+  "scripts": {
+    "dev:components": "tsdown --watch",
+    "dev:styles": "tailwindcss -i ./src/styles/globals.css -o ./dist/index.css --watch",
+    "build:components": "tsdown",
+    "build:styles": "tailwindcss -i ./src/styles/globals.css -o ./dist/index.css",
+    "typecheck": "tsc",
+    "typecheck:watch": "tsc --watch --preserveWatchOutput"
   },
   "dependencies": {
     "@radix-ui/react-label": "catalog:",
@@ -16,14 +33,17 @@
     "tailwind-merge": "catalog:"
   },
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@tailwindcss/cli": "catalog:",
     "@tailwindcss/postcss": "catalog:",
     "@types/react": "catalog:",
     "postcss": "catalog:",
     "shadcn": "catalog:",
     "tailwindcss": "catalog:",
+    "tsdown": "catalog:",
     "tw-animate-css": "catalog:"
   },
   "peerDependencies": {
-    "react": "*"
+    "react": "^19"
   }
 }

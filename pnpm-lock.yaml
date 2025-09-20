@@ -24,6 +24,9 @@ catalogs:
     '@radix-ui/react-switch':
       specifier: ^1.2.6
       version: 1.2.6
+    '@tailwindcss/cli':
+      specifier: ^4.1.13
+      version: 4.1.13
     '@tailwindcss/postcss':
       specifier: ^4.1.13
       version: 4.1.13
@@ -100,7 +103,7 @@ catalogs:
       specifier: ^4.1.13
       version: 4.1.13
     tsdown:
-      specifier: ^0.15.0
+      specifier: 0.15.0
       version: 0.15.0
     tsx:
       specifier: ^4.20.5
@@ -194,6 +197,9 @@ importers:
         specifier: 'catalog:'
         version: 19.1.1(react@19.1.1)
     devDependencies:
+      '@repo/platform-ui':
+        specifier: workspace:*
+        version: link:../../packages/platform-ui
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -246,12 +252,18 @@ importers:
         specifier: 'catalog:'
         version: 0.544.0(react@19.1.1)
       react:
-        specifier: '*'
+        specifier: ^19
         version: 19.1.1
       tailwind-merge:
         specifier: 'catalog:'
         version: 3.3.1
     devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@tailwindcss/cli':
+        specifier: 'catalog:'
+        version: 4.1.13
       '@tailwindcss/postcss':
         specifier: 'catalog:'
         version: 4.1.13
@@ -267,6 +279,9 @@ importers:
       tailwindcss:
         specifier: 'catalog:'
         version: 4.1.13
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.15.0(typescript@5.9.2)
       tw-animate-css:
         specifier: 'catalog:'
         version: 1.3.8
@@ -1763,6 +1778,10 @@ packages:
 
   '@swc/helpers@0.5.17':
     resolution: {integrity: sha512-5IKx/Y13RsYd+sauPb2x+U/xZikHjolzfuDgTAl/Tdf3Q8rslRvC19NKDLgAJQ6wsqADk10ntlv08nPFw/gO/A==}
+
+  '@tailwindcss/cli@4.1.13':
+    resolution: {integrity: sha512-KEu/iL4CYBzGza/2yZBLXqjCCZB/eRWkRLP8Vg2kkEWk4usC8HLGJW0QAhLS7U5DsAWumsisxgabuppE6NinLw==}
+    hasBin: true
 
   '@tailwindcss/node@4.1.13':
     resolution: {integrity: sha512-eq3ouolC1oEFOAvOMOBAmfCIqZBJuvWvvYWh5h5iOYfe1HFC6+GZ6EIL0JdM3/niGRJmnrOc+8gl9/HGUaaptw==}
@@ -3895,6 +3914,10 @@ packages:
 
   mlly@1.8.0:
     resolution: {integrity: sha512-l8D9ODSRWLe2KHJSifWGwBqpTZXIXTeo8mlKjY+E2HAakaTeNpqAyBZ8GSqLzHgw4XmHmC8whvpjJNMbFZN7/g==}
+
+  mri@1.2.0:
+    resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
+    engines: {node: '>=4'}
 
   mrmime@2.0.1:
     resolution: {integrity: sha512-Y3wQdFg2Va6etvQ5I82yUhGdsKrcYox6p7FfL1LbK2J4V01F9TGlepTIhnK24t7koZibmg82KGglhA1XK5IsLQ==}
@@ -6875,6 +6898,16 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
+  '@tailwindcss/cli@4.1.13':
+    dependencies:
+      '@parcel/watcher': 2.5.1
+      '@tailwindcss/node': 4.1.13
+      '@tailwindcss/oxide': 4.1.13
+      enhanced-resolve: 5.18.3
+      mri: 1.2.0
+      picocolors: 1.1.1
+      tailwindcss: 4.1.13
+
   '@tailwindcss/node@4.1.13':
     dependencies:
       '@jridgewell/remapping': 2.3.5
@@ -9733,6 +9766,8 @@ snapshots:
       pathe: 2.0.3
       pkg-types: 1.3.1
       ufo: 1.6.1
+
+  mri@1.2.0: {}
 
   mrmime@2.0.1: {}
 
