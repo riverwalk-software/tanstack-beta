@@ -6,19 +6,21 @@
     "preinstall": "pnpm only-allow pnpm",
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "check-types": "turbo run check-types",
+    "typecheck": "turbo run typecheck",
+    "typecheck:watch": "turbo run typecheck:watch",
+    "typegen": "turbo run typegen",
     "lint": "oxlint --fix",
     "lint:ci": "oxlint --format=github",
     "format": "biome check --write",
     "format:ci": "biome check --reporter=github"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.3",
-    "only-allow": "^1.2.1",
-    "oxlint": "^1.14.0",
-    "tsx": "^4.20.5",
-    "turbo": "^2.5.6",
-    "typescript": "^5.9.2"
+    "@biomejs/biome": "catalog:",
+    "only-allow": "catalog:",
+    "oxlint": "catalog:",
+    "tsx": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "catalog:"
   },
   "packageManager": "pnpm@10.15.0",
   "engines": {

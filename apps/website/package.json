@@ -6,10 +6,12 @@
   "scripts": {
     "build": "astro build",
     "dev": "astro dev",
-    "typecheck": "astro check",
+    "typecheck": "astro check --noSync",
+    "typecheck:watch": "astro check --noSync --watch --preserveWatchOutput",
     "typegen": "astro sync"
   },
   "dependencies": {
+    "@repo/helloworld": "workspace:*",
     "astro": "catalog:",
     "sharp": "catalog:"
   },

@@ -1,5 +1,5 @@
 {
-  "name": "@repo/common-configs",
+  "name": "@repo/typescript-config",
   "private": true,
   "type": "module",
   "sideEffects": false

@@ -1,4 +1,12 @@
 {
+  "include": [
+    "${configDir}/*.js",
+    "${configDir}/*.mjs",
+    "${configDir}/*.mts",
+    "${configDir}/*.ts",
+    "${configDir}/scripts",
+    "${configDir}/src"
+  ],
   "compilerOptions": {
     // Disable global types
     "types": [],
@@ -11,6 +19,7 @@
     "exactOptionalPropertyTypes": true,
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedSideEffectImports": true,
+    "erasableSyntaxOnly": true,
 
     // Covered by linting
     "noUnusedParameters": false,

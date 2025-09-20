@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    // Options
+    "isolatedDeclarations": true,
+    "allowJs": false,
+    "declaration": true,
+    "declarationMap": true,
+    "stripInternal": true,
+    "moduleResolution": "bundler"
+  }
+}
