@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build"
+    "build": "vite build",
+    "typecheck": "tsc",
+    "typecheck:watch": "tsc --watch --preserveWatchOutput"
   },
   "dependencies": {
     "@sentry/tanstackstart-react": "catalog:",
