@@ -3,7 +3,7 @@ import {
   createStartHandler,
   defaultStreamHandler,
 } from "@tanstack/react-start/server"
-import { createRouter } from "./router"
+import { createRouter } from "#router.js"
 
 init({
   dsn: "https://0fbe838a28cb6fad1356d8ea1653867d@o4506510291697664.ingest.us.sentry.io/4510058911957000",
