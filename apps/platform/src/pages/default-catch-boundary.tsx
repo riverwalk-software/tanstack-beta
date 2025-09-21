@@ -1,4 +1,7 @@
-import Sentry from "@sentry/tanstackstart-react"
+import {
+  captureException,
+  withErrorBoundary,
+} from "@sentry/tanstackstart-react"
 import {
   ErrorComponent,
   type ErrorComponentProps,
@@ -18,7 +21,7 @@ function UnmonitoredDefaultCatchBoundary({
     select: state => state.id === rootRouteId,
   })
 
-  Sentry.captureException(error)
+  captureException(error)
 
   return (
     <div className="min-w-0 flex-1 p-4 flex flex-col items-center justify-center gap-6">
@@ -58,7 +61,7 @@ function UnmonitoredDefaultCatchBoundary({
   )
 }
 
-const DefaultCatchBoundary = Sentry.withErrorBoundary(
+const DefaultCatchBoundary = withErrorBoundary(
   UnmonitoredDefaultCatchBoundary,
   {
     // ... sentry error wrapper options

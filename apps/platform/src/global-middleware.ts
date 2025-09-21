@@ -1,4 +1,4 @@
-import Sentry from "@sentry/tanstackstart-react"
+import { sentryGlobalServerMiddlewareHandler } from "@sentry/tanstackstart-react"
 import {
   createMiddleware,
   registerGlobalMiddleware,
@@ -7,7 +7,7 @@ import {
 registerGlobalMiddleware({
   middleware: [
     createMiddleware({ type: "function" }).server(
-      Sentry.sentryGlobalServerMiddlewareHandler(),
+      sentryGlobalServerMiddlewareHandler(),
     ),
   ],
 })
