@@ -1,4 +1,5 @@
 // @ts-check
+// oxlint-disable-next-line extensions
 import { defineConfig } from "astro/config"
 
 // https://astro.build/config
