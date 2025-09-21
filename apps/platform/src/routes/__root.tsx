@@ -2,7 +2,7 @@
 //   AuthenticationData,
 //   authenticationDataQueryOptions,
 // } from "@authentication"
-
+import { wrapCreateRootRouteWithSentry } from "@sentry/tanstackstart-react"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
@@ -21,7 +21,7 @@ import { NotFound } from "#pages/not-found.js"
 import stylesCss from "#styles/globals.css?url"
 // import { authClient } from "@/lib/auth-client"
 
-export const Route = createRootRouteWithContext<{
+export const Route = wrapCreateRootRouteWithSentry(createRootRouteWithContext)<{
   queryClient: QueryClient
 }>()({
   // beforeLoad: async ({

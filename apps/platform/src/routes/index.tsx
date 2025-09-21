@@ -6,5 +6,13 @@ export const Route = createFileRoute("/")({
 })
 
 function RouteComponent() {
-  return <Button>Hello</Button>
+  return (
+    <Button
+      onClick={() => {
+        throw new Error("Sentry Test Error")
+      }}
+    >
+      Break the world
+    </Button>
+  )
 }

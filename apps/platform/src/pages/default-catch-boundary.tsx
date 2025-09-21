@@ -1,3 +1,4 @@
+import Sentry from "@sentry/tanstackstart-react"
 import {
   ErrorComponent,
   type ErrorComponentProps,
@@ -8,14 +9,16 @@ import {
 } from "@tanstack/react-router"
 import type { JSX } from "react"
 
-function DefaultCatchBoundary({ error }: ErrorComponentProps): JSX.Element {
+function UnmonitoredDefaultCatchBoundary({
+  error,
+}: ErrorComponentProps): JSX.Element {
   const router = useRouter()
   const isRoot = useMatch({
     strict: false,
     select: state => state.id === rootRouteId,
   })
 
-  console.error(error)
+  Sentry.captureException(error)
 
   return (
     <div className="min-w-0 flex-1 p-4 flex flex-col items-center justify-center gap-6">
@@ -54,5 +57,12 @@ function DefaultCatchBoundary({ error }: ErrorComponentProps): JSX.Element {
     </div>
   )
 }
+
+const DefaultCatchBoundary = Sentry.withErrorBoundary(
+  UnmonitoredDefaultCatchBoundary,
+  {
+    // ... sentry error wrapper options
+  },
+)
 
 export { DefaultCatchBoundary }
