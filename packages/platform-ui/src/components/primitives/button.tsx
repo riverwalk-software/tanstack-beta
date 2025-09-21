@@ -1,20 +1,49 @@
+// oxlint-disable no-async-await
+//
+// oxlint-disable no-undefined
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import type { ComponentProps, JSX } from "react"
+import type { ClassProp } from "class-variance-authority/types"
+import { Loader2Icon } from "lucide-react"
+import {
+  type ButtonHTMLAttributes,
+  type ComponentProps,
+  type JSX,
+  type MouseEvent,
+  type ReactNode,
+  useCallback,
+  useState,
+} from "react"
 import { cn } from "#lib/utils.js"
 
-const buttonVariants: ReturnType<typeof cva> = cva(
+const buttonVariants: (
+  props?:
+    | ({
+        variant?:
+          | "default"
+          | "destructive"
+          | "outline"
+          | "secondary"
+          | "ghost"
+          | "link"
+          | null
+          | undefined
+        size?: "default" | "sm" | "lg" | "icon" | null | undefined
+      } & ClassProp)
+    | undefined,
+) => string = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default:
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
         destructive:
-          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
@@ -33,24 +62,89 @@ const buttonVariants: ReturnType<typeof cva> = cva(
   },
 )
 
+type ButtonBaseProps = Omit<ComponentProps<"button">, "onClick"> & {
+  children?: ReactNode
+}
+
+type ButtonProps = ButtonBaseProps &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean
+    onClick?: (event: MouseEvent<HTMLButtonElement>) => void | Promise<void>
+    lockWhileAsync?: boolean
+    loadingText?: string
+    type?: ButtonHTMLAttributes<HTMLButtonElement>["type"]
+  }
+
+// oxlint-disable-next-line func-style
+const isPromise = (v: unknown): v is Promise<unknown> => v instanceof Promise
+
 function Button({
   className,
   variant,
   size,
   asChild = false,
+  disabled,
+  onClick,
+  lockWhileAsync = true,
+  loadingText = "Loading...",
+  type,
+  children,
   ...props
-}: ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }): JSX.Element {
+}: ButtonProps): JSX.Element {
   const Comp = asChild ? Slot : "button"
-
+  const [isPending, setIsPending] = useState(false)
+  const isDisabled =
+    disabled ||
+    (type !== "submit" && onClick === undefined) ||
+    (lockWhileAsync && isPending)
+  const handleClick = useCallback(
+    async (event: MouseEvent<HTMLButtonElement>) => {
+      if (isDisabled) {
+        event.preventDefault()
+        event.stopPropagation()
+        return
+      }
+      if (!onClick) return
+      const result = onClick(event)
+      if (lockWhileAsync && isPromise(result)) {
+        try {
+          setIsPending(true)
+          await result
+        } finally {
+          setIsPending(false)
+        }
+      }
+    },
+    [isDisabled, onClick, lockWhileAsync],
+  )
   return (
     <Comp
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        asChild && isDisabled ? "pointer-events-none" : undefined,
+      )}
+      data-disabled={isDisabled || undefined}
+      data-pending={isPending || undefined}
       data-slot="button"
+      {...(asChild ? {} : { disabled: isDisabled, type: type ?? "button" })}
+      {...(asChild
+        ? {
+            "aria-disabled": isDisabled || undefined,
+            tabIndex: isDisabled ? -1 : undefined,
+          }
+        : {})}
+      onClick={handleClick}
       {...props}
-    />
+    >
+      {isPending ? (
+        <span className="inline-flex items-center gap-2">
+          <Loader2Icon aria-hidden="true" className="h-4 w-4 animate-spin" />
+          <span>{loadingText}</span>
+        </span>
+      ) : (
+        children
+      )}
+    </Comp>
   )
 }
 

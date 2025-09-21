@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "rules": {
+    "eslint/curly": ["error", "multi-line", "consistent"],
     "eslint/func-names": "allow", // Conflicts with Effect generators
     "eslint/id-length": "allow",
     "eslint/max-lines": "allow",
@@ -19,6 +20,7 @@
     "import/max-dependencies": "allow",
     "import/prefer-default-export": "allow",
     "import/unambiguous": "warn",
+    "oxc/no-rest-spread-properties": "allow",
     "react/jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
     "react/react-in-jsx-scope": "allow",
     "typescript/consistent-type-imports": "allow",
