@@ -7,6 +7,7 @@
     "declaration": true,
     "declarationMap": true,
     "stripInternal": true,
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx"
   }
 }

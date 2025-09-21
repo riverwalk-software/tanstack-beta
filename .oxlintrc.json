@@ -37,7 +37,10 @@
         "ignoreReadonlyClassProperties": true,
         "ignoreTypeIndexes": true
       }
-    ]
+    ],
+    // React Compiler
+    "react_perf/jsx-no-new-array-as-prop": "allow",
+    "react_perf/jsx-no-new-function-as-prop": "allow"
   },
   "plugins": [
     "typescript",

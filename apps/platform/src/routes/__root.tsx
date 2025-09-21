@@ -2,10 +2,7 @@
 //   AuthenticationData,
 //   authenticationDataQueryOptions,
 // } from "@authentication"
-// import { Button, DefaultCatchBoundary, NotFound } from "@components"
 
-// import { Toaster } from "sonner"
-// import globalsCss from "@repo/platform-ui/src/styles/globals.css?url"
 import stylesCss from "@repo/platform-ui/styles.css?url"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { QueryClient } from "@tanstack/react-query"
@@ -19,6 +16,9 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 // import { ThemeProvider, ThemeToggle, useTheme } from "@theme"
 import { ReactNode } from "react"
+import { Toaster } from "sonner"
+import { DefaultCatchBoundary } from "#pages/default-catch-boundary.js"
+import { NotFound } from "#pages/not-found.js"
 // import { authClient } from "@/lib/auth-client"
 
 export const Route = createRootRouteWithContext<{
@@ -78,12 +78,12 @@ export const Route = createRootRouteWithContext<{
       { rel: "icon", href: "/favicon.ico" },
     ],
   }),
-  // errorComponent: props => (
-  //   <RootDocument>
-  //     <DefaultCatchBoundary {...props} />
-  //   </RootDocument>
-  // ),
-  // notFoundComponent: () => <NotFound />,
+  errorComponent: props => (
+    <RootDocument>
+      <DefaultCatchBoundary {...props} />
+    </RootDocument>
+  ),
+  notFoundComponent: () => <NotFound />,
   component: RootComponent,
 })
 
@@ -176,7 +176,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             },
           ]}
         />
-        {/* <Toaster /> */}
+        <Toaster />
         <Scripts />
       </body>
     </html>

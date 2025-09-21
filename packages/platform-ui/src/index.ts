@@ -1,1 +1,1 @@
-export { Button } from "#components/ui/button.tsx"
+export { Button, buttonVariants } from "#components/primitives/button.js"

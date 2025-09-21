@@ -22,7 +22,7 @@
     "build": {
       "dependsOn": ["typegen", "^build"],
       "inputs": ["$TURBO_DEFAULT$", "!README.md"],
-      "outputs": ["dist"]
+      "outputs": ["dist", ".output"]
     },
     "dev": {
       "with": ["typecheck:watch"],

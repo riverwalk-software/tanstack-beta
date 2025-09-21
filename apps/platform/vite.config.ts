@@ -1,4 +1,5 @@
-import { devtools } from "@tanstack/devtools-vite"
+import tailwindcss from "@tailwindcss/vite"
+// import { devtools } from "@tanstack/devtools-vite"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
@@ -6,7 +7,8 @@ import tsConfigPaths from "vite-tsconfig-paths"
 
 export default defineConfig({
   plugins: [
-    devtools(), // Must come first
+    // devtools(), // Must come first
+    tailwindcss(),
     tsConfigPaths(),
     tanstackStart({
       customViteReactPlugin: true,
@@ -14,9 +16,7 @@ export default defineConfig({
     }),
     react({
       babel: {
-        plugins: [
-          // "babel-plugin-react-compiler"
-        ],
+        plugins: ["babel-plugin-react-compiler"],
       },
     }),
   ],
