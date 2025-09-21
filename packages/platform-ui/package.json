@@ -12,16 +12,16 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./styles.css": "./dist/index.css"
+    }
   },
   "scripts": {
-    "dev:components": "tsdown --watch",
-    "dev:styles": "tailwindcss -i ./src/styles/globals.css -o ./dist/index.css --watch",
-    "build:components": "tsdown",
-    "build:styles": "tailwindcss -i ./src/styles/globals.css -o ./dist/index.css",
+    "dev": "tsdown --watch",
+    "build": "tsdown",
     "typecheck": "tsc",
     "typecheck:watch": "tsc --watch --preserveWatchOutput"
+  },
+  "peerDependencies": {
+    "react": "^19"
   },
   "dependencies": {
     "@radix-ui/react-label": "catalog:",
@@ -34,16 +34,8 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@tailwindcss/cli": "catalog:",
-    "@tailwindcss/postcss": "catalog:",
     "@types/react": "catalog:",
-    "postcss": "catalog:",
     "shadcn": "catalog:",
-    "tailwindcss": "catalog:",
-    "tsdown": "catalog:",
-    "tw-animate-css": "catalog:"
-  },
-  "peerDependencies": {
-    "react": "^19"
+    "tsdown": "catalog:"
   }
 }

@@ -3,7 +3,6 @@
 //   authenticationDataQueryOptions,
 // } from "@authentication"
 
-import stylesCss from "@repo/platform-ui/styles.css?url"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
@@ -19,6 +18,7 @@ import { ReactNode } from "react"
 import { Toaster } from "sonner"
 import { DefaultCatchBoundary } from "#pages/default-catch-boundary.js"
 import { NotFound } from "#pages/not-found.js"
+import stylesCss from "#styles/globals.css?url"
 // import { authClient } from "@/lib/auth-client"
 
 export const Route = createRootRouteWithContext<{
