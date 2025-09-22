@@ -220,6 +220,9 @@ importers:
 
   apps/platform:
     dependencies:
+      '@repo/platform-authentication':
+        specifier: workspace:*
+        version: link:../../packages/platform-authentication
       '@repo/platform-theme':
         specifier: workspace:*
         version: link:../../packages/platform-theme

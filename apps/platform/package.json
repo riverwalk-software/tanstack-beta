@@ -15,6 +15,7 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@repo/platform-authentication": "workspace:*",
     "@repo/platform-theme": "workspace:*",
     "@repo/platform-ui": "workspace:*",
     "@sentry/tanstackstart-react": "catalog:",
