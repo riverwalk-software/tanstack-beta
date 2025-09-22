@@ -13,6 +13,7 @@
     "typecheck:watch": "tsc --watch --preserveWatchOutput"
   },
   "dependencies": {
+    "@repo/platform-ui": "workspace:*",
     "@sentry/tanstackstart-react": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
@@ -23,7 +24,6 @@
     "sonner": "catalog:"
   },
   "devDependencies": {
-    "@repo/platform-ui": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/devtools-vite": "catalog:",

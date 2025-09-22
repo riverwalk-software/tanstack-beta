@@ -2,7 +2,8 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     // Options
-    "isolatedDeclarations": true,
+    // "isolatedDeclarations": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "allowJs": false,
     "declaration": true,
     "declarationMap": true,
