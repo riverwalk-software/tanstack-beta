@@ -18,8 +18,17 @@
     "typecheck": "tsc",
     "typecheck:watch": "tsc --watch --preserveWatchOutput"
   },
+  "dependencies": {
+    "@repo/platform-ui": "workspace:*",
+    "@xstate/react": "catalog:",
+    "effect": "catalog:",
+    "lucide-react": "catalog:",
+    "xstate": "catalog:"
+  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
     "tsdown": "catalog:"
   }
 }
