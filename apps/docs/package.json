@@ -4,11 +4,11 @@
   "type": "module",
   "sideEffects": false,
   "scripts": {
-    "build": "astro build",
-    "dev": "astro dev",
+    "typegen": "astro sync",
     "typecheck": "astro check --noSync",
     "typecheck:watch": "astro check --noSync --watch --preserveWatchOutput",
-    "typegen": "astro sync"
+    "build": "astro build",
+    "dev": "astro dev"
   },
   "dependencies": {
     "@astrojs/starlight": "catalog:",

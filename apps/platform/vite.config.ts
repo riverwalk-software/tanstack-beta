@@ -12,7 +12,7 @@ export default defineConfig({
     tsConfigPaths(),
     tanstackStart({
       customViteReactPlugin: true,
-      // target: "cloudflare-module",
+      target: "cloudflare-module",
     }),
     react({
       babel: {

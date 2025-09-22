@@ -15,10 +15,10 @@
     }
   },
   "scripts": {
-    "dev": "tsdown --watch",
-    "build": "tsdown",
     "typecheck": "tsc",
-    "typecheck:watch": "tsc --watch --preserveWatchOutput"
+    "typecheck:watch": "tsc --watch --preserveWatchOutput",
+    "build": "tsdown",
+    "dev": "tsdown --watch"
   },
   "peerDependencies": {
     "react": "^19"

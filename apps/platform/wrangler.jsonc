@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "main": "./.output/server/index.mjs",
+  "compatibility_date": "2025-09-20",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "./.output/public/"
+  },
+  "compatibility_flags": ["nodejs_compat"],
+  "kv_namespaces": [
+    {
+      "binding": "SESSION_STORE",
+      "id": "e4313f1dcc9449fd905b0abe8e657003"
+    },
+    {
+      "binding": "USER_STORE",
+      "id": "3198a6fd3b774ea0a8b84fc4b638dd3e"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "AUTH_DB",
+      "database_name": "auth_database",
+      "database_id": "24960691-14e2-4e0a-9b85-942154cfea0a",
+      "migrations_dir": "./packages/authentication/src/db/migrations/"
+    },
+    {
+      "binding": "SCHOOL_DB",
+      "database_name": "school_database",
+      "database_id": "dec12f0e-fc46-4428-915d-7b49c31d4c63",
+      "migrations_dir": "./packages/schools/src/db/migrations/"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ATTACHMENTS_BUCKET",
+      "bucket_name": "tanstack-beta"
+    }
+  ]
+}
