@@ -43,6 +43,8 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "babel-plugin-react-compiler": "catalog:",
+    "better-sqlite3": "catalog:",
+    "sqlite": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
     "vite": "catalog:",
