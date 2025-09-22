@@ -41,7 +41,6 @@
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
     "wrangler": "catalog:"
   }
 }
