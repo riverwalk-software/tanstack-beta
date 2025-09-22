@@ -14,7 +14,7 @@ import {
   useCallback,
   useState,
 } from "react"
-import { cn } from "#lib/utils.js"
+import { cn } from "#utils.js"
 
 const buttonVariants: (
   props?:
