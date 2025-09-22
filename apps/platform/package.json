@@ -13,6 +13,7 @@
     "typecheck:watch": "tsc --watch --preserveWatchOutput"
   },
   "dependencies": {
+    "@repo/platform-theme": "workspace:*",
     "@repo/platform-ui": "workspace:*",
     "@sentry/tanstackstart-react": "catalog:",
     "@tanstack/react-query": "catalog:",

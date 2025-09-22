@@ -190,6 +190,9 @@ importers:
 
   apps/platform:
     dependencies:
+      '@repo/platform-theme':
+        specifier: workspace:*
+        version: link:../../packages/platform-theme
       '@repo/platform-ui':
         specifier: workspace:*
         version: link:../../packages/platform-ui

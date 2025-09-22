@@ -2,6 +2,8 @@
 //   AuthenticationData,
 //   authenticationDataQueryOptions,
 // } from "@authentication"
+
+import { ThemeProvider, ThemeToggle, useTheme } from "@repo/platform-theme"
 import { wrapCreateRootRouteWithSentry } from "@sentry/tanstackstart-react"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { QueryClient } from "@tanstack/react-query"
@@ -13,7 +15,6 @@ import {
   Scripts,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-// import { ThemeProvider, ThemeToggle, useTheme } from "@theme"
 import { ReactNode } from "react"
 import { Toaster } from "sonner"
 import { DefaultCatchBoundary } from "#pages/default-catch-boundary.js"
@@ -89,21 +90,18 @@ export const Route = wrapCreateRootRouteWithSentry(createRootRouteWithContext)<{
 
 function RootComponent() {
   return (
-    // <ThemeProvider>
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
-    // </ThemeProvider>
+    <ThemeProvider>
+      <RootDocument>
+        <Outlet />
+      </RootDocument>
+    </ThemeProvider>
   )
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  // const { theme } = useTheme()
+  const { theme } = useTheme()
   return (
-    <html
-      // className={theme} data-theme={theme}
-      lang="en"
-    >
+    <html className={theme} data-theme={theme} lang="en">
       <head>
         <HeadContent />
         <ReactScanScript />
@@ -161,7 +159,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           This Route Does Not Exist
         </Link>
       </div> */}
-        {/* <Navbar /> */}
+        <Navbar />
         <hr />
         {children}
         <TanStackDevtools
@@ -183,42 +181,43 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   )
 }
 
-// function Navbar() {
-//   const { authenticationData } = Route.useRouteContext()
-//   const isAuthenticated = authenticationData !== null
-//   const router = useRouter()
-//   const queryClient = useQueryClient()
-//   return (
-//     <div className="flex gap-2 p-2 text-lg">
-//       <div className="flex flex-1 gap-2">{isAuthenticated && <HomeLink />}</div>
-//       <div className="ml-auto flex gap-2">
-//         {isAuthenticated ? (
-//           <>
-//             <ProfileLink />
-//             {/* <SignOutButton /> */}
-//             <Button
-//               onClick={async () => {
-//                 await authClient.signOut()
-//                 await queryClient.invalidateQueries({
-//                   queryKey: authenticationDataQueryOptions.queryKey,
-//                 })
-//                 await router.invalidate({ sync: true })
-//               }}
-//             >
-//               Sign Out
-//             </Button>
-//           </>
-//         ) : (
-//           <>
-//             <SigninLink />
-//             <SignupLink />
-//           </>
-//         )}
-//       </div>
-//       <ThemeToggle />
-//     </div>
-//   )
-// }
+function Navbar() {
+  // const { authenticationData } = Route.useRouteContext()
+  // const isAuthenticated = authenticationData !== null
+  // const router = useRouter()
+  // const queryClient = useQueryClient()
+  return (
+    <ThemeToggle />
+    // <div className="flex gap-2 p-2 text-lg">
+    //   <div className="flex flex-1 gap-2">{isAuthenticated && <HomeLink />}</div>
+    //   <div className="ml-auto flex gap-2">
+    //     {isAuthenticated ? (
+    //       <>
+    //         <ProfileLink />
+    //         {/* <SignOutButton /> */}
+    //         <Button
+    //           onClick={async () => {
+    //             await authClient.signOut()
+    //             await queryClient.invalidateQueries({
+    //               queryKey: authenticationDataQueryOptions.queryKey,
+    //             })
+    //             await router.invalidate({ sync: true })
+    //           }}
+    //         >
+    //           Sign Out
+    //         </Button>
+    //       </>
+    //     ) : (
+    //       <>
+    //         <SigninLink />
+    //         <SignupLink />
+    //       </>
+    //     )}
+    //   </div>
+    //   <ThemeToggle />
+    // </div>
+  )
+}
 
 // function HomeLink() {
 //   return (
