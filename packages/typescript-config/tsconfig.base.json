@@ -13,13 +13,13 @@
 
     // Strictness
     "strict": true,
-    "noUncheckedIndexedAccess": true,
+    "erasableSyntaxOnly": true,
+    "exactOptionalPropertyTypes": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "exactOptionalPropertyTypes": true,
     "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
     "noUncheckedSideEffectImports": true,
-    "erasableSyntaxOnly": true,
 
     // Covered by linting
     "noUnusedParameters": false,
