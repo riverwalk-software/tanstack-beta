@@ -24,6 +24,7 @@
     "oxc/no-optional-chaining": "allow",
     "oxc/no-rest-spread-properties": "allow",
     "react/jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
+    "react/jsx-handler-names": "warn", // TODO: Reconsider
     "react/react-in-jsx-scope": "allow",
     "typescript/consistent-type-imports": "allow",
     "typescript/explicit-function-return-type": "allow",
@@ -46,7 +47,8 @@
     ],
     // React Compiler
     "react_perf/jsx-no-new-array-as-prop": "allow",
-    "react_perf/jsx-no-new-function-as-prop": "allow"
+    "react_perf/jsx-no-new-function-as-prop": "allow",
+    "react_perf/jsx-no-new-object-as-prop": "allow"
   },
   "plugins": [
     "typescript",
