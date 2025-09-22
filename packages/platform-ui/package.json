@@ -20,6 +20,11 @@
     "build": "tsdown",
     "dev": "tsdown --watch"
   },
+  "peerDependenciesMeta": {
+    "react-hook-form": {
+      "optional": true
+    }
+  },
   "peerDependencies": {
     "react": "catalog:",
     "react-hook-form": "catalog:"
@@ -36,7 +41,6 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/react": "catalog:",
-    "@types/react-dom": "catalog:",
     "react": "catalog:",
     "react-hook-form": "catalog:",
     "shadcn": "catalog:",
