@@ -9,9 +9,8 @@ export const Route = createFileRoute("/")({
 
 const memeFn = createServerFn().handler(async () => {
   const { SESSION_STORE } = getCloudflareBindings()
-  await SESSION_STORE.put("MYTEST", "HELLO WORLD")
-  const result = await SESSION_STORE.get("MYTEST")
-  return result
+  const key = "MYTEST2"
+  await SESSION_STORE.delete(key)
 })
 
 function RouteComponent() {
