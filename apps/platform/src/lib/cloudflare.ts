@@ -1,7 +1,6 @@
 // oxlint-disable no-undefined
 // oxlint-disable no-async-await
 
-import { Context, Effect } from "effect"
 import { IS_DEV } from "#constants.js"
 
 // oxlint-disable-next-line init-declarations
@@ -52,13 +51,4 @@ const getCloudflareBindings = (): CloudflareBindings => {
   return process.env as unknown as CloudflareBindings
 }
 
-class Cloudflare extends Context.Tag("CloudflareService")<
-  Cloudflare,
-  { readonly bindings: Effect.Effect<CloudflareBindings> }
->() {}
-
-const CloudflareLive = Effect.provideService(Cloudflare, {
-  bindings: Effect.sync(getCloudflareBindings),
-})
-
-export { Cloudflare, CloudflareLive, getCloudflareBindings }
+export { getCloudflareBindings }
