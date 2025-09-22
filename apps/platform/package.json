@@ -23,6 +23,9 @@
     "@tanstack/react-router-ssr-query": "catalog:",
     "@tanstack/react-start": "catalog:",
     "better-auth": "catalog:",
+    "effect": "catalog:",
+    "kysely": "catalog:",
+    "kysely-d1": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "sonner": "catalog:"
