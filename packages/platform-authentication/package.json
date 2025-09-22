@@ -1,0 +1,25 @@
+{
+  "name": "@repo/platform-authentication",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "imports": {
+    "#*": "./src/*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "typecheck:watch": "tsc --watch --preserveWatchOutput",
+    "build": "tsdown",
+    "dev": "tsdown --watch"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "tsdown": "catalog:"
+  }
+}
