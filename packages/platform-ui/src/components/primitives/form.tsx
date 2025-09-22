@@ -1,5 +1,3 @@
-"use client"
-
 import { Root } from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
 import { type ComponentProps, createContext, useContext, useId } from "react"
