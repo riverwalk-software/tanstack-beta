@@ -24,8 +24,7 @@
     "@tanstack/react-start": "catalog:",
     "better-auth": "catalog:",
     "react": "catalog:",
-    "sonner": "catalog:",
-    "vite": "catalog:"
+    "sonner": "catalog:"
   },
   "dependencies": {
     "@hookform/resolvers": "catalog:",
@@ -44,7 +43,6 @@
     "better-auth": "catalog:",
     "react": "catalog:",
     "sonner": "catalog:",
-    "tsdown": "catalog:",
-    "vite": "catalog:"
+    "tsdown": "catalog:"
   }
 }
