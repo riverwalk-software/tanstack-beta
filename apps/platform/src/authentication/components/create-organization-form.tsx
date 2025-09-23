@@ -10,15 +10,12 @@ import {
   FormMessage,
   Input,
 } from "@repo/platform-ui"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "@tanstack/react-router"
 import { Schema } from "effect"
 import { ComponentProps } from "react"
 import { UseFormReturn, useForm } from "react-hook-form"
 import slugify from "slugify"
-import { toast } from "sonner"
-import { authenticationDataQueryOptions } from "#authentication/query-options.js"
-import { authClient } from "#lib/auth-client.js"
 
 // oxlint-disable-next-line func-style
 const mySlugify = (value: string) =>
@@ -46,35 +43,37 @@ function CreateOrganizationForm({
   })
   const queryClient = useQueryClient()
   const router = useRouter()
-  const { mutate: createOrganization } = useMutation({
-    mutationKey: ["createOrganization"],
-    mutationFn: async (data: FormData) => {
-      const result = await authClient.organization.create({
-        name: data.name,
-        slug: mySlugify(data.name), // required
-        logo: "https://example.com/logo.png",
-        keepCurrentActiveOrganization: false,
-      })
-      if (result.error) {
-        throw new Error(result.error.message)
-      }
-      return result
-    },
-    onError: error => {
-      toast.error(error.message || "Failed to sign in")
-    },
-    onSuccess: async () => {
-      toast.success("Organization created successfully")
-      await queryClient.invalidateQueries({
-        queryKey: authenticationDataQueryOptions.queryKey,
-      })
-      await router.invalidate({ sync: true })
-    },
-  })
+  // const { mutate: createOrganization } = useMutation({
+  //   mutationKey: ["createOrganization"],
+  //   mutationFn: async (data: FormData) => {
+  //     const result = await authClient.organization.create({
+  //       name: data.name,
+  //       slug: mySlugify(data.name), // required
+  //       logo: "https://example.com/logo.png",
+  //       keepCurrentActiveOrganization: false,
+  //     })
+  //     if (result.error) {
+  //       throw new Error(result.error.message)
+  //     }
+  //     return result
+  //   },
+  //   onError: error => {
+  //     toast.error(error.message || "Failed to sign in")
+  //   },
+  //   onSuccess: async () => {
+  //     toast.success("Organization created successfully")
+  //     await queryClient.invalidateQueries({
+  //       queryKey: authenticationDataQueryOptions.queryKey,
+  //     })
+  //     await router.invalidate({ sync: true })
+  //   },
+  // })
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(data => createOrganization(data))}>
+        <form
+        // onSubmit={form.handleSubmit(data => createOrganization(data))}
+        >
           <div className="flex flex-col gap-6">
             {/* <FormHeader /> */}
             <div className="flex flex-col gap-6">
