@@ -18,6 +18,9 @@
     "build": "tsdown",
     "dev": "tsdown --watch --no-clean"
   },
+  "dependencies": {
+    "effect": "catalog:"
+  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "tsdown": "catalog:"

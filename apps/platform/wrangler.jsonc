@@ -9,16 +9,16 @@
     "directory": "./.output/public/"
   },
   "compatibility_flags": ["nodejs_compat"],
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "SESSION_STORE",
-  //     "id": "e4313f1dcc9449fd905b0abe8e657003"
-  //   },
-  //   {
-  //     "binding": "USER_STORE",
-  //     "id": "3198a6fd3b774ea0a8b84fc4b638dd3e"
-  //   }
-  // ],
+  "kv_namespaces": [
+    {
+      "binding": "SESSION_STORE",
+      "id": "e4313f1dcc9449fd905b0abe8e657003"
+    }
+    // {
+    //   "binding": "USER_STORE",
+    //   "id": "3198a6fd3b774ea0a8b84fc4b638dd3e"
+    // }
+  ],
   "d1_databases": [
     {
       "binding": "AUTH_DB",

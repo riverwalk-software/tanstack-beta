@@ -1,5 +1,7 @@
 export {
+  EVENTUAL_CONSISTENCY_DELAY,
   PRIVACY_POLICY_URL,
+  RANDOM_SEED,
   TERMS_OF_USE_URL,
   WEBSITE_NAME,
 } from "#constants.js"

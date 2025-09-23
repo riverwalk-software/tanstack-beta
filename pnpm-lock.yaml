@@ -417,6 +417,10 @@ importers:
         version: 0.15.0(typescript@5.9.2)
 
   packages/shared-constants:
+    dependencies:
+      effect:
+        specifier: 'catalog:'
+        version: 3.17.14
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*

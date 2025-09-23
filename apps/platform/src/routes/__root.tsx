@@ -174,7 +174,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             },
           ]}
         />
-        <Toaster />
+        <Toaster richColors />
         <Scripts />
       </body>
     </html>
