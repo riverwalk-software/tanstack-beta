@@ -18,8 +18,33 @@
     "build": "tsdown",
     "dev": "tsdown --watch"
   },
+  "peerDependencies": {
+    "@tanstack/react-query": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
+    "better-auth": "catalog:",
+    "react": "catalog:",
+    "sonner": "catalog:",
+    "vite": "catalog:"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "catalog:",
+    "@repo/platform-ui": "workspace:*",
+    "@repo/shared-constants": "workspace:*",
+    "effect": "catalog:",
+    "lucide-react": "catalog:",
+    "react-hook-form": "catalog:"
+  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "tsdown": "catalog:"
+    "@tanstack/react-query": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
+    "@types/react": "catalog:",
+    "better-auth": "catalog:",
+    "react": "catalog:",
+    "sonner": "catalog:",
+    "tsdown": "catalog:",
+    "vite": "catalog:"
   }
 }
