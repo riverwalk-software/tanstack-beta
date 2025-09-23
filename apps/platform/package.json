@@ -16,9 +16,11 @@
   },
   "dependencies": {
     "@hookform/resolvers": "catalog:",
-    "@repo/shared-constants": "workspace:*",
+    "@polar-sh/better-auth": "catalog:",
+    "@polar-sh/sdk": "catalog:",
     "@repo/platform-theme": "workspace:*",
     "@repo/platform-ui": "workspace:*",
+    "@repo/shared-constants": "workspace:*",
     "@sentry/tanstackstart-react": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
@@ -32,6 +34,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-hook-form": "catalog:",
+    "slugify": "catalog:",
     "sonner": "catalog:"
   },
   "devDependencies": {

@@ -3,7 +3,7 @@ const TEST_USER = {
   lastName: "User",
   name: "Test User",
   email: "testuser@gmail.com",
-  password: "testuser@gmail.com",
+  password: "body impaired relive litter egotistic freestyle",
 } as const
 const NAME_LENGTH = {
   FIRST: { MINIMUM: 2, MAXIMUM: 50 },

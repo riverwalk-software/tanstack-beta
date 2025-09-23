@@ -1,8 +1,9 @@
 import { EVENTUAL_CONSISTENCY_DELAY } from "@repo/shared-constants"
 import { betterAuth } from "better-auth"
+import { createAuthMiddleware } from "better-auth/api"
 //
 import { reactStartCookies } from "better-auth/react-start"
-import { Duration } from "effect"
+import { Duration, Option, Schema } from "effect"
 import { Kysely } from "kysely"
 import { D1Dialect } from "kysely-d1"
 import { AUTH_COOKIE_PREFIX, IS_DEV } from "#constants.js"
@@ -144,7 +145,64 @@ const { AUTH_DB, SESSION_STORE } = getCloudflareBindings()
 //   const runnable = pipe(program, CloudflareLive)
 //   return Effect.runSync(runnable)
 // }
+
 const auth = betterAuth({
+  hooks: {
+    after: createAuthMiddleware(async ctx => {
+      if (ctx.path.startsWith("/sign-in")) {
+        const email = ctx.context.newSession?.user.email
+        if (email === undefined) return
+        const url = `https://developers.teachable.com/v1/users?email=${email}`
+        const options = {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            apiKey: process.env["TEACHABLE_API_KEY"] || "",
+          },
+        }
+        let json
+        try {
+          const res = await fetch(url, options)
+          json = await res.json()
+          console.log(json)
+        } catch (error) {
+          console.error("Error fetching Teachable user:", error)
+        }
+        const maybeData = Schema.decodeUnknownOption(
+          Schema.Struct({
+            users: Schema.Array(
+              Schema.Struct({
+                email: Schema.String,
+                name: Schema.String,
+                id: Schema.Number,
+              }),
+            ),
+          }),
+        )(json)
+        if (Option.isNone(maybeData)) {
+          console.error("No Teachable user found for email:", email)
+          return
+        }
+        const id = Option.getOrThrow(maybeData).users[0]!.id
+        const url2 = `https://developers.teachable.com/v1/users/${id}`
+        const options2 = {
+          method: "GET",
+          headers: {
+            accept: "application/json",
+            apiKey: "AO9L9Gs9spfFPXuOT7B9lpozCOXi9Qfv",
+          },
+        }
+
+        try {
+          const res = await fetch(url2, options2)
+          json = await res.json()
+          console.log(json)
+        } catch (error) {
+          console.error("Error fetching Teachable user:", error)
+        }
+      }
+    }),
+  },
   user: {
     changeEmail: {
       enabled: true,
