@@ -27,7 +27,7 @@
     },
     "dev": {
       // "with": ["typecheck:watch"],
-      "dependsOn": ["typegen"],
+      "dependsOn": ["^build", "typegen"],
       "persistent": true,
       "cache": false
     },

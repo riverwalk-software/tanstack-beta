@@ -16,7 +16,7 @@
     "typecheck": "tsc",
     "typecheck:watch": "tsc --watch --preserveWatchOutput",
     "build": "tsdown",
-    "dev": "tsdown --watch"
+    "dev": "tsdown --watch --no-clean"
   },
   "peerDependencies": {
     "@tanstack/react-query": "catalog:",
