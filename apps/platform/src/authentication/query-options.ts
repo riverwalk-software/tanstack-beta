@@ -1,30 +1,45 @@
-const queryKey = ["authenticationData"] as const
-// type SessionData = typeof authClient.$Infer.Session
-// type AuthenticationData = SessionData | null
+import { queryOptions } from "@tanstack/react-query"
+import { createServerFn } from "@tanstack/react-start"
+import { getWebRequest } from "@tanstack/react-start/server"
+import { Context, Effect, pipe } from "effect"
+import { auth } from "#lib/auth.js"
 
-// class AuthenticationService extends Context.Tag("AuthenticationService")<
-//   AuthenticationService,
-//   { readonly data: (headers: Headers) => Effect.Effect<AuthenticationData> }
-// >() {}
+type SessionData = typeof auth.$Infer.Session
+type AuthenticationData = SessionData | null
 
-// const getAuthenticationDataFn = createServerFn().handler(
-//   (): Promise<AuthenticationData> => {
-//     const program = Effect.gen(function* () {
-//       const { headers } = getWebRequest()
-//       const authenticationData = yield* AuthenticationService
-//       return yield* authenticationData.data(headers)
-//     })
-//     const runnable = pipe(program, AuthenticationDataLive)
-//     return Effect.runPromise(runnable)
-//   },
-// )
+class AuthenticationService extends Context.Tag("AuthenticationService")<
+  AuthenticationService,
+  { readonly data: (headers: Headers) => Effect.Effect<AuthenticationData> }
+>() {}
 
-// const authenticationDataQueryOptions = queryOptions({
-//   queryKey,
-//   queryFn: getAuthenticationDataFn,
-//   staleTime: Infinity,
-//   gcTime: Infinity,
-//   subscribed: false,
-// })
+const AuthenticationDataLive = Effect.provideService(AuthenticationService, {
+  data: (headers: Headers) =>
+    Effect.gen(function* () {
+      const nullableSessionData = yield* Effect.promise(() =>
+        auth.api.getSession({ headers }),
+      )
+      return nullableSessionData
+    }),
+})
 
-export { queryKey }
+const getAuthenticationDataFn = createServerFn().handler(
+  (): Promise<AuthenticationData> => {
+    const program = Effect.gen(function* () {
+      const { headers } = getWebRequest()
+      const authenticationData = yield* AuthenticationService
+      return yield* authenticationData.data(headers)
+    })
+    const runnable = pipe(program, AuthenticationDataLive)
+    return Effect.runPromise(runnable)
+  },
+)
+
+const authenticationDataQueryOptions = queryOptions({
+  queryKey: ["authenticationData"],
+  queryFn: getAuthenticationDataFn,
+  staleTime: Infinity,
+  gcTime: Infinity,
+  subscribed: false,
+})
+
+export { authenticationDataQueryOptions }

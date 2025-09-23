@@ -5,7 +5,6 @@ const TEST_USER = {
   email: "testuser@gmail.com",
   password: "testuser@gmail.com",
 } as const
-
 const NAME_LENGTH = {
   FIRST: { MINIMUM: 2, MAXIMUM: 50 },
   LAST: { MINIMUM: 2, MAXIMUM: 50 },
