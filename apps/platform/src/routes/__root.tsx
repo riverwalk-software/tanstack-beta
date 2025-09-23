@@ -17,6 +17,10 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { ReactNode } from "react"
 import { Toaster } from "sonner"
+import {
+  AuthenticationData,
+  authenticationDataQueryOptions,
+} from "#authentication/query-options.js"
 import { DefaultCatchBoundary } from "#pages/default-catch-boundary.js"
 import { NotFound } from "#pages/not-found.js"
 import stylesCss from "#styles/globals.css?url"
@@ -25,14 +29,14 @@ import stylesCss from "#styles/globals.css?url"
 export const Route = wrapCreateRootRouteWithSentry(createRootRouteWithContext)<{
   queryClient: QueryClient
 }>()({
-  // beforeLoad: async ({
-  //   context: { queryClient },
-  // }): Promise<{ authenticationData: AuthenticationData }> => {
-  //   const maybeAuthenticationData = await queryClient.fetchQuery(
-  //     authenticationDataQueryOptions,
-  //   )
-  //   return { authenticationData: maybeAuthenticationData }
-  // },
+  beforeLoad: async ({
+    context: { queryClient },
+  }): Promise<{ authenticationData: AuthenticationData }> => {
+    const maybeAuthenticationData = await queryClient.fetchQuery(
+      authenticationDataQueryOptions,
+    )
+    return { authenticationData: maybeAuthenticationData }
+  },
   // loader: async ({ context: { queryClient } }): Promise<void> => {
   //   await Promise.all([
   //     IS_DEV

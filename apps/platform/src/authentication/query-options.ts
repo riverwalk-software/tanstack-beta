@@ -42,4 +42,8 @@ const authenticationDataQueryOptions = queryOptions({
   subscribed: false,
 })
 
-export { authenticationDataQueryOptions }
+export {
+  authenticationDataQueryOptions,
+  type SessionData,
+  type AuthenticationData,
+}

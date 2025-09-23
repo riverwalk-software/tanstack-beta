@@ -1,4 +1,4 @@
-// oxlint-disable no-async-await
+import { Context, Effect } from "effect"
 
 // import { IS_DEV } from "#constants.js"
 
@@ -78,4 +78,9 @@ const getCloudflareBindings = (): CloudflareBindings => {
   return process.env as unknown as CloudflareBindings
 }
 
-export { getCloudflareBindings }
+class Cloudflare extends Context.Tag("Cloudflare")<
+  Cloudflare,
+  { readonly bindings: Effect.Effect<CloudflareBindings> }
+>() {}
+
+export { getCloudflareBindings, Cloudflare }

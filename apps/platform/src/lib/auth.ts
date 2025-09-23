@@ -187,15 +187,12 @@ const auth = betterAuth({
   //   },
   // },
   // database: new Database("./packages/authentication/src/db/sqlite.db"),
-  // database: {
-  //   db: new Kysely({
-  //     dialect: new D1Dialect({ database: AUTH_DB }),
-  //   }),
-  //   type: "sqlite",
-  // },
-  database: new Kysely<D1Database>({
-    dialect: new D1Dialect({ database: AUTH_DB }),
-  }),
+  database: {
+    db: new Kysely({
+      dialect: new D1Dialect({ database: AUTH_DB }),
+    }),
+    type: "sqlite",
+  },
   session: {
     storeSessionInDatabase: true, // TODO: remove this when issue fixed https://github.com/better-auth/better-auth/issues/2007
     cookieCache: {
