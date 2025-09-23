@@ -1,5 +1,14 @@
 export { Button, buttonVariants } from "#components/primitives/button.js"
 export {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "#components/primitives/card.js"
+export {
   Form,
   FormControl,
   FormDescription,
