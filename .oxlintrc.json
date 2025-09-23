@@ -21,15 +21,17 @@
     "import/max-dependencies": "allow",
     "import/prefer-default-export": "allow",
     "import/unambiguous": "warn",
+    "oxc/no-async-await": "allow", // TODO: Reconsider
     "oxc/no-optional-chaining": "allow",
     "oxc/no-rest-spread-properties": "allow",
     "react/jsx-filename-extension": ["deny", { "extensions": [".tsx"] }],
-    "react/jsx-handler-names": "warn", // TODO: Reconsider
+    "react/jsx-handler-names": "allow", // TODO: Reconsider
     "react/react-in-jsx-scope": "allow",
     "typescript/consistent-type-imports": "allow",
     "typescript/explicit-function-return-type": "allow",
     "typescript/explicit-module-boundary-types": "allow",
     "unicorn/error-message": "warn",
+    "unicorn/no-array-method-this-argument": "allow", // Conflicts with Effect Schema filters
     "unicorn/no-empty-file": "warn",
     "eslint/no-magic-numbers": [
       "deny",
