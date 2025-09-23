@@ -1,6 +1,7 @@
 // oxlint-disable-next-line extensions
 import { createAuthClient } from "better-auth/react"
 
-const authClient = createAuthClient()
+type AuthClient = ReturnType<typeof createAuthClient>
+const authClient: AuthClient = createAuthClient()
 
 export { authClient }
