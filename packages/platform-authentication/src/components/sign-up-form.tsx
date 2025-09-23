@@ -27,13 +27,31 @@ import { authClient } from "#lib/auth-client.js"
 import { queryKey } from "#query-options.js"
 import { Email, FirstName, LastName, Password } from "#schemas.js"
 
-class FormData extends Schema.Class<FormData>("FormData")({
+// class FormData extends Schema.Class<FormData>("FormData")({
+//   firstName: FirstName,
+//   lastName: LastName,
+//   email: Email,
+//   password: Password,
+//   confirmPassword: Password,
+// }) {}
+
+const FormData = Schema.Struct({
   firstName: FirstName,
   lastName: LastName,
   email: Email,
   password: Password,
   confirmPassword: Password,
-}) {}
+}).pipe(
+  Schema.filter(input =>
+    input.password === input.confirmPassword
+      ? true
+      : {
+          path: ["confirmPassword"],
+          message: "Passwords do not matdch",
+        },
+  ),
+)
+type FormData = typeof FormData.Type
 
 function SignUpForm({ className, ...props }: ComponentProps<"div">) {
   const form = useForm<FormData>({
@@ -74,19 +92,7 @@ function SignUpForm({ className, ...props }: ComponentProps<"div">) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(data => {
-            // Check password confirmation before submitting
-            if (data.password !== data.confirmPassword) {
-              form.setError("confirmPassword", {
-                type: "manual",
-                message: "Passwords do not match",
-              })
-              return
-            }
-            SignUpWithEmail(data)
-          })}
-        >
+        <form onSubmit={form.handleSubmit(data => SignUpWithEmail(data))}>
           <div className="flex flex-col gap-6">
             <FormHeader />
             <div className="flex flex-col gap-6">
@@ -114,7 +120,7 @@ function FirstNameInput({ form }: { form: UseFormReturn<FormData> }) {
       name="firstName"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>First Name</FormLabel>
+          <FormLabel htmlFor="firstName">First Name</FormLabel>
           <FormControl>
             <Input type="text" {...field} />
           </FormControl>
@@ -131,7 +137,7 @@ function LastNameInput({ form }: { form: UseFormReturn<FormData> }) {
       name="lastName"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Last Name</FormLabel>
+          <FormLabel>Last Namesdg</FormLabel>
           <FormControl>
             <Input type="text" {...field} />
           </FormControl>
