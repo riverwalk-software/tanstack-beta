@@ -4,6 +4,14 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
+// const watchedDists = [
+//   path.resolve(__dirname, "../../packages/platform-authentication/dist"),
+//   path.resolve(__dirname, "../../packages/platform-theme/dist"),
+//   path.resolve(__dirname, "../../packages/platform-ui/dist"),
+//   path.resolve(__dirname, "../../packages/prologue/dist"),
+//   path.resolve(__dirname, "../../packages/shared-constants/dist"),
+// ]
+
 export default defineConfig({
   plugins: [
     devtools(), // Must come first
@@ -17,6 +25,16 @@ export default defineConfig({
         plugins: ["babel-plugin-react-compiler"],
       },
     }),
+    // {
+    //   name: "reload-on-local-dist-change",
+    //   apply: "serve",
+    //   configureServer(server) {
+    //     server.watcher.add(watchedDists)
+    //     server.watcher.on("all", (_event, _path) => {
+    //       server.ws.send({ type: "full-reload" })
+    //     })
+    //   },
+    // },
   ],
   server: {
     port: 3000,
