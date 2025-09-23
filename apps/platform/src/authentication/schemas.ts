@@ -1,5 +1,5 @@
 import { Schema } from "effect"
-import { PASSWORD_LENGTH } from "#constants.js"
+import { PASSWORD_LENGTH } from "#authentication/constants.js"
 
 const isNFC = (s: string): boolean => s === s.normalize("NFC")
 

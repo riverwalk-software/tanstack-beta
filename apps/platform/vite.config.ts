@@ -5,7 +5,6 @@ import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
 // const watchedDists = [
-//   path.resolve(__dirname, "../../packages/platform-authentication/dist"),
 //   path.resolve(__dirname, "../../packages/platform-theme/dist"),
 //   path.resolve(__dirname, "../../packages/platform-ui/dist"),
 //   path.resolve(__dirname, "../../packages/prologue/dist"),

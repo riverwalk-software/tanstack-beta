@@ -15,7 +15,8 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "@repo/platform-authentication": "workspace:*",
+    "@hookform/resolvers": "catalog:",
+    "@repo/shared-constants": "workspace:*",
     "@repo/platform-theme": "workspace:*",
     "@repo/platform-ui": "workspace:*",
     "@sentry/tanstackstart-react": "catalog:",
@@ -27,8 +28,10 @@
     "effect": "catalog:",
     "kysely": "catalog:",
     "kysely-d1": "catalog:",
+    "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-hook-form": "catalog:",
     "sonner": "catalog:"
   },
   "devDependencies": {

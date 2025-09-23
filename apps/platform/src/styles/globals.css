@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @source "../../src";
-@source "../../node_modules/@repo/platform-authentication/src";
 @source "../../node_modules/@repo/platform-theme/src";
 @source "../../node_modules/@repo/platform-ui/src";
 @import "tw-animate-css";

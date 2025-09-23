@@ -22,10 +22,15 @@ import { GalleryVerticalEnd } from "lucide-react"
 import type { ComponentProps } from "react"
 import { type UseFormReturn, useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { TEST_USER } from "#constants.js"
+import { TEST_USER } from "#authentication/constants.js"
+import { queryKey } from "#authentication/query-options.js"
+import {
+  Email,
+  FirstName,
+  LastName,
+  Password,
+} from "#authentication/schemas.js"
 import { authClient } from "#lib/auth-client.js"
-import { queryKey } from "#query-options.js"
-import { Email, FirstName, LastName, Password } from "#schemas.js"
 
 // class FormData extends Schema.Class<FormData>("FormData")({
 //   firstName: FirstName,
