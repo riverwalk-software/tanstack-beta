@@ -16,14 +16,14 @@ import {
   WEBSITE_NAME,
 } from "@repo/shared-constants"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "@tanstack/react-router"
+import { Link, useRouter } from "@tanstack/react-router"
 import { Schema } from "effect"
 import { GalleryVerticalEnd } from "lucide-react"
 import type { ComponentProps } from "react"
 import { type UseFormReturn, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { TEST_USER } from "#authentication/constants.js"
-import { queryKey } from "#authentication/query-options.js"
+import { authenticationDataQueryOptions } from "#authentication/query-options.js"
 import {
   Email,
   FirstName,
@@ -52,7 +52,7 @@ const FormData = Schema.Struct({
       ? true
       : {
           path: ["confirmPassword"],
-          message: "Passwords do not matdch",
+          message: "Passwords do not match",
         },
   ),
 )
@@ -66,7 +66,7 @@ function SignUpForm({ className, ...props }: ComponentProps<"div">) {
       lastName: TEST_USER.lastName,
       email: TEST_USER.email,
       password: TEST_USER.password,
-      confirmPassword: "hello",
+      confirmPassword: TEST_USER.password,
     },
   })
   const queryClient = useQueryClient()
@@ -89,7 +89,7 @@ function SignUpForm({ className, ...props }: ComponentProps<"div">) {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey,
+        queryKey: authenticationDataQueryOptions.queryKey,
       })
       await router.invalidate({ sync: true })
     },
@@ -142,7 +142,7 @@ function LastNameInput({ form }: { form: UseFormReturn<FormData> }) {
       name="lastName"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Last Namesdg</FormLabel>
+          <FormLabel>Last Name</FormLabel>
           <FormControl>
             <Input type="text" {...field} />
           </FormControl>
@@ -227,12 +227,12 @@ function FormHeader() {
         <span className="sr-only">{WEBSITE_NAME}</span>
       </div>
       <h1 className="text-xl font-bold">Welcome to {WEBSITE_NAME}</h1>
-      {/* <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <a className="underline underline-offset-4" href="#">
-          Sign up
-        </a>
-      </div> */}
+      <div className="text-center text-sm">
+        Already have an account?{" "}
+        <Link className="underline underline-offset-4" to="/sign-in">
+          Sign in
+        </Link>
+      </div>
     </div>
   )
 }

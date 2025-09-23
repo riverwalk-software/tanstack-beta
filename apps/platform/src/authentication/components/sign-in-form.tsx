@@ -24,7 +24,7 @@ import type { ComponentProps } from "react"
 import { type UseFormReturn, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { TEST_USER } from "#authentication/constants.js"
-import { queryKey } from "#authentication/query-options.js"
+import { authenticationDataQueryOptions } from "#authentication/query-options.js"
 import { Email, Password, RememberMe } from "#authentication/schemas.js"
 import { authClient } from "#lib/auth-client.js"
 
@@ -66,7 +66,7 @@ function SignInForm({ className, ...props }: ComponentProps<"div">) {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey,
+        queryKey: authenticationDataQueryOptions.queryKey,
       })
       await router.invalidate({ sync: true })
       // toast.success("Signed in") // (optional)
