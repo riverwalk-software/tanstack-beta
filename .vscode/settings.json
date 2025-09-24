@@ -64,7 +64,8 @@
   "explorer.fileNesting.patterns": {
     ".gitignore": ".gitattributes",
     "vite.config.ts": "vite*.ts",
-    "package.json": ".nvmrc, .npmrc, pnpm-lock.yaml, pnpm-workspace.yaml"
+    "package.json": ".nvmrc, .npmrc, pnpm-lock.yaml, pnpm-workspace.yaml",
+    "tsconfig.json": "tsdown.config.ts"
   },
   "files.associations": {
     "wrangler.json": "jsonc",
