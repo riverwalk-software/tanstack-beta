@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.vite.json",
+  "extends": "./tsconfig.app.vite.json",
   "compilerOptions": {
     // Tanstack Start: https://tanstack.com/start/latest/docs/framework/react/build-from-scratch#typescript-configuration
     "jsx": "react-jsx",
