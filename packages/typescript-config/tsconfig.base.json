@@ -26,14 +26,13 @@
     "noUnusedLocals": false,
 
     // Options
-    "target": "es2022",
-    "lib": ["ES2022"],
+    "allowJs": false,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "allowJs": true, // MDX: https://github.com/aleclarson/vite-tsconfig-paths#%EF%B8%8F-non-typescript-modules-need-special-configuration
-    "resolveJsonModule": true,
-    "moduleDetection": "force",
     "isolatedModules": true,
+    "moduleDetection": "force",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "es2022",
     "verbatimModuleSyntax": true,
 
     // Typecheck Only: https://vite.dev/guide/features#transpile-only

@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.library.base.json",
+  "compilerOptions": {
+    // Options
+    "lib": ["ES2022"]
+  }
+}

@@ -15,8 +15,7 @@
   "scripts": {
     "typecheck": "tsc",
     "typecheck:watch": "tsc --watch --preserveWatchOutput",
-    "build": "tsdown",
-    "dev": "tsdown --watch --no-clean"
+    "build": "tsdown --no-clean"
   },
   "peerDependencies": {
     "react": "catalog:"
@@ -32,6 +31,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/react": "catalog:",
     "react": "catalog:",
-    "tsdown": "catalog:"
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
   }
 }

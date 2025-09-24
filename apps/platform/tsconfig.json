@@ -1,3 +1,3 @@
 {
-  "extends": "@repo/typescript-config/tsconfig.tanstack-start.json"
+  "extends": "@repo/typescript-config/tsconfig.app.tanstack-start.json"
 }

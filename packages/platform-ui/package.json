@@ -2,9 +2,7 @@
   "name": "@repo/platform-ui",
   "private": true,
   "type": "module",
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "sideEffects": false,
   "imports": {
     "#*": "./src/*"
   },
@@ -17,8 +15,7 @@
   "scripts": {
     "typecheck": "tsc",
     "typecheck:watch": "tsc --watch --preserveWatchOutput",
-    "build": "tsdown",
-    "dev": "tsdown --watch --no-clean"
+    "build": "tsdown --no-clean"
   },
   "peerDependenciesMeta": {
     "react-hook-form": {
@@ -44,6 +41,7 @@
     "react": "catalog:",
     "react-hook-form": "catalog:",
     "shadcn": "catalog:",
-    "tsdown": "catalog:"
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
   }
 }

@@ -2,12 +2,9 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     // Options
-    "allowJs": false,
     "declaration": true,
     "declarationMap": true,
-    "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "moduleResolution": "bundler",
+    "module": "preserve",
     "stripInternal": true
   }
 }

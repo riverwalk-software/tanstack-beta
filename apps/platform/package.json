@@ -11,7 +11,7 @@
     "typecheck": "tsc",
     "typecheck:watch": "tsc --watch --preserveWatchOutput",
     "build": "vite build",
-    "dev": "vite dev",
+    "dev": "vite dev --clearScreen false",
     "deploy": "wrangler deploy"
   },
   "dependencies": {
@@ -55,6 +55,7 @@
     "sqlite": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
+    "typescript": "catalog:",
     "vite": "catalog:",
     "wrangler": "catalog:"
   }

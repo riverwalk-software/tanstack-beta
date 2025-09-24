@@ -2,5 +2,8 @@
   "name": "@repo/typescript-config",
   "private": true,
   "type": "module",
-  "sideEffects": false
+  "sideEffects": false,
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
 }

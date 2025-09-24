@@ -15,14 +15,14 @@
   "scripts": {
     "typecheck": "tsc",
     "typecheck:watch": "tsc --watch --preserveWatchOutput",
-    "build": "tsdown",
-    "dev": "tsdown --watch --no-clean"
+    "build": "tsdown --no-clean"
   },
   "dependencies": {
     "effect": "catalog:"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "tsdown": "catalog:"
+    "tsdown": "catalog:",
+    "typescript": "catalog:"
   }
 }

@@ -172,8 +172,6 @@ const auth = betterAuth({
           Schema.Struct({
             users: Schema.Array(
               Schema.Struct({
-                email: Schema.String,
-                name: Schema.String,
                 id: Schema.Number,
               }),
             ),
