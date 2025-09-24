@@ -1,7 +1,6 @@
 {
   "$schema": "./node_modules/turbo/schema.json",
   "ui": "tui",
-  "concurrency": "20",
   "tasks": {
     "typegen": {
       "inputs": ["$TURBO_DEFAULT$", "!README.md"],
@@ -10,6 +9,11 @@
     // https://turborepo.com/docs/crafting-your-repository/configuring-tasks#dependent-tasks-that-can-be-run-in-parallel
     "transit": {
       "dependsOn": ["^transit"]
+    },
+    "transit:packages": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!README.md"],
+      "outputs": ["dist", ".output"]
     },
     "typecheck": {
       "dependsOn": ["typegen", "transit"],
@@ -21,13 +25,13 @@
       "cache": false
     },
     "build": {
-      "dependsOn": ["typegen", "^build"],
+      "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", "!README.md"],
       "outputs": ["dist", ".output"]
     },
     "dev": {
       // "with": ["typecheck:watch"],
-      "dependsOn": ["^build", "typegen"],
+      "dependsOn": ["typegen", "^build"],
       "persistent": true,
       "cache": false
     },

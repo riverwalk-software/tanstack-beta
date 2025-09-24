@@ -4,7 +4,7 @@
   "sideEffects": false,
   "scripts": {
     "preinstall": "pnpm only-allow pnpm",
-    "dev": "turbo run dev",
+    "dev": "turbo watch transit:packages dev",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "typecheck:watch": "turbo run typecheck:watch",
