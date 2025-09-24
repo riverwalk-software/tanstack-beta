@@ -7,6 +7,7 @@
   "editor.foldingImportsByDefault": true,
   "editor.formatOnSave": true,
   "editor.insertSpaces": true,
+  "editor.linkedEditing": true,
   "editor.tabSize": 2,
   "editor.trimAutoWhitespace": true,
   "editor.wordWrap": "off",
