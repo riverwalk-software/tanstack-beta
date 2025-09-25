@@ -7,9 +7,9 @@ on:
 
 env:
   OS_TEMPLATES: windows,macos,linux
-  USER_SPACE_TEMPLATES: git,zsh,dotenv,turbo
-  EDITOR_TEMPLATES: visualstudiocode
   RUNTIME_TEMPLATES: node
+  EDITOR_TEMPLATES: visualstudiocode
+  USER_SPACE_TEMPLATES: git,zsh,dotenv,turbo,astro
 
 permissions:
   contents: write
