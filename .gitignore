@@ -1,5 +1,10 @@
-# Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,git,zsh,dotenv,turbo,visualstudiocode,node
-# Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,git,zsh,dotenv,turbo,visualstudiocode,node
+# Created by https://www.toptal.com/developers/gitignore/api/windows,macos,linux,git,zsh,dotenv,turbo,astro,visualstudiocode,node
+# Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,linux,git,zsh,dotenv,turbo,astro,visualstudiocode,node
+
+### Astro ###
+# Gitignore template for Astro projects
+# Ignore content collection generated files
+.astro
 
 ### dotenv ###
 .env
@@ -290,7 +295,7 @@ zsdoc/data
 /tests/_output/*
 !/tests/_output/.gitkeep
 
-# End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,git,zsh,dotenv,turbo,visualstudiocode,node
+# End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,git,zsh,dotenv,turbo,astro,visualstudiocode,node
 
 ### PNPM ###
 # lock files
