@@ -9,7 +9,7 @@
     ":enableVulnerabilityAlerts",
     ":reviewer(andreilgeorgescu)",
     ":timezone(US/Eastern)",
-    "schedule:weekly"
+    "schedule:earlyMondays"
   ],
   "packageRules": [
     {
