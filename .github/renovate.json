@@ -10,6 +10,7 @@
     ":reviewer(andreilgeorgescu)",
     ":timezone(US/Eastern)",
     "schedule:earlyMondays",
+    ":labels(dependencies,devops)"
   ],
   "lockFileMaintenance": {
     "enabled": true,
