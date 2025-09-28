@@ -9,8 +9,11 @@
     ":enableVulnerabilityAlerts",
     ":reviewer(andreilgeorgescu)",
     ":timezone(US/Eastern)",
-    "schedule:earlyMondays"
+    "schedule:earlyMondays",
+    "npm:unpublishSafe"
   ],
+  "minimumReleaseAge": "14 days",
+  "rollbackPrs": true,
   "packageRules": [
     {
       "matchDatasources": ["npm"],
