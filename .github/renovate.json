@@ -3,7 +3,9 @@
   "extends": [
     "config:best-practices",
     ":pinAllExceptPeerDependencies",
-    ":maintainLockFilesWeekly"
+    ":maintainLockFilesWeekly",
+    ":prConcurrentLimitNone",
+    ":prHourlyLimitNone",
   ],
   "packageRules": [
     {
