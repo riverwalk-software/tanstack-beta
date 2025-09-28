@@ -5,7 +5,7 @@
     ":pinAllExceptPeerDependencies",
     ":maintainLockFilesWeekly",
     ":prConcurrentLimitNone",
-    ":prHourlyLimitNone",
+    ":prHourlyLimitNone"
   ],
   "packageRules": [
     {
