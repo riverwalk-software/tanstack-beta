@@ -6,7 +6,7 @@
     ":maintainLockFilesWeekly",
     ":disableRateLimiting",
     ":separateMultipleMajorReleases",
-    "enableVulnerabilityAlerts"
+    ":enableVulnerabilityAlerts"
   ],
   "packageRules": [
     {
