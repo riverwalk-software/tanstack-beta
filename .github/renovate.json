@@ -10,8 +10,11 @@
     ":reviewer(andreilgeorgescu)",
     ":timezone(US/Eastern)",
     "schedule:earlyMondays",
-    "npm:unpublishSafe"
   ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": "after 10pm on sunday"
+  },
   "minimumReleaseAge": "14 days",
   "rollbackPrs": true,
   "packageRules": [
