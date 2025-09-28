@@ -4,8 +4,8 @@
     "config:best-practices",
     ":pinAllExceptPeerDependencies",
     ":maintainLockFilesWeekly",
-    ":prConcurrentLimitNone",
-    ":prHourlyLimitNone"
+    ":disableRateLimiting",
+    ":separateMultipleMajorReleases"
   ],
   "packageRules": [
     {
