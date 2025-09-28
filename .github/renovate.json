@@ -7,7 +7,9 @@
     ":disableRateLimiting",
     ":separateMultipleMajorReleases",
     ":enableVulnerabilityAlerts",
-    ":reviewer(andreilgeorgescu)"
+    ":reviewer(andreilgeorgescu)",
+    ":timezone(US/Eastern)",
+    "schedule:weekly"
   ],
   "packageRules": [
     {
