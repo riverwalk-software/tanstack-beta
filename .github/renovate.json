@@ -5,7 +5,8 @@
     ":pinAllExceptPeerDependencies",
     ":maintainLockFilesWeekly",
     ":disableRateLimiting",
-    ":separateMultipleMajorReleases"
+    ":separateMultipleMajorReleases",
+    "enableVulnerabilityAlerts"
   ],
   "packageRules": [
     {
