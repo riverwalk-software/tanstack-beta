@@ -1,4 +1,14 @@
 pull_request_rules:
+  - name: Auto-assign author when unassigned
+    description: Automatically assign the pull request author if a pull request is
+      open and has no assignees.
+    conditions:
+      - -closed
+      - "#assignee = 0"
+    actions:
+      assign:
+        add_users:
+          - "{{author}}"
   - name: Request review from user
     description: Request review from a specific user when checks are green.
     conditions:
