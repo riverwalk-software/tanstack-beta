@@ -1,9 +1,10 @@
 pull_request_rules:
-  - name: Delete head branch after merge
+  - name: Convert to draft on failure
     conditions:
-      - merged
+      - "#check-failure > 0"
     actions:
-      delete_head_branch:
+      edit:
+        draft: true
   - name: Request review from user
     description: Request review from a specific user when checks are green.
     conditions:
