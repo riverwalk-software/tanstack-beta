@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Mergifyio/docs/main/public/mergify-configuration-schema.json
 pull_request_rules:
   - name: Request review from team
     description: Request review from a specific team when checks are green.
