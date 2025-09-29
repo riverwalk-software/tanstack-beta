@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Mergifyio/docs/main/public/mergify-configuration-schema.json
+pull_request_rules:
+  - name: Request review from user
+    description: Request review from a specific user when checks are green.
+    conditions:
+      - -closed
+      - "#approved-reviews-by = 0"
+      - "#changes-requested-reviews-by = 0"
+      - review-requested != @wkenned1
+    actions:
+      request_reviews:
+        users:
+          - wkenned1
+  - name: Label conflicting pull requests
+    description: Add a label to a pull request with conflict to spot it easily
+    conditions:
+      - conflict
+      - -closed
+    actions:
+      label:
+        toggle:
+          - conflict
