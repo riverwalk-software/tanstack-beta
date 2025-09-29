@@ -28,3 +28,9 @@ merge_protections:
       - "title ~=
         ^(fix|feat|docs|style|refactor|perf|test|build|ci|chore|revert)(?:\\(.+\
         \\))?:"
+  - name: Force ticket association
+    description: Make sure PR has a ticket associated
+    if:
+      - base = main
+    success_conditions:
+      - body ~= Fixes
