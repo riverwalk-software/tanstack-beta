@@ -1,10 +1,16 @@
 pull_request_rules:
   - name: Automatic merge when CI passes and reviews approve
     conditions:
+      - -closed
+      - -draft
       - "#approved-reviews-by >= 0"
     actions:
       merge:
         method: squash
+        commit_message_template: |
+        {{ title }} (#{{ number }})
+
+        {{ body }}
   - name: assign PR to its author
     conditions:
       - "#assignees = 0"
@@ -18,17 +24,37 @@ pull_request_rules:
     actions:
       delete_head_branch:
         force: false
-  # - name: Convert to draft on failure
-  #   conditions:
-  #     - "#check-failure > 0"
-  #   actions:
-  #     edit:
-  #       draft: true
+  - name: rebase pull request when it's more than 10 commits behind main
+    conditions:
+      - base = main
+      - -closed
+      - -draft
+      - "#commits-behind >= 10"
+    actions:
+      rebase:
+  - name: Convert to draft on failure
+    conditions:
+      - -closed
+      - -draft
+      - "#check-failure > 0"
+    actions:
+      edit:
+        draft: true
+  - name: toggle labels based on CI state
+    conditions:
+      - -closed
+      - -draft
+      - "#check-failure > 0"
+    actions:
+      label:
+        toggle:
+          - "CI:fail"
   - name: Label conflicting pull requests
     description: Add a label to a pull request with conflict to spot it easily
     conditions:
-      - conflict
       - -closed
+      - -draft
+      - conflict
     actions:
       label:
         toggle:
