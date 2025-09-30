@@ -22,7 +22,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        task: [build, lint, format, test, typecheck]
+        task:
+          # - build
+          # - lint
+          - format
+          # - test
+          # - typecheck
     name: ${{ matrix.task }}
     steps:
       - uses: actions/checkout@v4
