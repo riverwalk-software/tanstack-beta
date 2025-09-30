@@ -9,10 +9,10 @@
     "typecheck": "turbo run typecheck",
     "typecheck:watch": "turbo run typecheck:watch",
     "typegen": "turbo run typegen",
-    "lint": "oxlint --fix",
-    "lint:ci": "oxlint --format=github",
-    "format": "biome check --write",
-    "format:ci": "biome check --reporter=github"
+    "lint:local": "oxlint --fix",
+    "lint": "oxlint --format=github",
+    "format:local": "biome check --write",
+    "format": "biome check --reporter=github"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",
