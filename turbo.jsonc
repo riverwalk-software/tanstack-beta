@@ -3,7 +3,7 @@
   "ui": "tui",
   "tasks": {
     "typegen": {
-      "inputs": ["$TURBO_DEFAULT$", "!README.md"],
+      // "inputs": ["$TURBO_DEFAULT$", "!README.md"],
       "outputs": [".astro/types.d.ts"]
     },
     // https://turborepo.com/docs/crafting-your-repository/configuring-tasks#dependent-tasks-that-can-be-run-in-parallel
@@ -12,12 +12,12 @@
     },
     "transit:packages": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", "!README.md"],
+      // "inputs": ["$TURBO_DEFAULT$", "!README.md"],
       "outputs": ["dist", ".output"]
     },
     "typecheck": {
-      "dependsOn": ["typegen", "transit"],
-      "inputs": ["$TURBO_DEFAULT$", "!README.md"]
+      "dependsOn": ["typegen", "transit"]
+      // "inputs": ["$TURBO_DEFAULT$", "!README.md"]
     },
     "typecheck:watch": {
       "dependsOn": ["typegen", "transit"],
@@ -26,7 +26,7 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", "!README.md"],
+      // "inputs": ["$TURBO_DEFAULT$", "!README.md"],
       "outputs": ["dist", ".output"]
     },
     "dev": {
