@@ -4,7 +4,7 @@ import { Effect, pipe } from "effect"
 import { TEST_USER } from "#authentication/constants.js"
 import { auth } from "#lib/auth.js"
 
-const main =    createServerFn({ method: "POST" }).handler((): Promise<void> => {
+const main = createServerFn({ method: "POST" }).handler((): Promise<void> => {
   const program = Effect.gen(function* () {
     const { email, name, password } = TEST_USER
     const { headers } = getWebRequest()
