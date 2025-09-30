@@ -24,8 +24,8 @@ jobs:
       matrix:
         task:
           # - build
-          # - lint
-          - format
+          # - "lint:ci"
+          - "format:ci"
           # - test
           # - typecheck
     name: ${{ matrix.task }}
