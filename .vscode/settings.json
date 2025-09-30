@@ -123,6 +123,8 @@
   "editorconfig.showMenuEntry": false,
   // formulahendry.auto-close-tag
   "auto-close-tag.activationOnLanguage": ["mdx"],
+  // GitHub.vscode-pull-request-github
+  "githubPullRequests.pushBranch": "always",
   // ms-vsliveshare.vsliveshare
   "liveshare.allowGuestDebugControl": true,
   "liveshare.allowGuestTaskControl": true,
@@ -140,5 +142,8 @@
   "yaml.extension.recommendations": false,
   "yaml.format.enable": false,
   "yaml.schemaStore.enable": false,
-  "yaml.validate": false
+  "yaml.validate": false,
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/Mergifyio/docs/main/public/mergify-configuration-schema.json": "/*mergify.yml"
+  }
 }
