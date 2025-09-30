@@ -1,9 +1,7 @@
 pull_request_rules:
   - name: Delete head branch after merge
     conditions:
-      - or:
-          - merged
-          - closed
+      - merged
     actions:
       delete_head_branch:
   - name: Convert to draft on failure
@@ -12,17 +10,6 @@ pull_request_rules:
     actions:
       edit:
         draft: true
-  - name: Request review from user
-    description: Request review from a specific user when checks are green.
-    conditions:
-      - -closed
-      - "#approved-reviews-by = 0"
-      - "#changes-requested-reviews-by = 0"
-      - review-requested != @wkenned1
-    actions:
-      request_reviews:
-        users:
-          - wkenned1
   - name: Label conflicting pull requests
     description: Add a label to a pull request with conflict to spot it easily
     conditions:
@@ -33,6 +20,15 @@ pull_request_rules:
         toggle:
           - conflict
 merge_protections:
+  - name: Enforce status checks
+    description: Make sure that all status checks passed
+    if:
+      - base = main
+    success_conditions:
+      - check-success = build
+      - check-success = format
+      - check-success = lint
+      - check-success = typecheck
   - name: Enforce conventional commit
     description: Make sure that we follow https://www.conventionalcommits.org/en/v1.0.0/
     if:
