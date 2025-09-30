@@ -11,8 +11,7 @@
     ":labels(dependencies)",
     "security:openssf-scorecard",
     ":reviewer(andreilgeorgescu)",
-    ":maintainLockFilesWeekly",
-    "schedule:earlyMondays"
+    ":maintainLockFilesWeekly"
   ],
   "minimumReleaseAge": "7 days",
   "rollbackPrs": true,
