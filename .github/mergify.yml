@@ -20,6 +20,11 @@ pull_request_rules:
         toggle:
           - conflict
 merge_protections:
+  - name: Require at least one review
+    if:
+      - base = main
+    success_conditions:
+      - "#approved-reviews-by >= 0"
   - name: Enforce status checks
     description: Make sure that all status checks passed
     if:
