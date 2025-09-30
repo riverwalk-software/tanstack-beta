@@ -2,21 +2,19 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:best-practices",
+    "group:vite",
     ":pinAllExceptPeerDependencies",
-    ":maintainLockFilesWeekly",
     ":disableRateLimiting",
     ":separateMultipleMajorReleases",
     ":enableVulnerabilityAlerts",
-    ":reviewer(andreilgeorgescu)",
     ":timezone(US/Eastern)",
-    "schedule:earlyMondays",
-    ":labels(dependencies,devops)"
+    ":labels(dependencies)",
+    "security:openssf-scorecard",
+    ":reviewer(andreilgeorgescu)",
+    ":maintainLockFilesWeekly",
+    "schedule:earlyMondays"
   ],
-  "lockFileMaintenance": {
-    "enabled": true,
-    "schedule": "after 10pm on sunday"
-  },
-  "minimumReleaseAge": "14 days",
+  "minimumReleaseAge": "7 days",
   "rollbackPrs": true,
   "packageRules": [
     {
