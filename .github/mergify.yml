@@ -77,5 +77,6 @@ merge_protections:
     description: Make sure PR has an associated issue
     if:
       - base = main
+      - author != renovate[bot]
     success_conditions:
       - body ~= Fixes
