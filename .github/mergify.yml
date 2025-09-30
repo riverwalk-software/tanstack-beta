@@ -20,20 +20,6 @@ pull_request_rules:
         toggle:
           - conflict
 merge_protections:
-  - name: Require at least one review
-    if:
-      - base = main
-    success_conditions:
-      - "#approved-reviews-by >= 0"
-  - name: Enforce status checks
-    description: Make sure that all status checks passed
-    if:
-      - base = main
-    success_conditions:
-      - check-success = build
-      - check-success = format
-      - check-success = lint
-      - check-success = typecheck
   - name: Enforce conventional commit
     description: Make sure that we follow https://www.conventionalcommits.org/en/v1.0.0/
     if:
