@@ -7,7 +7,6 @@
     "dev": "turbo watch transit:packages dev",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
-    "typecheck:watch": "turbo run typecheck:watch",
     "typegen": "turbo run typegen",
     "lint:local": "oxlint --fix",
     "lint": "oxlint --format=github",
