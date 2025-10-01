@@ -6,7 +6,7 @@
     ":pinAllExceptPeerDependencies",
     ":disableRateLimiting",
     ":separateMultipleMajorReleases",
-    ":enableVulnerabilityAlerts",
+    ":enableVulnerabilityAlertsWithLabel(security)",
     ":timezone(US/Eastern)",
     ":labels(dependencies)",
     "security:openssf-scorecard",
