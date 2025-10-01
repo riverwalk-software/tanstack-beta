@@ -25,13 +25,15 @@ lint:
     - markdownlint@0.45.0
     - osv-scanner@2.2.3
     - oxipng@9.1.5
-    - prettier@3.6.2
     - renovate@41.132.5
     - shellcheck@0.11.0
     - shfmt@3.6.0
     - svgo@4.0.0
     - trufflehog@3.90.8
     - yamllint@1.37.1
+  disabled:
+    - eslint
+    - prettier
 actions:
   enabled:
     - git-lfs
