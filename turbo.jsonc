@@ -19,18 +19,12 @@
       "dependsOn": ["typegen", "transit"]
       // "inputs": ["$TURBO_DEFAULT$", "!README.md"]
     },
-    "typecheck:watch": {
-      "dependsOn": ["typegen", "transit"],
-      "persistent": true,
-      "cache": false
-    },
     "build": {
       "dependsOn": ["^build"],
       // "inputs": ["$TURBO_DEFAULT$", "!README.md"],
       "outputs": ["dist", ".output"]
     },
     "dev": {
-      // "with": ["typecheck:watch"],
       "dependsOn": ["typegen", "^build"],
       "persistent": true,
       "cache": false

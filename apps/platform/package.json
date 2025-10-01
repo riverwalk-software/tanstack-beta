@@ -9,7 +9,6 @@
   "scripts": {
     "typegen": "wrangler types --env-interface CloudflareBindings",
     "typecheck": "tsc",
-    "typecheck:watch": "tsc --watch --preserveWatchOutput",
     "build": "vite build",
     "dev": "vite dev --clearScreen false",
     "deploy": "wrangler deploy"
