@@ -15,7 +15,7 @@
   ],
   "minimumReleaseAge": "7 days",
   "rollbackPrs": true,
-  "addLabels": ["{{manager}}"],
+  "addLabels": ["{{manager}}", "{{updateType}}"],
   "packageRules": [
     {
       "matchDatasources": ["npm"],
