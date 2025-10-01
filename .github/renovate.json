@@ -1,0 +1,26 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    "group:vite",
+    ":pinAllExceptPeerDependencies",
+    ":disableRateLimiting",
+    ":separateMultipleMajorReleases",
+    ":enableVulnerabilityAlertsWithLabel(security)",
+    ":timezone(US/Eastern)",
+    ":labels(dependencies)",
+    "security:openssf-scorecard",
+    ":reviewer(andreilgeorgescu)",
+    ":maintainLockFilesWeekly"
+  ],
+  "minimumReleaseAge": "7 days",
+  "rollbackPrs": true,
+  "addLabels": ["{{manager}}", "{{updateType}}"],
+  "packageRules": [
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["better-auth", "@better-auth/**"],
+      "groupName": "Better Auth"
+    }
+  ]
+}
