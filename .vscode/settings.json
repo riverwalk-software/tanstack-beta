@@ -58,8 +58,7 @@
   "typescript.validate.enable": true,
   "editor.codeActionsOnSave": {
     "source.addMissingImports.ts": "explicit",
-    "source.fixAll.biome": "explicit", // biomejs.biome
-    "source.fixAll.oxc": "explicit", // oxc.oxc-vscode
+    "source.fixAll": "explicit",
     "source.removeUnusedImports": "explicit"
   },
   "explorer.fileNesting.patterns": {
@@ -107,8 +106,6 @@
   //// Extensions
   // adpyke.codesnap
   "codesnap.shutterAction": "copy",
-  // biomejs.biome
-  "editor.defaultFormatter": "biomejs.biome",
   // bradlc.vscode-tailwindcss
   "editor.quickSuggestions": {
     "strings": "on"
@@ -133,10 +130,6 @@
   "liveshare.launcherClient": "visualStudioCode",
   "liveshare.notebooks.allowGuestExecuteCells": true,
   "liveshare.publishWorkspaceInfo": true,
-  // oxc.oxc-vscode
-  "oxc.lint.run": "onType",
-  "oxc.requireConfig": true,
-  "oxc.unusedDisableDirectives": "deny",
   // redhat.vscode-yaml
   "redhat.telemetry.enabled": false,
   "yaml.extension.recommendations": false,
@@ -145,5 +138,9 @@
   "yaml.validate": false,
   "yaml.schemas": {
     "https://raw.githubusercontent.com/Mergifyio/docs/main/public/mergify-configuration-schema.json": "/*mergify.yml"
-  }
+  },
+  // trunk.io
+  "editor.defaultFormatter": "trunk.io",
+  "trunk.autoInit": false,
+  "trunk.showPreexistingIssues": false,
 }

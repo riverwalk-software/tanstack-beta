@@ -19,7 +19,6 @@
       "extensions": [
         "-dbaeumer.vscode-eslint",
         "adpyke.codesnap",
-        "biomejs.biome",
         "bradlc.vscode-tailwindcss", // Needs more configuration
         "christian-kohler.npm-intellisense",
         "christian-kohler.path-intellisense",
@@ -30,8 +29,8 @@
         "github.vscode-github-actions",
         "GitHub.vscode-pull-request-github", // Needs more configuration
         "ms-vsliveshare.vsliveshare",
-        "oxc.oxc-vscode",
         "redhat.vscode-yaml",
+        "trunk.io",
         "unifiedjs.vscode-mdx",
         "Vercel.turbo-vsc",
         "vitest.explorer"
