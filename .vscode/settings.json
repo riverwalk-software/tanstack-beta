@@ -127,6 +127,7 @@
   "githubPullRequests.createOnPublishBranch": "never",
   "githubPullRequests.fileListLayout": "tree",
   "githubPullRequests.pullBranch": "never",
+  "githubPullRequests.pullPullRequestBranchBeforeCheckout": true,
   "githubPullRequests.pushBranch": "always",
   "githubPullRequests.terminalLinksHandler": "github",
   // ms-vsliveshare.vsliveshare
