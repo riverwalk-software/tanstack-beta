@@ -124,7 +124,11 @@
   // formulahendry.auto-close-tag
   "auto-close-tag.activationOnLanguage": ["mdx"],
   // GitHub.vscode-pull-request-github
+  "githubPullRequests.createOnPublishBranch": "never",
+  "githubPullRequests.fileListLayout": "tree",
+  "githubPullRequests.pullBranch": "never",
   "githubPullRequests.pushBranch": "always",
+  "githubPullRequests.terminalLinksHandler": "github",
   // ms-vsliveshare.vsliveshare
   "liveshare.allowGuestDebugControl": true,
   "liveshare.allowGuestTaskControl": true,
