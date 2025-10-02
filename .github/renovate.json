@@ -9,9 +9,9 @@
     ":enableVulnerabilityAlertsWithLabel(security)",
     ":timezone(US/Eastern)",
     ":labels(dependencies)",
-    "security:openssf-scorecard",
     ":reviewer(andreilgeorgescu)",
-    ":maintainLockFilesWeekly"
+    ":maintainLockFilesWeekly",
+    ":semanticCommits"
   ],
   "minimumReleaseAge": "7 days",
   "rollbackPrs": true,
