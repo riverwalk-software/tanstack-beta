@@ -2,20 +2,21 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:best-practices",
-    "group:vite",
-    ":pinAllExceptPeerDependencies",
     ":disableRateLimiting",
-    ":separateMultipleMajorReleases",
     ":enableVulnerabilityAlertsWithLabel(security)",
-    ":timezone(US/Eastern)",
     ":labels(dependencies)",
-    ":reviewer(andreilgeorgescu)",
     ":maintainLockFilesWeekly",
-    ":semanticCommits"
+    ":pinAllExceptPeerDependencies",
+    ":reviewer(andreilgeorgescu)",
+    ":semanticCommits",
+    ":separateMultipleMajorReleases",
+    ":timezone(US/Eastern)",
+    "group:vite"
   ],
-  "minimumReleaseAge": "7 days",
-  "rollbackPrs": true,
   "addLabels": ["{{manager}}", "{{updateType}}"],
+  "minimumReleaseAge": "7 days",
+  "osvVulnerabilityAlerts": true,
+  "rollbackPrs": true,
   "packageRules": [
     {
       "matchDatasources": ["npm"],
