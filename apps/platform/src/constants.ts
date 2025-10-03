@@ -7,8 +7,5 @@ const DEFAULT_COOKIE_OPTIONS = {
   secure: !IS_DEV,
 } as const
 const AUTH_COOKIE_PREFIX = "auth" as const
-// oxlint-disable-next-line no-unused-vars
-const test = 2
 
-// oxlint-disable-next-line no-named-export
 export { IS_DEV, DEFAULT_COOKIE_OPTIONS, AUTH_COOKIE_PREFIX }

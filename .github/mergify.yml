@@ -45,26 +45,6 @@ pull_request_rules:
     actions:
       edit:
         draft: true
-  - name: toggle labels based on CI state
-    conditions:
-      - -closed
-      - -draft
-      - "#check-failure > 0"
-    actions:
-      label:
-        toggle:
-          - "CI:fail"
-  - name: Label conflicting pull requests
-    description: Add a label to a pull request with conflict to spot it easily
-    conditions:
-      - -closed
-      - -draft
-      - author != renovate[bot]
-      - conflict
-    actions:
-      label:
-        toggle:
-          - conflict
 merge_protections:
   - name: Enforce conventional commit
     description: Make sure that we follow https://www.conventionalcommits.org/en/v1.0.0/
