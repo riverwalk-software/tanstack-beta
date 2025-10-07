@@ -4,7 +4,12 @@
   "tasks": {
     "typegen": {
       // "inputs": ["$TURBO_DEFAULT$", "!README.md"],
-      "outputs": [".astro/types.d.ts"]
+      "outputs": [
+        // Astro: https://docs.astro.build/en/reference/cli-reference/#astro-sync
+        ".astro/types.d.ts",
+        // Cloudflare: https://developers.cloudflare.com/workers/wrangler/commands/#types
+        "worker-configuration.d.ts"
+      ]
     },
     // https://turborepo.com/docs/crafting-your-repository/configuring-tasks#dependent-tasks-that-can-be-run-in-parallel
     "transit": {

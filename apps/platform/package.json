@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "catalog:",
+    "@measured/puck": "catalog:",
     "@polar-sh/better-auth": "catalog:",
     "@polar-sh/sdk": "catalog:",
     "@repo/platform-theme": "workspace:*",

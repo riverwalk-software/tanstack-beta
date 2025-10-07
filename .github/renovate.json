@@ -14,7 +14,7 @@
     "group:vite"
   ],
   "addLabels": ["{{manager}}", "{{updateType}}"],
-  "minimumReleaseAge": "7 days",
+  "minimumReleaseAge": "14 days",
   "osvVulnerabilityAlerts": true,
   "rollbackPrs": true,
   "packageRules": [
@@ -22,6 +22,28 @@
       "matchDatasources": ["npm"],
       "matchPackageNames": ["better-auth", "@better-auth/**"],
       "groupName": "Better Auth"
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": [
+        "sqlite",
+        "better-sqlite3",
+        "@types/better-sqlite3"
+      ],
+      "groupName": "SQLite"
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": [
+        "@radix-ui/**",
+        "class-variance-authority",
+        "clsx",
+        "lucide-react",
+        "shadcn",
+        "tailwind-merge",
+        "tw-animate-css"
+      ],
+      "groupName": "shadcn"
     }
   ]
 }
