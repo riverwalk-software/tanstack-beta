@@ -20,7 +20,7 @@
   "packageRules": [
     {
       "matchDatasources": ["npm"],
-      "matchPackageNames": ["better-auth", "@better-auth/**"],
+      "matchPackageNames": ["better-auth", "@better-auth/**", "@polar-sh/**"],
       "groupName": "Better Auth"
     },
     {
