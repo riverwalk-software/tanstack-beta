@@ -69,8 +69,9 @@
     "tsconfig.json": "tsdown.config.ts"
   },
   "files.associations": {
-    "wrangler.json": "jsonc",
-    "*.css": "tailwindcss"
+    "**/.oxlintrc.json": "jsonc",
+    "**/*.css": "tailwindcss",
+    "**/renovate.json": "jsonc"
   },
   "files.readonlyInclude": {
     "**/.editorconfig": true,
