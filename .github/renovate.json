@@ -20,17 +20,18 @@
   "packageRules": [
     {
       "matchDatasources": ["npm"],
-      "matchPackageNames": ["better-auth", "@better-auth/**", "@polar-sh/**"],
+      "matchPackageNames": ["@astrojs/**", "astro", "sharp"],
+      "groupName": "Astro"
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["@better-auth/**", "@polar-sh/**", "better-auth"],
       "groupName": "Better Auth"
     },
     {
       "matchDatasources": ["npm"],
-      "matchPackageNames": [
-        "sqlite",
-        "better-sqlite3",
-        "@types/better-sqlite3"
-      ],
-      "groupName": "SQLite"
+      "matchPackageNames": ["@effect/**", "effect"],
+      "groupName": "Effect"
     },
     {
       "matchDatasources": ["npm"],
@@ -44,6 +45,20 @@
         "tw-animate-css"
       ],
       "groupName": "shadcn"
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": [
+        "@types/better-sqlite3",
+        "better-sqlite3",
+        "sqlite"
+      ],
+      "groupName": "SQLite"
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": ["tsdown", "tsx", "typescript"],
+      "groupName": "TypeScript"
     }
   ]
 }
