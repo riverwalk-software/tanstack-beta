@@ -10,7 +10,7 @@ catalog:
   '@hookform/resolvers': 5.2.2
   '@measured/puck': 0.20.2
   '@polar-sh/better-auth': 1.1.4
-  '@polar-sh/sdk': 0.35.2
+  '@polar-sh/sdk': 0.34.16
   '@radix-ui/react-label': 2.1.7
   '@radix-ui/react-slot': 1.2.3
   '@radix-ui/react-switch': 1.2.6
@@ -64,3 +64,6 @@ catalog:
 catalogMode: strict
 
 cleanupUnusedCatalogs: true
+
+onlyBuiltDependencies:
+  - workerd

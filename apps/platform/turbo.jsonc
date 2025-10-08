@@ -1,0 +1,13 @@
+{
+  "$schema": "../../node_modules/turbo/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "typegen": {
+      "inputs": ["wrangler.jsonc"],
+      "outputs": ["worker-configuration.d.ts"]
+    },
+    "build": {
+      "outputs": [".output"]
+    }
+  }
+}

@@ -11,6 +11,7 @@
   },
   "containerEnv": {
     "BETTER_AUTH_URL": "http://localhost:3000",
+    "CI": "false",
     "NODE_ENV": "development",
     "POLAR_SUCCESS_URL": "http://localhost:3000/success?checkout_id={CHECKOUT_ID}"
   },

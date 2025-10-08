@@ -20,6 +20,7 @@
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "git.autofetch": true,
+  "git.autoStash": true,
   "git.blame.editorDecoration.enabled": true,
   "git.confirmEmptyCommits": true,
   "git.confirmForcePush": true,

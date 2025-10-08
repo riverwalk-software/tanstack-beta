@@ -1,33 +1,28 @@
 {
   "$schema": "./node_modules/turbo/schema.json",
   "ui": "tui",
+  "noUpdateNotifier": true,
+  "globalEnv": ["CI", "NODE_ENV"],
   "tasks": {
     "typegen": {
-      // "inputs": ["$TURBO_DEFAULT$", "!README.md"],
-      "outputs": [
-        // Astro: https://docs.astro.build/en/reference/cli-reference/#astro-sync
-        ".astro/types.d.ts",
-        // Cloudflare: https://developers.cloudflare.com/workers/wrangler/commands/#types
-        "worker-configuration.d.ts"
-      ]
+      "outputs": []
     },
     // https://turborepo.com/docs/crafting-your-repository/configuring-tasks#dependent-tasks-that-can-be-run-in-parallel
     "transit": {
       "dependsOn": ["^transit"]
     },
-    "transit:packages": {
-      "dependsOn": ["^build"],
-      // "inputs": ["$TURBO_DEFAULT$", "!README.md"],
-      "outputs": ["dist", ".output"]
-    },
     "typecheck": {
       "dependsOn": ["typegen", "transit"]
-      // "inputs": ["$TURBO_DEFAULT$", "!README.md"]
+    },
+    "build:packages": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist"]
     },
     "build": {
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "tsconfig*.json"],
+      "env": ["*_URL"],
       "dependsOn": ["^build"],
-      // "inputs": ["$TURBO_DEFAULT$", "!README.md"],
-      "outputs": ["dist", ".output"]
+      "outputs": ["dist"]
     },
     "dev": {
       "dependsOn": ["typegen", "^build"],
