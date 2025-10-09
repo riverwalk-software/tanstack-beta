@@ -36,6 +36,18 @@
     {
       "matchDatasources": ["npm"],
       "matchPackageNames": [
+        "@types/react-dom",
+        "@types/react",
+        "@vitejs/plugin-react",
+        "babel-plugin-react-compiler",
+        "react-dom",
+        "react"
+      ],
+      "groupName": "React"
+    },
+    {
+      "matchDatasources": ["npm"],
+      "matchPackageNames": [
         "@radix-ui/**",
         "class-variance-authority",
         "clsx",
