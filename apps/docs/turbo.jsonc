@@ -5,6 +5,9 @@
     "typegen": {
       "outputs": [".astro/types.d.ts"]
     },
+    "typecheck": {
+      "inputs": ["$TURBO_DEFAULT$", ".astro/types.d.ts"]
+    },
     "build": {
       "outputs": ["dist"]
     }

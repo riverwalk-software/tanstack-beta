@@ -2,7 +2,7 @@ import { Context, Effect } from "effect"
 
 // import { IS_DEV } from "#constants.js"
 
-// // oxlint-disable-next-line init-declarations
+// oxlint-disable-next-line init-declarations
 let cachedEnv: CloudflareBindings | null
 
 // // This gets called once at startup when running locally
