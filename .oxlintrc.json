@@ -19,6 +19,7 @@
     "import/consistent-type-specifier-style": "allow",
     "import/extensions": ["deny", "ignorePackages"],
     "import/max-dependencies": "allow",
+    "import/no-named-export": "allow",
     "import/prefer-default-export": "allow",
     "import/unambiguous": "warn",
     "oxc/no-async-await": "allow", // TODO: Reconsider
