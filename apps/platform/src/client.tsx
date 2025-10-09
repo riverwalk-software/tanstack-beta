@@ -1,7 +1,6 @@
 import { init } from "@sentry/tanstackstart-react"
 import { StartClient } from "@tanstack/react-start"
 import { StrictMode } from "react"
-// oxlint-disable-next-line extensions
 import { hydrateRoot } from "react-dom/client"
 import { createRouter } from "#router.js"
 

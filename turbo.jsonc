@@ -4,13 +4,11 @@
   "noUpdateNotifier": true,
   "globalEnv": ["CI", "NODE_ENV"],
   "tasks": {
-    "typegen": {
-      "outputs": []
-    },
     // https://turborepo.com/docs/crafting-your-repository/configuring-tasks#dependent-tasks-that-can-be-run-in-parallel
     "transit": {
       "dependsOn": ["^transit"]
     },
+    "typegen": {},
     "typecheck": {
       "dependsOn": ["typegen", "transit"]
     },
@@ -19,9 +17,9 @@
       "outputs": ["dist"]
     },
     "build": {
-      "inputs": ["$TURBO_DEFAULT$", ".env*", "tsconfig*.json"],
-      "env": ["*_URL"],
       "dependsOn": ["^build"],
+      "env": ["*_URL"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist"]
     },
     "dev": {

@@ -6,6 +6,9 @@
       "inputs": ["wrangler.jsonc"],
       "outputs": ["worker-configuration.d.ts"]
     },
+    "typecheck": {
+      "inputs": ["$TURBO_DEFAULT$", "worker-configuration.d.ts"]
+    },
     "build": {
       "outputs": [".output"]
     }

@@ -27,7 +27,7 @@ jobs:
           # - lint
           - format
           # - test
-          # - typecheck
+          - typecheck
     name: ${{ matrix.task }}
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
