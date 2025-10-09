@@ -1,8 +1,4 @@
 import {
-  captureException,
-  withErrorBoundary,
-} from "@sentry/tanstackstart-react"
-import {
   ErrorComponent,
   type ErrorComponentProps,
   Link,
@@ -10,7 +6,7 @@ import {
   useMatch,
   useRouter,
 } from "@tanstack/react-router"
-import type { JSX } from "react"
+import type { JSX, MouseEvent } from "react"
 
 function UnmonitoredDefaultCatchBoundary({
   error,
@@ -21,7 +17,7 @@ function UnmonitoredDefaultCatchBoundary({
     select: state => state.id === rootRouteId,
   })
 
-  captureException(error)
+  // captureException(error)
 
   return (
     <div className="min-w-0 flex-1 p-4 flex flex-col items-center justify-center gap-6">
@@ -46,8 +42,8 @@ function UnmonitoredDefaultCatchBoundary({
         ) : (
           <Link
             className="px-2 py-1 bg-gray-600 dark:bg-gray-700 rounded text-white uppercase font-extrabold"
-            onClick={e => {
-              e.preventDefault()
+            onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+              event.preventDefault()
               // oxlint-disable-next-line prefer-global-this
               window.history.back()
             }}
@@ -61,11 +57,6 @@ function UnmonitoredDefaultCatchBoundary({
   )
 }
 
-const DefaultCatchBoundary = withErrorBoundary(
-  UnmonitoredDefaultCatchBoundary,
-  {
-    // ... sentry error wrapper options
-  },
-)
+const DefaultCatchBoundary = UnmonitoredDefaultCatchBoundary
 
 export { DefaultCatchBoundary }

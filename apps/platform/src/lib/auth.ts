@@ -1,332 +1,331 @@
-import { EVENTUAL_CONSISTENCY_DELAY } from "@repo/shared-constants"
-import { betterAuth } from "better-auth"
-import { createAuthMiddleware } from "better-auth/api"
-//
-import { reactStartCookies } from "better-auth/react-start"
-import { Duration, Option, Schema } from "effect"
-import { Kysely } from "kysely"
-import { D1Dialect } from "kysely-d1"
-import { AUTH_COOKIE_PREFIX, IS_DEV } from "#constants.js"
-import { getCloudflareBindings } from "#lib/cloudflare.js"
+// import { env } from "cloudflare:workers"
+// import { EVENTUAL_CONSISTENCY_DELAY } from "@repo/shared-constants"
+// import { betterAuth } from "better-auth"
+// import { createAuthMiddleware } from "better-auth/api"
+// import { reactStartCookies } from "better-auth/react-start"
+// import { Duration, Option, Schema } from "effect"
+// import { Kysely } from "kysely"
+// import { D1Dialect } from "kysely-d1"
+// import { AUTH_COOKIE_PREFIX, IS_DEV } from "#constants.js"
 
-// const polarClient = new Polar({
-//   accessToken: process.env["POLAR_ACCESS_TOKEN"],
-//   server: "sandbox",
+// // const polarClient = new Polar({
+// //   accessToken: process.env["POLAR_ACCESS_TOKEN"],
+// //   server: "sandbox",
+// // })
+
+// // https://www.better-auth.com/docs/guides/optimizing-for-performance
+// // https://www.better-auth.com/docs/guides/browser-extension-guide
+// // const { RESEND_API_KEY } = environment.secrets
+// // const resend = new Resend(RESEND_API_KEY)
+// // const emailSender = "info@riverwalk.dev"
+// const { AUTH_DB, SESSION_STORE } = env
+// // const getAuth = () => {
+// //   const program = Effect.gen(function* () {
+// //     const cloudflare = yield* Cloudflare
+// //     const { AUTH_DB, SESSION_STORE } = yield* cloudflare.bindings
+// //     return yield* Effect.sync(() =>
+// //       betterAuth({
+// //         emailAndPassword: {
+// //           enabled: true,
+// //           autoSignIn: IS_DEV,
+// //           requireEmailVerification: !IS_DEV,
+// //           revokeSessionsOnPasswordReset: true,
+// //           minPasswordLength: 16,
+// //           maxPasswordLength: 64,
+// //           // sendResetPassword: async ({ user, url }) => {
+// //           //   await resend.emails.send({
+// //           //     from: emailSender,
+// //           //     to: user.email,
+// //           //     subject: "Reset your password",
+// //           //     react: ResetPasswordEmail({ url }),
+// //           //   })
+// //           // },
+// //         },
+// //         emailVerification: {
+// //           autoSignInAfterVerification: true,
+// //           sendOnSignIn: true,
+// //           sendOnSignUp: true,
+// //           // sendVerificationEmail: async ({ user, url }) => {
+// //           //   await resend.emails.send({
+// //           //     from: emailSender,
+// //           //     to: user.email,
+// //           //     subject: "Verify your email address",
+// //           //     react: VerifyEmailEmail({ url }),
+// //           //   })
+// //           // },
+// //         },
+// //         // socialProviders: {
+// //         //   google: {
+// //         //     clientId: environment.variables.GOOGLE_CLIENT_ID,
+// //         //     clientSecret: environment.secrets.GOOGLE_CLIENT_SECRET,
+// //         //   },
+// //         // },
+// //         // database: new Database("./packages/authentication/db/sqlite.db"),
+// //         database: {
+// //           db: new Kysely({
+// //             dialect: new D1Dialect({ database: AUTH_DB }),
+// //           }),
+// //           type: "sqlite",
+// //         },
+// //         session: {
+// //           storeSessionInDatabase: true, // TODO: remove this when issue fixed https://github.com/better-auth/better-auth/issues/2007
+// //           cookieCache: {
+// //             enabled: true,
+// //             maxAge: Duration.toSeconds(EVENTUAL_CONSISTENCY_DELAY),
+// //           },
+// //         },
+// //         secondaryStorage: {
+// //           get: key => SESSION_STORE.get(key),
+// //           set: (key, value, ttl) =>
+// //             SESSION_STORE.put(
+// //               key,
+// //               value,
+// //               ttl === undefined ? {} : { expirationTtl: ttl },
+// //             ),
+// //           delete: key => SESSION_STORE.delete(key),
+// //         },
+// //         // rateLimit: { // https://www.better-auth.com/docs/concepts/rate-limit
+// //         //   enabled: true,
+// //         //   customStorage: {
+// //         //     get: async (key) => {
+// //         //       const data = await RATE_LIMIT_CACHE.get(key);
+// //         //       return data ? JSON.parse(data) : undefined;
+// //         //     },
+// //         //     set: (key, value) => RATE_LIMIT_CACHE.put(key, JSON.stringify(value)),
+// //         //   },
+// //         //   window: 60,
+// //         //   max: 2,
+// //         //   customRules: {
+// //         //     "/sign-in/email": {
+// //         //       window: 15,
+// //         //       max: 1,
+// //         //     },
+// //         //   },
+// //         // },
+// //         advanced: {
+// //           cookiePrefix: AUTH_COOKIE_PREFIX,
+// //         },
+// //         plugins: [
+// //           // polar({
+// //           //   client: polarClient,
+// //           //   createCustomerOnSignUp: true,
+// //           //   // getCustomerCreateParams: ({ user }, request) => ({
+// //           //   //   metadata: {
+// //           //   //     myCustomProperty: 123,
+// //           //   //   },
+// //           //   // }),
+// //           //   use: [
+// //           //     checkout({
+// //           //       products: [
+// //           //         {
+// //           //           productId: "06ef753e-cecf-478e-b107-2422241a29ed",
+// //           //           slug: TEST_PRODUCT_SLUG,
+// //           //         },
+// //           //       ],
+// //           //       successUrl: process.env.POLAR_SUCCESS_URL,
+// //           //       authenticatedUsersOnly: true,
+// //           //     }),
+// //           //     portal(),
+// //           //     // usage(),
+// //           //     // webhooks({
+// //           //     //     secret: process.env.POLAR_WEBHOOK_SECRET,
+// //           //     //     onCustomerStateChanged: (payload) => // Triggered when anything regarding a customer changes
+// //           //     //     onOrderPaid: (payload) => // Triggered when an order was paid (purchase, subscription renewal, etc.)
+// //           //     //      // Over 25 granular webhook handlers
+// //           //     //     onPayload: (payload) => // Catch-all for all events
+// //           //     // })
+// //           //   ],
+// //           // }),
+// //           reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
+// //         ],
+// //       }),
+// //     )
+// //   })
+// //   const runnable = pipe(program, CloudflareLive)
+// //   return Effect.runSync(runnable)
+// // }
+
+// const auth = betterAuth({
+//   hooks: {
+//     after: createAuthMiddleware(async ctx => {
+//       if (ctx.path.startsWith("/sign-in")) {
+//         const email = ctx.context.newSession?.user.email
+//         if (email === undefined) return
+//         const url = `https://developers.teachable.com/v1/users?email=${email}`
+//         const options = {
+//           method: "GET",
+//           headers: {
+//             accept: "application/json",
+//             apiKey: process.env["TEACHABLE_API_KEY"] || "",
+//           },
+//         }
+//         let json
+//         try {
+//           const res = await fetch(url, options)
+//           json = await res.json()
+//           console.log(json)
+//         } catch (error) {
+//           console.error("Error fetching Teachable user:", error)
+//         }
+//         const maybeData = Schema.decodeUnknownOption(
+//           Schema.Struct({
+//             users: Schema.Array(
+//               Schema.Struct({
+//                 id: Schema.Number,
+//               }),
+//             ),
+//           }),
+//         )(json)
+//         if (Option.isNone(maybeData)) {
+//           console.error("No Teachable user found for email:", email)
+//           return
+//         }
+//         const id = Option.getOrThrow(maybeData).users[0]!.id
+//         const url2 = `https://developers.teachable.com/v1/users/${id}`
+//         const options2 = {
+//           method: "GET",
+//           headers: {
+//             accept: "application/json",
+//             apiKey: "AO9L9Gs9spfFPXuOT7B9lpozCOXi9Qfv",
+//           },
+//         }
+
+//         try {
+//           const res = await fetch(url2, options2)
+//           json = await res.json()
+//           console.log(json)
+//         } catch (error) {
+//           console.error("Error fetching Teachable user:", error)
+//         }
+//       }
+//     }),
+//   },
+//   user: {
+//     changeEmail: {
+//       enabled: true,
+//       // sendChangeEmailVerification: TODO
+//     },
+//   },
+//   emailAndPassword: {
+//     enabled: true,
+//     autoSignIn: IS_DEV,
+//     requireEmailVerification: !IS_DEV,
+//     revokeSessionsOnPasswordReset: true,
+//     minPasswordLength: 16,
+//     maxPasswordLength: 64,
+//     // sendResetPassword: async ({ user, url }) => {
+//     //   await resend.emails.send({
+//     //     from: emailSender,
+//     //     to: user.email,
+//     //     subject: "Reset your password",
+//     //     react: ResetPasswordEmail({ url }),
+//     //   })
+//     // },
+//   },
+//   emailVerification: {
+//     autoSignInAfterVerification: true,
+//     sendOnSignIn: true,
+//     sendOnSignUp: true,
+//     // sendVerificationEmail: async ({ user, url }) => {
+//     //   await resend.emails.send({
+//     //     from: emailSender,
+//     //     to: user.email,
+//     //     subject: "Verify your email address",
+//     //     react: VerifyEmailEmail({ url }),
+//     //   })
+//     // },
+//   },
+//   // socialProviders: {
+//   //   google: {
+//   //     clientId: environment.variables.GOOGLE_CLIENT_ID,
+//   //     clientSecret: environment.secrets.GOOGLE_CLIENT_SECRET,
+//   //   },
+//   // },
+//   // database: new Database("./packages/authentication/src/db/sqlite.db"),
+//   database: {
+//     db: new Kysely({
+//       dialect: new D1Dialect({ database: AUTH_DB }),
+//     }),
+//     type: "sqlite",
+//   },
+//   session: {
+//     storeSessionInDatabase: true, // TODO: remove this when issue fixed https://github.com/better-auth/better-auth/issues/2007
+//     cookieCache: {
+//       enabled: true,
+//       maxAge: Duration.toSeconds(EVENTUAL_CONSISTENCY_DELAY),
+//     },
+//   },
+//   secondaryStorage: {
+//     get: key => SESSION_STORE.get(key),
+//     // oxlint-disable-next-line max-params
+//     set: (key, value, ttl) =>
+//       SESSION_STORE.put(
+//         key,
+//         value,
+//         // oxlint-disable-next-line no-undefined
+//         ttl === undefined ? {} : { expirationTtl: ttl },
+//       ),
+//     delete: key => SESSION_STORE.delete(key),
+//   },
+//   // rateLimit: { // https://www.better-auth.com/docs/concepts/rate-limit
+//   //   enabled: true,
+//   //   customStorage: {
+//   //     get: async (key) => {
+//   //       const data = await RATE_LIMIT_CACHE.get(key);
+//   //       return data ? JSON.parse(data) : undefined;
+//   //     },
+//   //     set: (key, value) => RATE_LIMIT_CACHE.put(key, JSON.stringify(value)),
+//   //   },
+//   //   window: 60,
+//   //   max: 2,
+//   //   customRules: {
+//   //     "/sign-in/email": {
+//   //       window: 15,
+//   //       max: 1,
+//   //     },
+//   //   },
+//   // },
+//   advanced: {
+//     cookiePrefix: AUTH_COOKIE_PREFIX,
+//   },
+//   plugins: [
+//     // admin(),
+//     // organization(),
+//     // polar({
+//     //   client: polarClient,
+//     //   createCustomerOnSignUp: true,
+//     //   // getCustomerCreateParams: ({ user }, request) => ({
+//     //   //   metadata: {
+//     //   //     myCustomProperty: 123,
+//     //   //   },
+//     //   // }),
+//     //   use: [
+//     //     checkout({
+//     //       products: [...products],
+//     //     }),
+//     //     // checkout({
+//     //     //   products: [
+//     //     //     {
+//     //     //       productId: "06ef753e-cecf-478e-b107-2422241a29ed",
+//     //     //       slug: TEST_PRODUCT_SLUG,
+//     //     //     },
+//     //     //   ],
+//     //     //   successUrl: process.env.POLAR_SUCCESS_URL,
+//     //     //   authenticatedUsersOnly: true,
+//     //     // }),
+//     //     portal(),
+//     //     // usage(),
+//     //     // webhooks({
+//     //     //     secret: process.env.POLAR_WEBHOOK_SECRET,
+//     //     //     onCustomerStateChanged: (payload) => // Triggered when anything regarding a customer changes
+//     //     //     onOrderPaid: (payload) => // Triggered when an order was paid (purchase, subscription renewal, etc.)
+//     //     //      // Over 25 granular webhook handlers
+//     //     //     onPayload: (payload) => // Catch-all for all events
+//     //     // })
+//     //   ],
+//     // }),
+//     reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
+//   ],
 // })
 
-// https://www.better-auth.com/docs/guides/optimizing-for-performance
-// https://www.better-auth.com/docs/guides/browser-extension-guide
-// const { RESEND_API_KEY } = environment.secrets
-// const resend = new Resend(RESEND_API_KEY)
-// const emailSender = "info@riverwalk.dev"
-const { AUTH_DB, SESSION_STORE } = getCloudflareBindings()
-// const getAuth = () => {
-//   const program = Effect.gen(function* () {
-//     const cloudflare = yield* Cloudflare
-//     const { AUTH_DB, SESSION_STORE } = yield* cloudflare.bindings
-//     return yield* Effect.sync(() =>
-//       betterAuth({
-//         emailAndPassword: {
-//           enabled: true,
-//           autoSignIn: IS_DEV,
-//           requireEmailVerification: !IS_DEV,
-//           revokeSessionsOnPasswordReset: true,
-//           minPasswordLength: 16,
-//           maxPasswordLength: 64,
-//           // sendResetPassword: async ({ user, url }) => {
-//           //   await resend.emails.send({
-//           //     from: emailSender,
-//           //     to: user.email,
-//           //     subject: "Reset your password",
-//           //     react: ResetPasswordEmail({ url }),
-//           //   })
-//           // },
-//         },
-//         emailVerification: {
-//           autoSignInAfterVerification: true,
-//           sendOnSignIn: true,
-//           sendOnSignUp: true,
-//           // sendVerificationEmail: async ({ user, url }) => {
-//           //   await resend.emails.send({
-//           //     from: emailSender,
-//           //     to: user.email,
-//           //     subject: "Verify your email address",
-//           //     react: VerifyEmailEmail({ url }),
-//           //   })
-//           // },
-//         },
-//         // socialProviders: {
-//         //   google: {
-//         //     clientId: environment.variables.GOOGLE_CLIENT_ID,
-//         //     clientSecret: environment.secrets.GOOGLE_CLIENT_SECRET,
-//         //   },
-//         // },
-//         // database: new Database("./packages/authentication/db/sqlite.db"),
-//         database: {
-//           db: new Kysely({
-//             dialect: new D1Dialect({ database: AUTH_DB }),
-//           }),
-//           type: "sqlite",
-//         },
-//         session: {
-//           storeSessionInDatabase: true, // TODO: remove this when issue fixed https://github.com/better-auth/better-auth/issues/2007
-//           cookieCache: {
-//             enabled: true,
-//             maxAge: Duration.toSeconds(EVENTUAL_CONSISTENCY_DELAY),
-//           },
-//         },
-//         secondaryStorage: {
-//           get: key => SESSION_STORE.get(key),
-//           set: (key, value, ttl) =>
-//             SESSION_STORE.put(
-//               key,
-//               value,
-//               ttl === undefined ? {} : { expirationTtl: ttl },
-//             ),
-//           delete: key => SESSION_STORE.delete(key),
-//         },
-//         // rateLimit: { // https://www.better-auth.com/docs/concepts/rate-limit
-//         //   enabled: true,
-//         //   customStorage: {
-//         //     get: async (key) => {
-//         //       const data = await RATE_LIMIT_CACHE.get(key);
-//         //       return data ? JSON.parse(data) : undefined;
-//         //     },
-//         //     set: (key, value) => RATE_LIMIT_CACHE.put(key, JSON.stringify(value)),
-//         //   },
-//         //   window: 60,
-//         //   max: 2,
-//         //   customRules: {
-//         //     "/sign-in/email": {
-//         //       window: 15,
-//         //       max: 1,
-//         //     },
-//         //   },
-//         // },
-//         advanced: {
-//           cookiePrefix: AUTH_COOKIE_PREFIX,
-//         },
-//         plugins: [
-//           // polar({
-//           //   client: polarClient,
-//           //   createCustomerOnSignUp: true,
-//           //   // getCustomerCreateParams: ({ user }, request) => ({
-//           //   //   metadata: {
-//           //   //     myCustomProperty: 123,
-//           //   //   },
-//           //   // }),
-//           //   use: [
-//           //     checkout({
-//           //       products: [
-//           //         {
-//           //           productId: "06ef753e-cecf-478e-b107-2422241a29ed",
-//           //           slug: TEST_PRODUCT_SLUG,
-//           //         },
-//           //       ],
-//           //       successUrl: process.env.POLAR_SUCCESS_URL,
-//           //       authenticatedUsersOnly: true,
-//           //     }),
-//           //     portal(),
-//           //     // usage(),
-//           //     // webhooks({
-//           //     //     secret: process.env.POLAR_WEBHOOK_SECRET,
-//           //     //     onCustomerStateChanged: (payload) => // Triggered when anything regarding a customer changes
-//           //     //     onOrderPaid: (payload) => // Triggered when an order was paid (purchase, subscription renewal, etc.)
-//           //     //      // Over 25 granular webhook handlers
-//           //     //     onPayload: (payload) => // Catch-all for all events
-//           //     // })
-//           //   ],
-//           // }),
-//           reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
-//         ],
-//       }),
-//     )
-//   })
-//   const runnable = pipe(program, CloudflareLive)
-//   return Effect.runSync(runnable)
-// }
-
-const auth = betterAuth({
-  hooks: {
-    after: createAuthMiddleware(async ctx => {
-      if (ctx.path.startsWith("/sign-in")) {
-        const email = ctx.context.newSession?.user.email
-        if (email === undefined) return
-        const url = `https://developers.teachable.com/v1/users?email=${email}`
-        const options = {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            apiKey: process.env["TEACHABLE_API_KEY"] || "",
-          },
-        }
-        let json
-        try {
-          const res = await fetch(url, options)
-          json = await res.json()
-          console.log(json)
-        } catch (error) {
-          console.error("Error fetching Teachable user:", error)
-        }
-        const maybeData = Schema.decodeUnknownOption(
-          Schema.Struct({
-            users: Schema.Array(
-              Schema.Struct({
-                id: Schema.Number,
-              }),
-            ),
-          }),
-        )(json)
-        if (Option.isNone(maybeData)) {
-          console.error("No Teachable user found for email:", email)
-          return
-        }
-        const id = Option.getOrThrow(maybeData).users[0]!.id
-        const url2 = `https://developers.teachable.com/v1/users/${id}`
-        const options2 = {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            apiKey: "AO9L9Gs9spfFPXuOT7B9lpozCOXi9Qfv",
-          },
-        }
-
-        try {
-          const res = await fetch(url2, options2)
-          json = await res.json()
-          console.log(json)
-        } catch (error) {
-          console.error("Error fetching Teachable user:", error)
-        }
-      }
-    }),
-  },
-  user: {
-    changeEmail: {
-      enabled: true,
-      // sendChangeEmailVerification: TODO
-    },
-  },
-  emailAndPassword: {
-    enabled: true,
-    autoSignIn: IS_DEV,
-    requireEmailVerification: !IS_DEV,
-    revokeSessionsOnPasswordReset: true,
-    minPasswordLength: 16,
-    maxPasswordLength: 64,
-    // sendResetPassword: async ({ user, url }) => {
-    //   await resend.emails.send({
-    //     from: emailSender,
-    //     to: user.email,
-    //     subject: "Reset your password",
-    //     react: ResetPasswordEmail({ url }),
-    //   })
-    // },
-  },
-  emailVerification: {
-    autoSignInAfterVerification: true,
-    sendOnSignIn: true,
-    sendOnSignUp: true,
-    // sendVerificationEmail: async ({ user, url }) => {
-    //   await resend.emails.send({
-    //     from: emailSender,
-    //     to: user.email,
-    //     subject: "Verify your email address",
-    //     react: VerifyEmailEmail({ url }),
-    //   })
-    // },
-  },
-  // socialProviders: {
-  //   google: {
-  //     clientId: environment.variables.GOOGLE_CLIENT_ID,
-  //     clientSecret: environment.secrets.GOOGLE_CLIENT_SECRET,
-  //   },
-  // },
-  // database: new Database("./packages/authentication/src/db/sqlite.db"),
-  database: {
-    db: new Kysely({
-      dialect: new D1Dialect({ database: AUTH_DB }),
-    }),
-    type: "sqlite",
-  },
-  session: {
-    storeSessionInDatabase: true, // TODO: remove this when issue fixed https://github.com/better-auth/better-auth/issues/2007
-    cookieCache: {
-      enabled: true,
-      maxAge: Duration.toSeconds(EVENTUAL_CONSISTENCY_DELAY),
-    },
-  },
-  secondaryStorage: {
-    get: key => SESSION_STORE.get(key),
-    // oxlint-disable-next-line max-params
-    set: (key, value, ttl) =>
-      SESSION_STORE.put(
-        key,
-        value,
-        // oxlint-disable-next-line no-undefined
-        ttl === undefined ? {} : { expirationTtl: ttl },
-      ),
-    delete: key => SESSION_STORE.delete(key),
-  },
-  // rateLimit: { // https://www.better-auth.com/docs/concepts/rate-limit
-  //   enabled: true,
-  //   customStorage: {
-  //     get: async (key) => {
-  //       const data = await RATE_LIMIT_CACHE.get(key);
-  //       return data ? JSON.parse(data) : undefined;
-  //     },
-  //     set: (key, value) => RATE_LIMIT_CACHE.put(key, JSON.stringify(value)),
-  //   },
-  //   window: 60,
-  //   max: 2,
-  //   customRules: {
-  //     "/sign-in/email": {
-  //       window: 15,
-  //       max: 1,
-  //     },
-  //   },
-  // },
-  advanced: {
-    cookiePrefix: AUTH_COOKIE_PREFIX,
-  },
-  plugins: [
-    // admin(),
-    // organization(),
-    // polar({
-    //   client: polarClient,
-    //   createCustomerOnSignUp: true,
-    //   // getCustomerCreateParams: ({ user }, request) => ({
-    //   //   metadata: {
-    //   //     myCustomProperty: 123,
-    //   //   },
-    //   // }),
-    //   use: [
-    //     checkout({
-    //       products: [...products],
-    //     }),
-    //     // checkout({
-    //     //   products: [
-    //     //     {
-    //     //       productId: "06ef753e-cecf-478e-b107-2422241a29ed",
-    //     //       slug: TEST_PRODUCT_SLUG,
-    //     //     },
-    //     //   ],
-    //     //   successUrl: process.env.POLAR_SUCCESS_URL,
-    //     //   authenticatedUsersOnly: true,
-    //     // }),
-    //     portal(),
-    //     // usage(),
-    //     // webhooks({
-    //     //     secret: process.env.POLAR_WEBHOOK_SECRET,
-    //     //     onCustomerStateChanged: (payload) => // Triggered when anything regarding a customer changes
-    //     //     onOrderPaid: (payload) => // Triggered when an order was paid (purchase, subscription renewal, etc.)
-    //     //      // Over 25 granular webhook handlers
-    //     //     onPayload: (payload) => // Catch-all for all events
-    //     // })
-    //   ],
-    // }),
-    reactStartCookies(), // must be last https://www.better-auth.com/docs/integrations/tanstack#usage-tips
-  ],
-})
-
-export { auth }
+// export { auth }

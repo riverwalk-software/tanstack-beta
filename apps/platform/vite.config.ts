@@ -1,21 +1,18 @@
 import tailwindcss from "@tailwindcss/vite"
-import { devtools } from "@tanstack/devtools-vite"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [
-    devtools(), // Must come first
+    // devtools(), // Must come first
     tailwindcss(),
-    tanstackStart({
-      customViteReactPlugin: true,
-      target: "cloudflare-module",
-    }),
+    // cloudflare({ viteEnvironment: { name: "ssr" } }),
+    tanstackStart(),
     react({
-      babel: {
-        plugins: ["babel-plugin-react-compiler"],
-      },
+      // babel: {
+      //   plugins: ["babel-plugin-react-compiler"],
+      // },
     }),
   ],
   server: {
