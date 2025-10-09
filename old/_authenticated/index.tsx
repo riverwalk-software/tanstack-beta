@@ -1,24 +1,23 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
-import { authClient } from "#lib/auth-client.js"
 
 export const Route = createFileRoute("/_authenticated/")({
   component: RouteComponent,
 })
 
-function useBenefits() {
-  return useSuspenseQuery({
-    queryKey: ["benefits"],
-    queryFn: async () => {
-      const res = await authClient.customer.benefits.list({
-        query: { page: 1, limit: 10 },
-      })
-      return res
-    },
-  })
-}
+// function useBenefits() {
+//   return useSuspenseQuery({
+//     queryKey: ["benefits"],
+//     queryFn: async () => {
+//       const res = await authClient.customer.benefits.list({
+//         query: { page: 1, limit: 10 },
+//       })
+//       return res
+//     },
+//   })
+// }
 
 function RouteComponent() {
+  return <div>Home</div>
   // const { data, error } = useBenefits()
   // console.log("BENEFITS DATA", data, error)
   // const benefits =

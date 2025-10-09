@@ -13,8 +13,8 @@ import {
 import { useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "@tanstack/react-router"
 import { Schema } from "effect"
-import { ComponentProps } from "react"
-import { UseFormReturn, useForm } from "react-hook-form"
+import type { ComponentProps } from "react"
+import { type UseFormReturn, useForm } from "react-hook-form"
 import slugify from "slugify"
 
 // oxlint-disable-next-line func-style

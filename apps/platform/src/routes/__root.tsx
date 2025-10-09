@@ -1,46 +1,29 @@
-// import {
-//   AuthenticationData,
-//   authenticationDataQueryOptions,
-// } from "@authentication"
-
-import { ThemeProvider, ThemeToggle, useTheme } from "@repo/platform-theme"
-import { Button } from "@repo/platform-ui"
-import { wrapCreateRootRouteWithSentry } from "@sentry/tanstackstart-react"
-import { TanStackDevtools } from "@tanstack/react-devtools"
-import { type QueryClient, useQueryClient } from "@tanstack/react-query"
-import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
+import { ThemeProvider, useTheme } from "@repo/platform-theme"
+import type { QueryClient } from "@tanstack/react-query"
 import {
   createRootRouteWithContext,
   HeadContent,
-  Link,
   Outlet,
   Scripts,
-  useRouter,
 } from "@tanstack/react-router"
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-import { ReactNode } from "react"
+import type { ReactNode } from "react"
 import { Toaster } from "sonner"
-import {
-  AuthenticationData,
-  authenticationDataQueryOptions,
-} from "#authentication/query-options.js"
-import { authClient } from "#lib/auth-client.js"
 import { DefaultCatchBoundary } from "#pages/default-catch-boundary.js"
 import { NotFound } from "#pages/not-found.js"
 import stylesCss from "#styles/globals.css?url"
 // import { authClient } from "@/lib/auth-client"
 
-export const Route = wrapCreateRootRouteWithSentry(createRootRouteWithContext)<{
+export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
 }>()({
-  beforeLoad: async ({
-    context: { queryClient },
-  }): Promise<{ authenticationData: AuthenticationData }> => {
-    const maybeAuthenticationData = await queryClient.fetchQuery(
-      authenticationDataQueryOptions,
-    )
-    return { authenticationData: maybeAuthenticationData }
-  },
+  // beforeLoad: async ({
+  //   context: { queryClient },
+  // }): Promise<{ authenticationData: AuthenticationData }> => {
+  //   const maybeAuthenticationData = await queryClient.fetchQuery(
+  //     authenticationDataQueryOptions,
+  //   )
+  //   return { authenticationData: maybeAuthenticationData }
+  // },
   // loader: async ({ context: { queryClient } }): Promise<void> => {
   //   await Promise.all([
   //     IS_DEV
@@ -167,10 +150,10 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           This Route Does Not Exist
         </Link>
       </div> */}
-        <Navbar />
+        {/* <Navbar /> */}
         <hr />
         {children}
-        <TanStackDevtools
+        {/* <TanStackDevtools
           plugins={[
             {
               name: "TanStack Query",
@@ -181,7 +164,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
               render: <TanStackRouterDevtoolsPanel />,
             },
           ]}
-        />
+        /> */}
         <Toaster />
         <Scripts />
       </body>
@@ -189,98 +172,98 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   )
 }
 
-function Navbar() {
-  const { authenticationData } = Route.useRouteContext()
-  const isAuthenticated = authenticationData !== null
-  const router = useRouter()
-  const queryClient = useQueryClient()
-  return (
-    <div className="flex gap-2 p-2 text-lg">
-      <div className="flex flex-1 gap-2">{isAuthenticated && <HomeLink />}</div>
-      <div className="ml-auto flex gap-2">
-        {isAuthenticated ? (
-          <>
-            <ProfileLink />
-            {/* <SignOutButton /> */}
-            <Button
-              onClick={async () => {
-                await authClient.signOut()
-                await queryClient.invalidateQueries({
-                  queryKey: authenticationDataQueryOptions.queryKey,
-                })
-                await router.invalidate({ sync: true })
-              }}
-            >
-              Sign Out
-            </Button>
-          </>
-        ) : (
-          <>
-            <SigninLink />
-            <SignupLink />
-          </>
-        )}
-      </div>
-      <ThemeToggle />
-    </div>
-  )
-}
+// function Navbar() {
+//   const { authenticationData } = Route.useRouteContext()
+//   const isAuthenticated = authenticationData !== null
+//   const router = useRouter()
+//   const queryClient = useQueryClient()
+//   return (
+//     <div className="flex gap-2 p-2 text-lg">
+//       <div className="flex flex-1 gap-2">{isAuthenticated && <HomeLink />}</div>
+//       <div className="ml-auto flex gap-2">
+//         {isAuthenticated ? (
+//           <>
+//             <ProfileLink />
+//             {/* <SignOutButton /> */}
+//             {/* <Button
+//               onClick={async () => {
+//                 await authClient.signOut()
+//                 await queryClient.invalidateQueries({
+//                   queryKey: authenticationDataQueryOptions.queryKey,
+//                 })
+//                 await router.invalidate({ sync: true })
+//               }}
+//             >
+//               Sign Out
+//             </Button> */}
+//           </>
+//         ) : (
+//           <>
+//             <SigninLink />
+//             <SignupLink />
+//           </>
+//         )}
+//       </div>
+//       <ThemeToggle />
+//     </div>
+//   )
+// }
 
-function HomeLink() {
-  return (
-    <Link
-      activeOptions={{ exact: true }}
-      activeProps={{
-        className: "font-bold",
-      }}
-      to="/"
-    >
-      Home
-    </Link>
-  )
-}
+// function HomeLink() {
+//   return (
+//     <Link
+//       activeOptions={{ exact: true }}
+//       activeProps={{
+//         className: "font-bold",
+//       }}
+//       to="/"
+//     >
+//       Home
+//     </Link>
+//   )
+// }
 
-function SigninLink() {
-  return (
-    <Link
-      activeOptions={{ exact: true }}
-      activeProps={{
-        className: "font-bold",
-      }}
-      to="/sign-in"
-    >
-      Sign In
-    </Link>
-  )
-}
+// function SigninLink() {
+//   return (
+//     <Link
+//       activeOptions={{ exact: true }}
+//       activeProps={{
+//         className: "font-bold",
+//       }}
+//       to="/sign-in"
+//     >
+//       Sign In
+//     </Link>
+//   )
+// }
 
-function SignupLink() {
-  return (
-    <Link
-      activeOptions={{ exact: true }}
-      activeProps={{
-        className: "font-bold",
-      }}
-      to="/sign-up"
-    >
-      Sign Up
-    </Link>
-  )
-}
+// function SignupLink() {
+//   return (
+//     <Link
+//       activeOptions={{ exact: true }}
+//       activeProps={{
+//         className: "font-bold",
+//       }}
+//       to="/sign-up"
+//     >
+//       Sign Up
+//     </Link>
+//   )
+// }
 
-function ProfileLink() {
-  return (
-    <Link
-      activeOptions={{ exact: true }}
-      activeProps={{
-        className: "font-bold",
-      }}
-      to="/profile"
-    >
-      Profile
-    </Link>
-  )
-}
+// function ProfileLink() {
+//   return (
+//     <Link
+//       activeOptions={{ exact: true }}
+//       activeProps={{
+//         className: "font-bold",
+//       }}
+//       to="/profile"
+//     >
+//       Profile
+//     </Link>
+//   )
+// }
 
 function ReactScanScript() {
   return (
