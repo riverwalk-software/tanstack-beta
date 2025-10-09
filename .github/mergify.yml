@@ -4,6 +4,7 @@ pull_request_rules:
       - -closed
       - -draft
       - author != renovate[bot]
+      - author != dependabot[bot]
       - "#approved-reviews-by >= 0"
     actions:
       merge:
@@ -15,6 +16,7 @@ pull_request_rules:
   - name: assign PR to its author
     conditions:
       - author != renovate[bot]
+      - author != dependabot[bot]
       - "#assignees = 0"
     actions:
       assign:
@@ -32,6 +34,7 @@ pull_request_rules:
       - -closed
       - -draft
       - author != renovate[bot]
+      - author != dependabot[bot]
       - "#commits-behind >= 10"
     actions:
       rebase:
@@ -40,6 +43,7 @@ pull_request_rules:
       - -closed
       - -draft
       - author != renovate[bot]
+      - author != dependabot[bot]
       - "#check-failure > 0"
     actions:
       edit:
@@ -58,5 +62,6 @@ merge_protections:
     if:
       - base = main
       - author != renovate[bot]
+      - author != dependabot[bot]
     success_conditions:
       - body ~= Fixes
