@@ -18,16 +18,16 @@ catalog:
   '@tailwindcss/vite': 4.1.13
   '@tanstack/devtools-vite': 0.3.3
   '@tanstack/react-devtools': 0.7.0
-  '@tanstack/react-query': 5.90.2
   '@tanstack/react-query-devtools': 5.90.2
-  '@tanstack/react-router': 1.131.49
+  '@tanstack/react-query': 5.90.2
   '@tanstack/react-router-devtools': 1.131.49
   '@tanstack/react-router-ssr-query': 1.131.49
+  '@tanstack/react-router': 1.131.49
   '@tanstack/react-start': 1.131.49
   '@types/better-sqlite3': 7.6.13
   '@types/node': 24.5.2
-  '@types/react': 19.1.13
   '@types/react-dom': 19.1.9
+  '@types/react': 19.1.13
   '@vitejs/plugin-react': 5.0.3
   '@xstate/react': 6.0.0
   astro: 5.13.6
@@ -37,14 +37,14 @@ catalog:
   class-variance-authority: 0.7.1
   clsx: 2.1.1
   effect: 3.17.14
-  kysely: 0.28.7
   kysely-d1: 0.4.0
+  kysely: 0.28.7
   lucide-react: 0.544.0
   only-allow: 1.2.1
   oxlint: 1.17.0
-  react: 19.1.1
   react-dom: 19.1.1
   react-hook-form: 7.63.0
+  react: 19.1.1
   shadcn: 3.3.1
   sharp: 0.34.3
   slugify: 1.6.6
@@ -61,9 +61,11 @@ catalog:
   wrangler: 4.39.0
   xstate: 5.22.0
 
-catalogMode: strict
-
-cleanupUnusedCatalogs: true
-
 onlyBuiltDependencies:
   - workerd
+
+catalogMode: strict
+cleanupUnusedCatalogs: true
+engineStrict: true
+strictPeerDependencies: true
+updateNotifier: false
