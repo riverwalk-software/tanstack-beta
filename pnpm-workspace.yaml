@@ -59,7 +59,7 @@ catalog:
   typescript: 5.9.2
   vite: 7.1.9
   wrangler: 4.42.2
-  xstate: 5.22.0
+  xstate: 5.23.0
 
 catalogMode: strict
 
